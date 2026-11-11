@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard di produzione mensile</title><style>
+  /* Layout: fondo nero a tutta pagina, testata con filetto rosso, tre volumi in riga, poi fatturato e dettaglio liquidato */
+  html, body { margin: 0; background: #000; }
+  .ae {
+    --ae-red: #E50041;
+    --ae-yellow: #FFC400;
+    --ae-burg: #66153A;
+    --ae-bg: #000000;
+    --ae-panel: #121212;
+    --ae-line: #2e2e2e;
+    --ae-fg: #ffffff;
+    --ae-muted: #b8b8b8;
+    background: var(--ae-bg);
+    color: var(--ae-fg);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    padding-block: clamp(20px, 4vw, 40px) 40px;
+    padding-inline: clamp(16px, 4vw, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    min-height: 100%;
+  }
+  .ae-head { display: flex; flex-direction: column; gap: 10px; border-bottom: 4px solid var(--ae-red); padding-bottom: 20px; }
+  .ae-brand { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ae-yellow); margin: 0; }
+  .ae-title { font-size: clamp(26px, 5vw, 40px); font-weight: 700; line-height: 1.1; margin: 0; text-wrap: balance; }
+  .ae-period { color: var(--ae-muted); font-size: 13px; margin: 0; }
+  .ae-lead { font-size: clamp(16px, 2.4vw, 19px); margin: 6px 0 0; max-width: 62ch; }
+  .ae-lead b { color: var(--ae-yellow); white-space: nowrap; }
+
+  .ae-h2 { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ae-muted); margin: 0 0 14px; }
+
+  .ae-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+  .ae-card { background: var(--ae-panel); border: 1px solid var(--ae-line); border-radius: 6px; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .ae-card.is-key { background: var(--ae-red); border-color: var(--ae-red); }
+  .ae-card-label { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin: 0; }
+  .ae-big { font-size: clamp(28px, 4.6vw, 38px); font-weight: 700; line-height: 1; display: block; min-height: 1em; }
+  .ae-pairs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; }
+  .ae-pairs dt { font-size: 12px; color: var(--ae-muted); }
+  .ae-card.is-key .ae-pairs dt { color: #ffd9e3; }
+  .ae-pairs dd { margin: 2px 0 0; font-size: 18px; font-weight: 700; min-height: 1.2em; }
+  .ae-note { font-size: 12px; margin: 0; color: #ffd9e3; }
+
+  .ae-rev { display: flex; flex-wrap: wrap; gap: 24px 64px; }
+  .ae-fig-label { font-size: 12px; color: var(--ae-muted); margin: 0 0 4px; }
+  .ae-fig { font-size: clamp(30px, 5vw, 44px); font-weight: 700; line-height: 1; color: var(--ae-yellow); display: block; min-height: 1em; }
+  .ae-fig.is-plain { color: var(--ae-fg); }
+  .ae-fig-def { font-size: 12px; color: var(--ae-muted); margin: 6px 0 0; }
+
+  .ae-table tr.is-current td { color: var(--ae-yellow); }
+  .ae-table-note { font-size: 12px; color: var(--ae-muted); margin: 10px 0 0; }
+
+  .ae-table-wrap { overflow-x: auto; }
+  .ae-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .ae-table th { text-align: right; font-size: 12px; font-weight: 700; color: var(--ae-muted); padding: 8px 10px; border-bottom: 1px solid var(--ae-line); white-space: nowrap; }
+  .ae-table td { text-align: right; padding: 12px 10px; border-bottom: 1px solid var(--ae-line); white-space: nowrap; }
+  .ae-table th:first-child, .ae-table td:first-child { text-align: left; padding-left: 0; white-space: normal; }
+  .ae-table td:first-child { font-weight: 700; }
+
+  .ae-defs { border-top: 1px solid var(--ae-line); padding-top: 16px; color: var(--ae-muted); font-size: 13px; }
+  .ae-defs summary { cursor: pointer; color: var(--ae-fg); font-weight: 700; }
+  .ae-defs summary:focus-visible { outline: 2px solid var(--ae-yellow); outline-offset: 4px; }
+  .ae-defs ul { margin: 12px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; max-width: 75ch; }
+  .ae [data-dash-source-state=refreshing] { opacity: .5; }
+</style></head><body>
+<div class="ae">
+<header class="ae-head"><p class="ae-brand">Aessefin Prestiti 24/7</p><h1 class="ae-title">Dashboard di produzione mensile</h1><p class="ae-period">Aggiornato l'11 novembre 2026 alle 17:10</p></header>
+<section><h2 class="ae-h2">Volumi sul montante</h2><div class="ae-cards"><article class="ae-card"><p class="ae-card-label">Caricato</p><b class="ae-big">756.828 €</b>
+<dl class="ae-pairs"><div><dt>Pezzi</dt><dd>43</dd></div><div><dt>Montante medio</dt><dd>17.601 €</dd></div></dl></article><article class="ae-card"><p class="ae-card-label">Deliberato</p><b class="ae-big">517.932 €</b>
+<dl class="ae-pairs"><div><dt>Pezzi</dt><dd>27</dd></div><div><dt>Montante medio</dt><dd>19.183 €</dd></div></dl></article><article class="ae-card is-key"><p class="ae-card-label">Liquidato</p><b class="ae-big">613.416 €</b>
+<dl class="ae-pairs"><div><dt>Pezzi</dt><dd>33</dd></div><div><dt>Montante medio</dt><dd>18.588 €</dd></div></dl><p class="ae-note">Comprende <b>7</b> pratiche in richiesta liquidazione, con benestare già rientrato.</p></article></div></section>
+<section><h2 class="ae-h2">Fatturato sul liquidato</h2><div class="ae-rev">
+<div><p class="ae-fig-label">Fatturato</p><b class="ae-fig">88.356,10 €</b><p class="ae-fig-def">Commissioni maturate sulle pratiche liquidate.</p></div>
+<div><p class="ae-fig-label">Redditività</p><b class="ae-fig is-plain">14,40%</b><p class="ae-fig-def">Fatturato diviso montante liquidato.</p></div></div></section>
+<section><h2 class="ae-h2">Produzione per mese</h2><div class="ae-table-wrap"><table class="ae-table"><thead><tr><th>Mese</th><th>Montante</th><th>Redditività</th><th>Fatturato del mese</th><th>Tasso rifiutate</th><th>Tasso archivio</th><th>Tasso ritirate</th><th>Tasso prospect</th><th>Tasso pratiche aperte</th></tr></thead><tbody>
+<tr><td>Gennaio 2026</td><td>969.240 €</td><td>13,23%</td><td>128.196,87 €</td><td>26,26%</td><td>7,64%</td><td>20,55%</td><td>39,61%</td><td>0,11%</td></tr>
+<tr><td>Febbraio 2026</td><td>979.236 €</td><td>13,69%</td><td>134.094,79 €</td><td>17,91%</td><td>12,55%</td><td>18,83%</td><td>45,94%</td><td>0,08%</td></tr>
+<tr><td>Marzo 2026</td><td>1.210.248 €</td><td>14,72%</td><td>178.098,07 €</td><td>17,84%</td><td>11,65%</td><td>16,23%</td><td>50,48%</td><td>0,13%</td></tr>
+<tr><td>Aprile 2026</td><td>1.935.240 €</td><td>13,53%</td><td>261.889,43 €</td><td>20,44%</td><td>10,10%</td><td>15,27%</td><td>49,27%</td><td>0,38%</td></tr>
+<tr><td>Maggio 2026</td><td>1.150.128 €</td><td>12,26%</td><td>140.953,02 €</td><td>19,97%</td><td>8,30%</td><td>16,75%</td><td>51,27%</td><td>0,24%</td></tr>
+<tr><td>Giugno 2026</td><td>1.479.636 €</td><td>13,53%</td><td>200.258,30 €</td><td>23,86%</td><td>6,66%</td><td>15,97%</td><td>49,29%</td><td>0,24%</td></tr>
+<tr><td>Luglio 2026</td><td>2.027.232 €</td><td>13,07%</td><td>264.926,70 €</td><td>25,06%</td><td>6,48%</td><td>18,35%</td><td>46,32%</td><td>0,22%</td></tr>
+<tr><td>Agosto 2026</td><td>1.079.868 €</td><td>13,22%</td><td>142.738,99 €</td><td>21,01%</td><td>9,97%</td><td>20,58%</td><td>44,83%</td><td>0,32%</td></tr>
+<tr><td>Settembre 2026</td><td>1.360.788 €</td><td>13,41%</td><td>182.487,77 €</td><td>20,83%</td><td>11,62%</td><td>20,54%</td><td>42,50%</td><td>0,54%</td></tr>
+<tr><td>Ottobre 2026</td><td>1.679.316 €</td><td>14,00%</td><td>235.094,35 €</td><td>23,88%</td><td>10,03%</td><td>15,69%</td><td>43,23%</td><td>3,61%</td></tr>
+<tr class="is-current"><td>Novembre 2026</td><td>613.416 €</td><td>14,40%</td><td>88.356,10 €</td><td>22,06%</td><td>2,02%</td><td>5,15%</td><td>25,37%</td><td>42,65%</td></tr>
+</tbody></table></div>
+<p class="ae-table-note">Novembre è in corso: montante e fatturato sono parziali e gran parte delle pratiche del mese è ancora aperta.</p></section>
+</div></body></html>

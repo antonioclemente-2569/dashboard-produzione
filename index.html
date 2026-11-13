@@ -83,4 +83,23 @@
 <tr class="is-current"><td>Novembre 2026</td><td>715.320 €</td><td>14,16%</td><td>101.309,16 €</td><td>25,76%</td><td>2,13%</td><td>6,55%</td><td>30,79%</td><td>32,32%</td></tr>
 </tbody></table></div>
 <p class="ae-table-note">Novembre è in corso: montante e fatturato sono parziali e gran parte delle pratiche del mese è ancora aperta.</p></section>
-</div></body></html>
+</div>
+<script>
+/* Aggiornamento automatico: rilegge la versione pubblicata saltando la memoria del browser e, se è cambiata, sostituisce i contenuti sul posto */
+(function () {
+  function check() {
+    fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : null; })
+      .then(function (t) {
+        if (!t) return;
+        var d = new DOMParser().parseFromString(t, 'text/html');
+        var n = d.querySelector('.ae'), o = document.querySelector('.ae');
+        if (n && o && n.innerHTML !== o.innerHTML) o.innerHTML = n.innerHTML;
+      })
+      .catch(function () {});
+  }
+  check();
+  setInterval(check, 300000);
+})();
+</script>
+</body></html>

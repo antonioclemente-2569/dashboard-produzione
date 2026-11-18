@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chiamate lead manager</title><style>
+  html, body { margin: 0; background: #000; }
+  .ae {
+    --ae-red: #E50041; --ae-yellow: #FFC400; --ae-bg: #000; --ae-panel: #121212;
+    --ae-line: #2e2e2e; --ae-fg: #fff; --ae-muted: #b8b8b8;
+    background: var(--ae-bg); color: var(--ae-fg);
+    font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 40px) 40px;
+    display: flex; flex-direction: column; gap: 32px; min-height: 100%;
+  }
+  .ae-head { display: flex; flex-direction: column; gap: 10px; border-bottom: 4px solid var(--ae-red); padding-bottom: 20px; }
+  .ae-brand { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ae-yellow); margin: 0; }
+  .ae-title { font-size: clamp(26px, 5vw, 40px); font-weight: 700; line-height: 1.1; margin: 0; }
+  .ae-period { color: var(--ae-muted); font-size: 13px; margin: 0; }
+  .ae-lead { font-size: 16px; margin: 4px 0 0; }
+  .ae-lead b { color: var(--ae-yellow); }
+  .ae-h2 { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ae-muted); margin: 0 0 14px; }
+  .ae-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+  .ae-card { background: var(--ae-panel); border: 1px solid var(--ae-line); border-radius: 6px; padding: 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .ae-card.is-key { background: var(--ae-red); border-color: var(--ae-red); }
+  .ae-card-label { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin: 0; }
+  .ae-big { font-size: clamp(28px, 4.6vw, 38px); font-weight: 700; line-height: 1; display: block; min-height: 1em; }
+  .ae-sub { font-size: 13px; color: var(--ae-muted); margin: 0; }
+  .ae-card.is-key .ae-sub { color: #ffd9e3; }
+  .ae-legend { display: flex; gap: 18px; font-size: 12px; color: var(--ae-muted); margin: 0 0 10px; flex-wrap: wrap; }
+  .ae-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .ae-bars { display: flex; flex-direction: column; gap: 10px; }
+  .ae-bar-row { display: grid; grid-template-columns: minmax(110px, 180px) 1fr; gap: 12px; align-items: center; }
+  .ae-bar-name { font-size: 13px; color: var(--ae-muted); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ae-bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .ae-bar { display: flex; height: 24px; min-width: 2px; }
+  .ae-bar span { display: block; height: 100%; }
+  .ae-bar-val { font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .ae-table-wrap { overflow-x: auto; }
+  .ae-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .ae-table th { text-align: right; font-size: 12px; font-weight: 700; color: var(--ae-muted); padding: 8px 10px; border-bottom: 1px solid var(--ae-line); white-space: nowrap; }
+  .ae-table td { text-align: right; padding: 12px 10px; border-bottom: 1px solid var(--ae-line); white-space: nowrap; }
+  .ae-table th:first-child, .ae-table td:first-child { text-align: left; padding-left: 0; }
+  .ae-table td:first-child { font-weight: 700; }
+  .ae-table td.is-tot { color: var(--ae-yellow); font-weight: 700; }
+  .ae-note { font-size: 12px; color: var(--ae-muted); margin: 10px 0 0; }
+</style></head><body>
+<div class="ae">
+  <header class="ae-head">
+    <p class="ae-brand">Aessefin Prestiti 24/7</p>
+    <h1 class="ae-title">Chiamate lead manager</h1>
+    <p class="ae-period" id="agg">Caricamento…</p>
+    <p class="ae-lead" id="lead"></p>
+  </header>
+  <section>
+    <h2 class="ae-h2">Conversato con il cliente</h2>
+    <div class="ae-cards">
+      <article class="ae-card is-key"><p class="ae-card-label">Totale</p><b class="ae-big" id="k-tot">—</b><p class="ae-sub">Dialer più chiamate manuali</p></article>
+      <article class="ae-card"><p class="ae-card-label">Da dialer</p><b class="ae-big" id="k-dial">—</b><p class="ae-sub"><span id="k-dial-n">—</span> chiamate passate dalle campagne</p></article>
+      <article class="ae-card"><p class="ae-card-label">Manuali</p><b class="ae-big" id="k-man">—</b><p class="ae-sub"><span id="k-man-n">—</span> chiamate fatte, <span id="k-man-r">—</span> con risposta</p></article>
+    </div>
+  </section>
+  <section>
+    <h2 class="ae-h2">Conversato per operatore</h2>
+    <p class="ae-legend"><span><i style="background:#E50041"></i>Da dialer</span><span><i style="background:#FFC400"></i>Manuali</span></p>
+    <div class="ae-bars" id="bars"></div>
+  </section>
+  <section>
+    <h2 class="ae-h2">Dettaglio per operatore</h2>
+    <div class="ae-table-wrap"><table class="ae-table"><thead><tr><th>Operatore</th><th>Chiamate dialer</th><th>Conversato dialer</th><th>Chiamate manuali</th><th>Con risposta</th><th>Conversato manuali</th><th>Totale</th></tr></thead><tbody id="tb"></tbody></table></div>
+    <p class="ae-note">Lead manager: operatori con ruolo "LEAD MANAGER" nel Performance Index del CRM. Il conversato è il tempo in linea con il cliente, senza lo squillo. Le chiamate manuali comprendono anche quelle senza risposta.</p>
+  </section>
+  <section>
+    <h2 class="ae-h2">Conversato per fascia oraria</h2>
+    <p class="ae-legend"><span><i style="background:#E50041"></i>Da dialer</span><span><i style="background:#FFC400"></i>Manuali</span></p>
+    <div class="ae-bars" id="hours"></div>
+  </section>
+</div>
+<script>
+(function () {
+  function fmt(s) { s = Math.round(+s || 0); var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60; return (h ? h + 'h ' + String(m).padStart(2, '0') + 'm ' : m + 'm ') + String(r).padStart(2, '0') + 's'; }
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function bars(box, rows) {
+    box.replaceChildren();
+    var max = Math.max.apply(null, rows.map(function (r) { return r.d + r.m; }).concat([1]));
+    rows.forEach(function (r) {
+      var row = el('div', 'ae-bar-row'), track = el('div', 'ae-bar-track'), bar = el('div', 'ae-bar');
+      row.appendChild(el('div', 'ae-bar-name', r.nome));
+      var w = Math.round((r.d + r.m) / max * 80);
+      bar.style.width = w + '%';
+      var a = el('span'); a.style.background = '#E50041'; a.style.width = ((r.d + r.m) ? r.d / (r.d + r.m) * 100 : 0) + '%';
+      var b = el('span'); b.style.background = '#FFC400'; b.style.width = ((r.d + r.m) ? r.m / (r.d + r.m) * 100 : 0) + '%';
+      bar.appendChild(a); bar.appendChild(b);
+      bar.title = 'Dialer ' + fmt(r.d) + ' · Manuali ' + fmt(r.m);
+      track.appendChild(bar); track.appendChild(el('span', 'ae-bar-val', fmt(r.d + r.m)));
+      row.appendChild(track); box.appendChild(row);
+    });
+  }
+  function render(d) {
+    var ops = (d.operatori || []).map(function (o) { return { interno: o.interno, nome: o.operatore, dn: +o.chiamate_dialer || 0, d: +o.conversato_dialer_sec || 0, mn: +o.chiamate_manuali || 0, ma: +o.manuali_con_risposta || 0, m: +o.conversato_manuali_sec || 0 }; })
+      .sort(function (a, b) { return (b.d + b.m) - (a.d + a.m); });
+    var sum = function (k) { return ops.reduce(function (a, o) { return a + o[k]; }, 0); };
+    var td = sum('d'), tm = sum('m');
+    document.getElementById('agg').textContent = d.etichetta || ('Aggiornato ' + d.aggiornato);
+    document.getElementById('k-tot').textContent = fmt(td + tm);
+    document.getElementById('k-dial').textContent = fmt(td);
+    document.getElementById('k-man').textContent = fmt(tm);
+    document.getElementById('k-dial-n').textContent = sum('dn');
+    document.getElementById('k-man-n').textContent = sum('mn');
+    document.getElementById('k-man-r').textContent = sum('ma');
+    var lead = document.getElementById('lead'); lead.replaceChildren();
+    if (ops.length && (ops[0].d + ops[0].m) > 0) {
+      lead.appendChild(document.createTextNode('Conversato totale '));
+      lead.appendChild(el('b', null, fmt(td + tm)));
+      lead.appendChild(document.createTextNode(': guida '));
+      lead.appendChild(el('b', null, ops[0].nome));
+      lead.appendChild(document.createTextNode(' con '));
+      lead.appendChild(el('b', null, fmt(ops[0].d + ops[0].m)));
+      lead.appendChild(document.createTextNode('.'));
+    } else { lead.textContent = 'Nessuna conversazione registrata finora.'; }
+    bars(document.getElementById('bars'), ops);
+    var tb = document.getElementById('tb'); tb.replaceChildren();
+    ops.forEach(function (o) {
+      var tr = el('tr');
+      [o.nome + ' (' + o.interno + ')', o.dn, fmt(o.d), o.mn, o.ma, fmt(o.m)].forEach(function (v) { tr.appendChild(el('td', null, String(v))); });
+      tr.appendChild(el('td', 'is-tot', fmt(o.d + o.m)));
+      tb.appendChild(tr);
+    });
+    bars(document.getElementById('hours'), (d.ore || []).map(function (h) { return { nome: h.ora, d: +h.conversato_dialer_sec || 0, m: +h.conversato_manuali_sec || 0 }; }));
+  }
+  var last = '';
+  function load() {
+    fetch('dati.json?v=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : null; })
+      .then(function (t) { if (t && t !== last) { last = t; render(JSON.parse(t)); } })
+      .catch(function () { if (!last) document.getElementById('agg').textContent = 'Dati non disponibili al momento.'; });
+  }
+  load();
+  setInterval(load, 300000);
+})();
+</script>
+</body></html>

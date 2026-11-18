@@ -97,7 +97,7 @@
     <section>
       <h2 class="ae-h2">Andamento dei giorni</h2>
       <div class="ae-cards">
-        <article class="ae-card is-key"><p class="ae-card-label">Media giornaliera</p><b class="ae-big" id="g-media">—</b><p class="ae-sub"><span id="g-n">—</span> giorni registrati</p></article>
+        <article class="ae-card is-key"><p class="ae-card-label">Media giornaliera</p><b class="ae-big" id="g-media">—</b><p class="ae-sub" id="g-n">—</p></article>
         <article class="ae-card"><p class="ae-card-label">Giorno migliore</p><b class="ae-big" id="g-best">—</b><p class="ae-sub" id="g-best-d">—</p></article>
         <article class="ae-card"><p class="ae-card-label">Ultimo giorno</p><b class="ae-big" id="g-last">—</b><p class="ae-sub" id="g-last-delta">—</p></article>
       </div>
@@ -120,7 +120,7 @@
       <h2 class="ae-h2">Mese</h2>
       <p style="margin:0 0 16px"><select class="ae-select" id="m-sel"></select></p>
       <div class="ae-cards">
-        <article class="ae-card is-key"><p class="ae-card-label">Conversato del mese</p><b class="ae-big" id="m-tot">—</b><p class="ae-sub"><span id="m-gg">—</span> giorni lavorati</p></article>
+        <article class="ae-card is-key"><p class="ae-card-label">Conversato del mese</p><b class="ae-big" id="m-tot">—</b><p class="ae-sub" id="m-gg">—</p></article>
         <article class="ae-card"><p class="ae-card-label">Media giornaliera</p><b class="ae-big" id="m-media">—</b><p class="ae-sub" id="m-media-sub">—</p></article>
         <article class="ae-card"><p class="ae-card-label">Chiamate</p><b class="ae-big" id="m-ch">—</b><p class="ae-sub"><span id="m-ch-d">—</span> da dialer, <span id="m-ch-m">—</span> manuali</p></article>
       </div>
@@ -148,6 +148,7 @@
 
   function fmt(s) { s = Math.round(+s || 0); var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60; return (h ? h + 'h ' + String(m).padStart(2, '0') + 'm ' : m + 'm ') + String(r).padStart(2, '0') + 's'; }
   function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function nGiorni(n, suff) { return n + (n === 1 ? ' giorno ' : ' giorni ') + suff; }
   function dayLabel(iso) { var p = String(iso).split('-'); var d = new Date(+p[0], +p[1] - 1, +p[2]); return GG[d.getDay()] + ' ' + p[2] + '/' + p[1]; }
   function monthLabel(ym) { var p = String(ym).split('-'); return MESI[+p[1] - 1] + ' ' + p[0]; }
 
@@ -178,10 +179,7 @@
     list.forEach(function (o) { t.dn += o.dn; t.d += o.d; t.mn += o.mn; t.ma += o.ma; t.m += o.m; });
     t.tot = t.d + t.m; return t;
   }
-  function delta(cur, prev) {
-    if (!prev) return null;
-    return Math.round((cur - prev) / prev * 100);
-  }
+  function delta(cur, prev) { if (!prev) return null; return Math.round((cur - prev) / prev * 100); }
   function deltaCell(p) {
     if (p === null || !isFinite(p)) return el('td', null, '—');
     return el('td', p > 0 ? 'is-up' : (p < 0 ? 'is-down' : null), (p > 0 ? '+' : '') + p + '%');
@@ -232,7 +230,7 @@
     var best = gs.slice().sort(function (a, b) { return b.t.tot - a.t.tot; })[0];
     var last = gs[gs.length - 1], prev = gs[gs.length - 2];
     document.getElementById('g-media').textContent = fmt(media);
-    document.getElementById('g-n').textContent = gs.length;
+    document.getElementById('g-n').textContent = nGiorni(gs.length, gs.length === 1 ? 'registrato' : 'registrati');
     document.getElementById('g-best').textContent = best ? fmt(best.t.tot) : '—';
     document.getElementById('g-best-d').textContent = best ? dayLabel(best.data) : '—';
     document.getElementById('g-last').textContent = last ? fmt(last.t.tot) : '—';
@@ -279,9 +277,9 @@
     var list = Object.keys(per).map(function (k) { return per[k]; }).sort(function (a, b) { return (b.d + b.m) - (a.d + a.m); });
     var t = tot(list);
     document.getElementById('m-tot').textContent = fmt(t.tot);
-    document.getElementById('m-gg').textContent = gs.length;
+    document.getElementById('m-gg').textContent = nGiorni(gs.length, gs.length === 1 ? 'lavorato' : 'lavorati');
     document.getElementById('m-media').textContent = fmt(gs.length ? t.tot / gs.length : 0);
-    document.getElementById('m-media-sub').textContent = 'Per giorno lavorato, su ' + gs.length + (gs.length === 1 ? ' giorno' : ' giorni');
+    document.getElementById('m-media-sub').textContent = 'Per giorno lavorato, su ' + nGiorni(gs.length, 'del mese');
     document.getElementById('m-ch').textContent = t.dn + t.mn;
     document.getElementById('m-ch-d').textContent = t.dn;
     document.getElementById('m-ch-m').textContent = t.mn;

@@ -1,17 +1,23 @@
 {
- "aggiornato": "2026-11-18 10:18",
- "etichetta": "Oggi, 18 novembre 2026 · dati del centralino aggiornati alle 10:18",
+ "aggiornato": "2026-11-18 18:15",
+ "etichetta": "Oggi, 18 novembre 2026 · dati del centralino aggiornati alle 18:15",
  "operatori": [
-  {"interno": "202", "operatore": "Marco Firrincieli", "chiamate_dialer": 4, "conversato_dialer_sec": 205, "chiamate_manuali": 6, "manuali_con_risposta": 3, "conversato_manuali_sec": 327},
-  {"interno": "204", "operatore": "Marcel Honla", "chiamate_dialer": 9, "conversato_dialer_sec": 622, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-  {"interno": "205", "operatore": "Giovanni Sanglimbene", "chiamate_dialer": 9, "conversato_dialer_sec": 572, "chiamate_manuali": 23, "manuali_con_risposta": 8, "conversato_manuali_sec": 591},
-  {"interno": "206", "operatore": "Letizia Biddeci", "chiamate_dialer": 16, "conversato_dialer_sec": 1582, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-  {"interno": "208", "operatore": "Ludovica Baciucchi", "chiamate_dialer": 22, "conversato_dialer_sec": 1766, "chiamate_manuali": 11, "manuali_con_risposta": 1, "conversato_manuali_sec": 4},
-  {"interno": "215", "operatore": "Martina Giannotta", "chiamate_dialer": 24, "conversato_dialer_sec": 1519, "chiamate_manuali": 1, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-  {"interno": "233", "operatore": "Sara Camposano", "chiamate_dialer": 21, "conversato_dialer_sec": 2117, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0}
+  {"interno": "202", "operatore": "Marco Firrincieli", "chiamate_dialer": 29, "conversato_dialer_sec": 1878, "chiamate_manuali": 65, "manuali_con_risposta": 30, "conversato_manuali_sec": 2585},
+  {"interno": "204", "operatore": "Marcel Honla", "chiamate_dialer": 168, "conversato_dialer_sec": 10264, "chiamate_manuali": 2, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
+  {"interno": "205", "operatore": "Giovanni Sanglimbene", "chiamate_dialer": 48, "conversato_dialer_sec": 2889, "chiamate_manuali": 43, "manuali_con_risposta": 10, "conversato_manuali_sec": 806},
+  {"interno": "206", "operatore": "Letizia Biddeci", "chiamate_dialer": 123, "conversato_dialer_sec": 11903, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
+  {"interno": "208", "operatore": "Ludovica Baciucchi", "chiamate_dialer": 114, "conversato_dialer_sec": 7757, "chiamate_manuali": 70, "manuali_con_risposta": 13, "conversato_manuali_sec": 1537},
+  {"interno": "215", "operatore": "Martina Giannotta", "chiamate_dialer": 134, "conversato_dialer_sec": 9564, "chiamate_manuali": 5, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
+  {"interno": "233", "operatore": "Sara Camposano", "chiamate_dialer": 65, "conversato_dialer_sec": 5952, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0}
  ],
  "ore": [
   {"ora": "09:00", "conversato_dialer_sec": 5756, "conversato_manuali_sec": 872},
-  {"ora": "10:00", "conversato_dialer_sec": 2627, "conversato_manuali_sec": 50}
+  {"ora": "10:00", "conversato_dialer_sec": 8672, "conversato_manuali_sec": 234},
+  {"ora": "11:00", "conversato_dialer_sec": 5642, "conversato_manuali_sec": 1508},
+  {"ora": "12:00", "conversato_dialer_sec": 6250, "conversato_manuali_sec": 647},
+  {"ora": "14:00", "conversato_dialer_sec": 6689, "conversato_manuali_sec": 71},
+  {"ora": "15:00", "conversato_dialer_sec": 8751, "conversato_manuali_sec": 166},
+  {"ora": "16:00", "conversato_dialer_sec": 4317, "conversato_manuali_sec": 830},
+  {"ora": "17:00", "conversato_dialer_sec": 4130, "conversato_manuali_sec": 600}
  ]
 }

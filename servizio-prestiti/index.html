@@ -145,13 +145,26 @@ body.consulente .details{display:block}
 .legal{font-size:12.5px;color:var(--muted);padding:0 0 32px;max-width:780px;margin:0 auto}
 .legal p{margin:6px 0}
 
-/* modale */
-.modal{position:fixed;inset:0;background:rgba(8,16,28,.55);display:none;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto;z-index:10}
-.modal.open{display:flex}
-.modal .card{max-width:620px;width:100%;padding:22px}
-.modal h2{font-size:22px}
-.recap{background:var(--bg);border-radius:10px;padding:12px 14px;margin:12px 0 16px;font-size:14px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px}
-.recap dt{color:var(--muted)} .recap dd{margin:0;font-weight:600}
+/* richiesta */
+.ap-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 22px 0;flex-wrap:wrap}
+.ap-head h2{font-size:22px}
+.ap-steps{display:flex;gap:6px;flex-wrap:wrap;padding:12px 22px 0}
+.ap-body{padding:16px 22px 22px;display:grid;gap:14px}
+.ap-body .help{color:var(--muted);margin:0;font-size:15px}
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.slot{position:relative;display:grid;gap:3px;border:1.5px dashed var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;background:var(--surface)}
+.slot:hover{border-color:var(--ink-2)}
+.slot.has{border-style:solid;border-color:var(--accent);background:var(--accent-soft)}
+.slot input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.slot:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+.slot-t b{font-weight:600}
+.slot-h{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.slot-s{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.slot-s.ok{color:var(--good)} .slot-s.ko{color:var(--warn)}
+.opt{font-style:normal;font-weight:400;color:var(--muted);font-size:12px}
+fieldset{border:1px solid var(--line);border-radius:12px;padding:12px 14px 2px;margin:0}
+legend{font-family:var(--display);font-weight:700;padding:0 6px}
+.src{font-size:12px;color:var(--good)} .src.miss{color:var(--warn)}
 .field{display:grid;gap:6px;margin-bottom:14px}
 .field label{font-weight:600;font-size:14.5px}
 .field input,.field select{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);width:100%}
@@ -199,6 +212,8 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
         <div class="offers" id="offers"></div>
       </section>
     </aside>
+
+    <section class="card" id="apply" hidden aria-label="Richiesta"></section>
   </div>
 
   <section class="legal">
@@ -206,48 +221,6 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
     <p>Servizio Prestiti è un portale di Aessefin Prestiti 24/7 S.r.l. (agente in attività finanziaria iscritto all'elenco OAM al n. A12056, P.IVA 12548990964) e di Magenta S.p.A. (agente in attività finanziaria iscritto all'elenco OAM al n. [DA INSERIRE]), mandatari di Banca Sistema S.p.A. per il collocamento dei prestiti personali erogati da Agos Ducato S.p.A., Compass Banca S.p.A. e Admiral Financial Services Italia S.p.A. (Con.te). La concessione del finanziamento è subordinata all'approvazione del finanziatore.</p>
   </section>
 </main>
-
-<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
-  <div class="card">
-    <div id="m-form">
-      <h2 id="m-title">Richiedi il prestito</h2>
-      <dl class="recap num" id="recap"></dl>
-      <form id="lead" novalidate>
-        <div class="row2">
-          <div class="field"><label for="nome">Nome</label><input type="text" id="nome" autocomplete="given-name" required></div>
-          <div class="field"><label for="cognome">Cognome</label><input type="text" id="cognome" autocomplete="family-name" required></div>
-        </div>
-        <div class="row2">
-          <div class="field"><label for="tel">Cellulare</label><input type="tel" id="tel" autocomplete="tel" required></div>
-          <div class="field"><label for="email">Email</label><input type="email" id="email" autocomplete="email" required></div>
-        </div>
-        <div class="row2">
-          <div class="field"><label for="prov">Provincia di residenza</label><input type="text" id="prov" maxlength="30"></div>
-          <div class="field"><label for="orario">Quando preferisci essere richiamato?</label>
-            <select id="orario"><option>Mattina</option><option>Pausa pranzo</option><option>Pomeriggio</option><option>Sera (fino alle 20)</option></select></div>
-        </div>
-        <label class="check"><input type="checkbox" id="privacy" required> <span>Ho letto l'informativa privacy e acconsento al trattamento dei miei dati per essere ricontattato in merito a questa richiesta (obbligatorio).</span></label>
-        <label class="check"><input type="checkbox" id="mkt"> <span>Acconsento a ricevere comunicazioni commerciali da Servizio Prestiti (facoltativo).</span></label>
-        <p class="err" id="err"></p>
-        <div class="nav">
-          <button type="button" class="btn ghost" id="close">Annulla</button>
-          <button type="submit" class="btn primary">Invia la richiesta</button>
-        </div>
-      </form>
-    </div>
-    <div id="m-done" hidden>
-      <h2>Richiesta pronta</h2>
-      <p id="done-msg"></p>
-      <pre class="summary" id="summary"></pre>
-      <div class="nav">
-        <button type="button" class="btn ghost" id="copy">Copia riepilogo</button>
-        <a class="btn primary" id="mailto" href="#">Invia via email</a>
-      </div>
-      <p class="hint" id="mailhint"></p>
-      <div class="nav"><button type="button" class="btn ghost" id="close2">Chiudi</button></div>
-    </div>
-  </div>
-</div>
 
 <script>
 /* ============================================================
@@ -633,81 +606,10 @@ function renderResults(){
 /* ============================================================
    RICHIESTA
    ============================================================ */
-const modal = document.getElementById("modal");
-let scelta = null;
 document.getElementById("offers").addEventListener("click", e => {
   const b = e.target.closest("[data-pick]"); if (!b) return;
-  scelta = last.results.find(o => o.key === b.dataset.pick);
-  document.getElementById("m-title").textContent = `Richiedi il prestito con ${scelta.nome}`;
-  document.getElementById("recap").innerHTML = `
-    <dt>Finanziaria</dt><dd>${esc(scelta.nome)} – ${esc(scelta.prodotto)}</dd>
-    <dt>Importo</dt><dd>${eur(+A.importo)}</dd>
-    <dt>Durata</dt><dd>${scelta.durata} mesi</dd>
-    <dt>Rata stimata</dt><dd>${eur2(scelta.rata)}</dd>
-    <dt>TAN / TAEG stimati</dt><dd>${pct(scelta.tan)} / ${pct(scelta.taeg)}</dd>`;
-  document.getElementById("m-form").hidden = false; document.getElementById("m-done").hidden = true;
-  document.getElementById("err").textContent = "";
-  modal.classList.add("open"); document.getElementById("nome").focus();
-});
-function closeModal(){ modal.classList.remove("open"); }
-document.getElementById("close").addEventListener("click", closeModal);
-document.getElementById("close2").addEventListener("click", closeModal);
-modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
-
-document.getElementById("lead").addEventListener("submit", async e => {
-  e.preventDefault();
-  const g = id => document.getElementById(id).value.trim();
-  const err = document.getElementById("err");
-  if (!g("nome") || !g("cognome")) return err.textContent = "Inserisci nome e cognome.";
-  if (!/^[+0-9\s]{8,16}$/.test(g("tel"))) return err.textContent = "Inserisci un numero di cellulare valido.";
-  if (!/^\S+@\S+\.\S+$/.test(g("email"))) return err.textContent = "Inserisci un indirizzo email valido.";
-  if (!document.getElementById("privacy").checked) return err.textContent = "Per inviare la richiesta serve il consenso privacy.";
-  const o = scelta;
-  const profilo = Object.fromEntries(RECAP.filter(([id]) => vis(Q.find(q => q.id === id))).map(([id, l]) => [l, show(id)]));
-  profilo["Residenza in Italia"] = show("residenza"); profilo["Conto corrente in Italia"] = show("conto"); profilo["Documenti pronti"] = show("documenti");
-  if (vis(Q.find(q => q.id === "permesso"))) profilo["Permesso di soggiorno"] = show("permesso");
-  if (vis(Q.find(q => q.id === "scadenza"))) profilo["Scadenza contratto"] = show("scadenza");
-  if (vis(Q.find(q => q.id === "altriRedditi"))) profilo["Altri redditi in famiglia"] = show("altriRedditi");
-  const lead = {
-    data: new Date().toISOString(), fonte: "Servizio Prestiti – comparatore",
-    nome: g("nome"), cognome: g("cognome"), cellulare: g("tel"), email: g("email"), provincia: g("prov"), orario: g("orario"),
-    consenso_privacy: true, consenso_marketing: document.getElementById("mkt").checked,
-    finanziaria: o.nome, importo: +A.importo, durata: o.durata, rata_stimata: +o.rata.toFixed(2), tan: o.tan, taeg_stimato: +o.taeg.toFixed(2),
-    rischio_stimato: +(last.R.r * 10).toFixed(1), profilo,
-    altri_prodotti: last.results.filter(x => x.key !== o.key).map(x => x.nome).join(", ")
-  };
-  const testo = `NUOVA RICHIESTA – SERVIZIO PRESTITI
-Cliente: ${lead.nome} ${lead.cognome}
-Cellulare: ${lead.cellulare} – Email: ${lead.email}
-Provincia: ${lead.provincia || "-"} – Richiamare: ${lead.orario}
-
-Scelta: ${lead.finanziaria} – ${eur(lead.importo)} in ${lead.durata} mesi
-Rata stimata ${eur2(lead.rata_stimata)} – TAN ${pct(lead.tan)} – TAEG stimato ${pct(lead.taeg_stimato)}
-Altri prodotti valutati: ${lead.altri_prodotti} – Rischio stimato ${lead.rischio_stimato}/10
-
-PROFILO
-${Object.entries(profilo).map(([k, v]) => `${k}: ${v}`).join("\n")}
-
-Consenso privacy: sì – Marketing: ${lead.consenso_marketing ? "sì" : "no"}`;
-
-  let inviato = false;
-  if (WEBHOOK_URL){ try { const r = await fetch(WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(lead) }); inviato = r.ok; } catch (_) { inviato = false; } }
-  document.getElementById("m-form").hidden = true; document.getElementById("m-done").hidden = false;
-  document.getElementById("summary").textContent = testo;
-  const mail = document.getElementById("mailto");
-  mail.href = `mailto:${LEAD_EMAIL}?subject=${encodeURIComponent(`Richiesta prestito ${lead.finanziaria} – ${lead.nome} ${lead.cognome}`)}&body=${encodeURIComponent(testo)}`;
-  if (inviato){
-    document.getElementById("done-msg").textContent = `Grazie ${lead.nome}, abbiamo ricevuto la tua richiesta. Un consulente di Servizio Prestiti ti richiamerà al ${lead.cellulare}.`;
-    mail.hidden = true; document.getElementById("mailhint").textContent = "";
-  } else {
-    document.getElementById("done-msg").textContent = `Grazie ${lead.nome}. Per completare, invia la richiesta con il pulsante qui sotto: un consulente di Servizio Prestiti ti richiamerà al ${lead.cellulare}.`;
-    mail.hidden = false; document.getElementById("mailhint").textContent = `Se il pulsante non apre la posta, copia il riepilogo e invialo a ${LEAD_EMAIL}.`;
-  }
-});
-document.getElementById("copy").addEventListener("click", async e => {
-  try { await navigator.clipboard.writeText(document.getElementById("summary").textContent); e.target.textContent = "Copiato"; }
-  catch (_) { e.target.textContent = "Seleziona il testo e copialo"; }
+  const scelta = last.results.find(o => o.key === b.dataset.pick);
+  window.SP_startApply(scelta.key, scelta);
 });
 
 /* consulente */
@@ -718,5 +620,6 @@ cons.addEventListener("change", () => document.body.classList.toggle("consulente
 
 renderQ(); renderResults();
 </script>
+<script src="documenti.js"></script>
 </body>
 </html>

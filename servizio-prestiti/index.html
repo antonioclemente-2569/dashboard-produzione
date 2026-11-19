@@ -43,8 +43,10 @@ button,input,select{font:inherit;color:inherit}
 header.top{background:var(--surface);color:var(--ink);border-bottom:1px solid var(--line)}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
-.brand{display:flex;align-items:baseline;gap:8px;font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:-.04em}
-.brand b{font-weight:inherit;color:inherit}
+.brand{display:inline-flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--ink);font-family:var(--display);line-height:1}
+.brand-sp{font-size:42px;font-weight:700;letter-spacing:-.075em;line-height:.86;padding-right:.075em}
+.brand-sub{display:flex;align-items:baseline;gap:3px;font-size:10.5px;letter-spacing:-.01em;margin-top:3px}
+.brand-sub span{font-weight:500} .brand-sub b{font-weight:700}
 .top small{opacity:.75;font-size:13px}
 .toggle{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
 
@@ -189,7 +191,7 @@ h1,h2,h3{letter-spacing:-.025em}
 <body>
 <header class="top">
   <div class="wrap">
-    <div class="brand">Servizio Prestiti</div>
+    <a class="brand" href="./" aria-label="Servizio Prestiti 24/7"><span class="brand-sp">SP</span><span class="brand-sub"><span>servizio prestiti</span><b>24/7</b></span></a>
     <label class="toggle" id="consToggle"><input type="checkbox" id="consulente"> Modalità consulente</label>
   </div>
 </header>

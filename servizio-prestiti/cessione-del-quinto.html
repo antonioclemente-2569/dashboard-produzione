@@ -42,8 +42,10 @@ button,input,select{font:inherit;color:inherit}
 header.top{background:var(--surface);color:var(--ink);border-bottom:1px solid var(--line)}
 .wrap{max-width:780px;margin:0 auto;padding:0 20px}
 .top .wrap{padding-top:14px;padding-bottom:14px;max-width:1180px}
-.brand{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:-.04em}
-.brand b{font-weight:inherit;color:inherit}
+.brand{display:inline-flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--ink);font-family:var(--display);line-height:1}
+.brand-sp{font-size:42px;font-weight:700;letter-spacing:-.075em;line-height:.86;padding-right:.075em}
+.brand-sub{display:flex;align-items:baseline;gap:3px;font-size:10.5px;letter-spacing:-.01em;margin-top:3px}
+.brand-sub span{font-weight:500} .brand-sub b{font-weight:700}
 .hero{padding:30px 0 10px}
 .eyebrow{display:inline-block;background:var(--accent-soft);color:var(--ink);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600;margin-bottom:12px}
 .hero h1{font-size:clamp(30px,4.6vw,46px);font-weight:600;letter-spacing:-.035em}
@@ -89,7 +91,7 @@ h1,h2,h3{letter-spacing:-.025em}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap"><div class="brand">Servizio Prestiti</div></div></header>
+<header class="top"><div class="wrap"><a class="brand" href="./" aria-label="Servizio Prestiti 24/7"><span class="brand-sp">SP</span><span class="brand-sub"><span>servizio prestiti</span><b>24/7</b></span></a></div></header>
 
 <main class="wrap">
   <section class="hero">

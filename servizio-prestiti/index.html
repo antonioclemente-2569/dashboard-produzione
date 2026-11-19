@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Servizio Prestiti – Trova il tuo prestito</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: una domanda per schermata a sinistra, prodotto indicato che si affina a destra; su mobile si impilano. */
+:root{
+  --ink:#0B2A5B; --ink-2:#34507F; --muted:#62738F;
+  --bg:#F2F5FA; --surface:#FFFFFF; --line:#D9E1EE;
+  --brand-blue:#0D3F8F; --brand-orange:#F28A1A;
+  --accent:#F28A1A; --accent-ink:#3D1F00; --accent-soft:#FEEEDC;
+  --good:#1E7A4F; --good-soft:#E3F3EA; --warn:#9A5600; --warn-soft:#FFF2DC; --bad:#B3261E; --bad-soft:#FBE6E4;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#E8EEF7; --ink-2:#B9C5D6; --muted:#8C9AB0;
+    --bg:#0D1726; --surface:#15233A; --line:#26364F;
+    --brand-blue:#0D3F8F; --brand-orange:#F28A1A; --accent:#F59A33; --accent-ink:#1B0E00; --accent-soft:#3A2510;
+    --good:#58C48C; --good-soft:#143326; --warn:#F2B35C; --warn-soft:#3A2A12; --bad:#F08A80; --bad-soft:#3B1C1A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E8EEF7; --ink-2:#B9C5D6; --muted:#8C9AB0;
+  --bg:#0D1726; --surface:#15233A; --line:#26364F;
+  --brand-blue:#0D3F8F; --brand-orange:#F28A1A; --accent:#F59A33; --accent-ink:#1B0E00; --accent-soft:#3A2510;
+  --good:#58C48C; --good-soft:#143326; --warn:#F2B35C; --warn-soft:#3A2A12; --bad:#F08A80; --bad-soft:#3B1C1A;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+.num{font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+
+header.top{background:var(--brand-blue);color:#FFFFFF;border-bottom:4px solid var(--brand-orange)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:8px;font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em}
+.brand b{color:var(--brand-orange)}
+.top small{opacity:.75;font-size:13px}
+.toggle{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+
+.hero{padding:26px 0 6px}
+.hero h1{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-.02em;max-width:24ch}
+.hero p{color:var(--ink-2);max-width:64ch;margin:10px 0 0}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:24px;padding:20px 0 36px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+
+/* intervista */
+.q-head{padding:16px 22px 0;display:grid;gap:8px}
+.sections{display:flex;gap:6px;flex-wrap:wrap}
+.sec{font-size:12.5px;border-radius:999px;padding:3px 10px;border:1px solid var(--line);color:var(--muted)}
+.sec.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sec.done{color:var(--ink);border-color:var(--ink-2)}
+.progress{height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.q-count{font-size:13px;color:var(--muted)}
+.q{padding:18px 22px 22px;min-height:330px;display:flex;flex-direction:column}
+.q h2{font-size:24px;font-weight:700;margin-bottom:6px}
+.q .help{color:var(--muted);margin:0 0 18px;font-size:15px;max-width:60ch}
+.q-body{flex:1}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.choice{text-align:left;border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;background:var(--surface);cursor:pointer;transition:border-color .15s, background .15s}
+.choice:hover{border-color:var(--ink-2)}
+.choice b{display:block;font-weight:600}
+.choice i{display:block;font-style:normal;color:var(--muted);font-size:13px}
+.choice[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.slider{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.out{font-family:var(--display);font-weight:700;font-size:28px;min-width:6ch;text-align:right}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 12px;font-size:13.5px;cursor:pointer}
+.chip:hover{border-color:var(--ink-2)}
+.big-input{display:flex;align-items:center;gap:10px;max-width:320px}
+.big-input input{font-family:var(--display);font-size:28px;font-weight:700;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;width:100%;background:var(--surface)}
+.big-input span{font-family:var(--display);font-size:22px;color:var(--muted)}
+.note{margin-top:14px;font-size:14px;color:var(--ink-2);background:var(--bg);border-radius:10px;padding:10px 12px}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.btn{border:0;border-radius:10px;padding:11px 18px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.recap-list{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;font-size:14px;margin:0}
+.recap-list dt{color:var(--muted)} .recap-list dd{margin:0;font-weight:600}
+.recap-list button{border:0;background:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px;padding:0}
+
+/* prodotto indicato */
+.side{position:sticky;top:16px}
+@media (max-width:900px){.side{position:static}}
+.side-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:16px 18px 0;flex-wrap:wrap}
+.side-head h2{font-size:18px}
+.precision{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);padding:6px 18px 0}
+.precision .bar{width:90px}
+.alerts{display:grid;gap:8px;padding:12px 18px 0}
+.alert{border-radius:10px;padding:9px 12px;font-size:14px;border-left:4px solid}
+.alert.warn{background:var(--warn-soft);border-color:var(--warn)}
+.alert.bad{background:var(--bad-soft);border-color:var(--bad)}
+.alert.good{background:var(--good-soft);border-color:var(--good)}
+.offers{display:grid;gap:12px;padding:14px 18px 18px}
+.offer{border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:10px;background:var(--surface)}
+.offer.best{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.offer.off{opacity:.62}
+.o-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.rank{font-family:var(--display);font-weight:800;font-size:26px;color:var(--muted);line-height:1}
+.offer.best .rank{color:var(--accent)}
+.o-name{flex:1}
+.o-name h3{font-size:18px;font-weight:700}
+.o-name span{display:block;color:var(--muted);font-size:13px}
+.pill{display:inline-block;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:600;white-space:nowrap}
+.pill.best{background:var(--accent);color:var(--accent-ink)}
+.pill.ok{background:var(--good-soft);color:var(--good)}
+.pill.no{background:var(--bad-soft);color:var(--bad)}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:520px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.m{background:var(--bg);border-radius:8px;padding:8px 10px}
+.m span{display:block;font-size:12px;color:var(--muted)}
+.m strong{font-family:var(--display);font-size:18px;font-weight:700}
+.fit{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.bar{flex:1;height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:6px}
+.offer ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.offer ul li.neg{color:var(--warn)}
+.o-actions{display:flex;justify-content:flex-end}
+.others-h{font-family:var(--display);font-size:15px;font-weight:700;color:var(--ink-2);margin:6px 0 -2px}
+.other{border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start;background:var(--bg)}
+.other h3{font-size:16px;font-weight:700}
+.other p{margin:2px 0 0;font-size:13.5px;color:var(--ink-2)}
+.none{border:1.5px dashed var(--line);border-radius:12px;padding:14px 16px;font-size:14.5px;color:var(--ink-2)}
+.details{font-size:12.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;display:none}
+body.consulente .details{display:block}
+
+.legal{font-size:12.5px;color:var(--muted);padding:0 0 32px;max-width:115ch}
+.legal p{margin:6px 0}
+
+/* modale */
+.modal{position:fixed;inset:0;background:rgba(8,16,28,.55);display:none;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto;z-index:10}
+.modal.open{display:flex}
+.modal .card{max-width:620px;width:100%;padding:22px}
+.modal h2{font-size:22px}
+.recap{background:var(--bg);border-radius:10px;padding:12px 14px;margin:12px 0 16px;font-size:14px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px}
+.recap dt{color:var(--muted)} .recap dd{margin:0;font-weight:600}
+.field{display:grid;gap:6px;margin-bottom:14px}
+.field label{font-weight:600;font-size:14.5px}
+.field input,.field select{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);width:100%}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.row2{grid-template-columns:1fr}}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;margin-bottom:10px}
+.check input{margin-top:4px}
+.err{color:var(--bad);font-size:13px;min-height:1em}
+pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:12px;font-size:13px;max-height:240px;overflow:auto}
+.hint{color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Servizio <b>Prestiti</b></div>
+    <label class="toggle" id="consToggle"><input type="checkbox" id="consulente"> Modalità consulente</label>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Scopri il prestito personale disponibile per te</h1>
+    <p>Qualche domanda, una alla volta: raccogliamo le informazioni che Agos, Compass e Con.te usano per valutare la richiesta e ti indichiamo il prodotto disponibile per il tuo profilo, con rata e costi stimati. Poi fai la richiesta e un consulente ti accompagna nella firma online.</p>
+  </section>
+
+  <div class="grid">
+    <section class="card" aria-label="Domande">
+      <div class="q-head">
+        <div class="sections" id="sections"></div>
+        <div class="progress" aria-hidden="true"><i id="progress"></i></div>
+        <div class="q-count num" id="qcount"></div>
+      </div>
+      <div class="q" id="q" aria-live="polite"></div>
+    </section>
+
+    <aside class="side">
+      <section class="card">
+        <div class="side-head">
+          <h2>Il prodotto per te</h2>
+          <span class="hint num" id="profilo"></span>
+        </div>
+        <div class="precision"><span>Precisione della stima</span><div class="bar"><i id="prec"></i></div><span class="num" id="precTxt"></span></div>
+        <div class="alerts" id="alerts"></div>
+        <div class="offers" id="offers"></div>
+      </section>
+    </aside>
+  </div>
+
+  <section class="legal">
+    <p><b>Messaggio pubblicitario con finalità promozionale.</b> I valori mostrati (TAN, TAEG, rata, costo totale) sono stime indicative calcolate sulle informazioni inserite e sulle condizioni dei finanziatori: non costituiscono offerta né promessa di finanziamento. Le condizioni definitive dipendono dalla valutazione del merito creditizio effettuata dal finanziatore. Il TAEG stimato comprende interessi e spese di istruttoria; non comprende imposte, assicurazioni facoltative e altri oneri eventualmente previsti. Prima della firma riceverai il modulo "Informazioni europee di base sul credito ai consumatori" (SECCI) con il TAEG effettivo.</p>
+    <p>Servizio Prestiti è un portale di Aessefin Prestiti 24/7 S.r.l. (agente in attività finanziaria iscritto all'elenco OAM al n. A12056, P.IVA 12548990964) e di Magenta S.p.A. (agente in attività finanziaria iscritto all'elenco OAM al n. [DA INSERIRE]), mandatari di Banca Sistema S.p.A. per il collocamento dei prestiti personali erogati da Agos Ducato S.p.A., Compass Banca S.p.A. e Admiral Financial Services Italia S.p.A. (Con.te). La concessione del finanziamento è subordinata all'approvazione del finanziatore.</p>
+  </section>
+</main>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="card">
+    <div id="m-form">
+      <h2 id="m-title">Richiedi il prestito</h2>
+      <dl class="recap num" id="recap"></dl>
+      <form id="lead" novalidate>
+        <div class="row2">
+          <div class="field"><label for="nome">Nome</label><input type="text" id="nome" autocomplete="given-name" required></div>
+          <div class="field"><label for="cognome">Cognome</label><input type="text" id="cognome" autocomplete="family-name" required></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="tel">Cellulare</label><input type="tel" id="tel" autocomplete="tel" required></div>
+          <div class="field"><label for="email">Email</label><input type="email" id="email" autocomplete="email" required></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="prov">Provincia di residenza</label><input type="text" id="prov" maxlength="30"></div>
+          <div class="field"><label for="orario">Quando preferisci essere richiamato?</label>
+            <select id="orario"><option>Mattina</option><option>Pausa pranzo</option><option>Pomeriggio</option><option>Sera (fino alle 20)</option></select></div>
+        </div>
+        <label class="check"><input type="checkbox" id="privacy" required> <span>Ho letto l'informativa privacy e acconsento al trattamento dei miei dati per essere ricontattato in merito a questa richiesta (obbligatorio).</span></label>
+        <label class="check"><input type="checkbox" id="mkt"> <span>Acconsento a ricevere comunicazioni commerciali da Servizio Prestiti (facoltativo).</span></label>
+        <p class="err" id="err"></p>
+        <div class="nav">
+          <button type="button" class="btn ghost" id="close">Annulla</button>
+          <button type="submit" class="btn primary">Invia la richiesta</button>
+        </div>
+      </form>
+    </div>
+    <div id="m-done" hidden>
+      <h2>Richiesta pronta</h2>
+      <p id="done-msg"></p>
+      <pre class="summary" id="summary"></pre>
+      <div class="nav">
+        <button type="button" class="btn ghost" id="copy">Copia riepilogo</button>
+        <a class="btn primary" id="mailto" href="#">Invia via email</a>
+      </div>
+      <p class="hint" id="mailhint"></p>
+      <div class="nav"><button type="button" class="btn ghost" id="close2">Chiudi</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURAZIONE
+   WEBHOOK_URL: sul dominio Servizio Prestiti inserire il webhook
+   (es. Make) che crea il lead nel CRM. Vuoto = riepilogo via email.
+   SHOW_CONSULENTE: false per nascondere il pulsante sul sito pubblico
+   (si attiva comunque aprendo la pagina con #consulente).
+   ============================================================ */
+const WEBHOOK_URL = "";
+const LEAD_EMAIL = "antonio.clemente@aessefin.it";
+const SHOW_CONSULENTE = true;
+
+/* ============================================================
+   PARAMETRI DEI FINANZIATORI (allegati Banca Sistema, nov. 2026)
+   ============================================================ */
+const LENDERS = {
+  agos: {
+    nome: "Agos", societa: "Agos Ducato S.p.A.", prodotto: "Prestito Personale",
+    minImp: 1000, maxImp: 50000, softMax: 30000, minDur: 24, maxDur: 120,
+    tan(r, gia){ const top = gia ? 15 : 14.95; return round005(9.95 + r * (top - 9.95)); },
+    fee(imp){ return Math.min(imp * 0.015, 500); }, feeNote: "1,5% dell'importo, max 500 €", cpi: true
+  },
+  compass: {
+    nome: "Compass", societa: "Compass Banca S.p.A.", prodotto: "Prestito Personale",
+    minImp: 1000, maxImp: 30000,
+    durRange(imp){ return imp < 5000 ? [12, 60] : [24, 84]; },
+    tabella(imp, r){
+      if (imp < 5000) return { cod: "VGF", nome: "Small ticket", tan: 15.25, cpi: false };
+      if (r < 0.15) return { cod: "VGG", nome: "Standard RBP", tan: 12.70, cpi: true };
+      if (r < 0.35) return { cod: "VGH", nome: "Standard", tan: 13.70, cpi: true };
+      if (r < 0.60) return { cod: "VGN", nome: "Standard RBP", tan: 14.55, cpi: true };
+      return { cod: "VGM", nome: "Standard RBP", tan: 15.85, cpi: false };
+    },
+    fee(imp){ if (imp < 5000) return imp * 0.02; if (imp <= 6700) return 100; if (imp <= 20000) return imp * 0.015; return 300; },
+    feeNote: "2% sotto 5.000 €; da 100 a 300 € oltre"
+  },
+  conte: {
+    nome: "Con.te", societa: "Admiral Financial Services Italia S.p.A.", prodotto: "Prestito Personale",
+    minImp: 1000, maxImp: 30000, minDur: 12, maxDur: 84,
+    tan(r){ return Math.round((9.5 + r * 4.5) * 2) / 2; },
+    // spese non indicate nell'allegato: stima prudenziale 1,5% max 300 € (da confermare)
+    fee(imp){ return Math.min(imp * 0.015, 300); }, feeNote: "stima prudenziale, da confermare", cpi: true
+  }
+};
+function round005(x){ return Math.round(x * 20) / 20; }
+
+/* ============================================================
+   DOMANDE (una per schermata). show(A) decide se la domanda serve.
+   ============================================================ */
+const SECTIONS = ["Il prestito", "Chi sei", "Casa e famiglia", "Lavoro e reddito", "Impegni e storia", "Ultimi dettagli"];
+const DIP = a => ["pubblico", "privato_ind", "privato_det"].includes(a.occupazione);
+const Q = [
+  { id: "finalita", sec: 0, type: "choice", title: "A cosa ti serve il prestito?", help: "La finalità orienta il tipo di prodotto: per unire più prestiti esistono soluzioni dedicate.",
+    options: [["liquidita", "Liquidità", "spese, progetti, imprevisti"], ["consolido", "Unire altri prestiti", "chiudere finanziamenti in corso in un'unica rata"], ["auto", "Auto o moto", "usata, nuova, riparazioni"], ["casa", "Casa e arredo", "lavori, mobili, elettrodomestici"], ["persona", "Salute, studi, famiglia", "cure, corsi, matrimonio"], ["altro", "Altro"]] },
+  { id: "residuo", sec: 0, type: "money", title: "Quanto devi ancora restituire sui prestiti da chiudere?", help: "Somma dei debiti residui che vuoi estinguere. La trovi nel conteggio estintivo o nell'app della finanziaria.", show: a => a.finalita === "consolido", max: 50000 },
+  { id: "importo", sec: 0, type: "slider", title: "Di quanto hai bisogno in totale?", help: "Da 1.000 € a 50.000 €.", min: 1000, max: 50000, step: 500, unit: "€", chips: [3000, 5000, 10000, 15000, 20000, 30000] },
+  { id: "durata", sec: 0, type: "slider", title: "In quanti mesi vuoi restituirlo?", help: "Più mesi significano una rata più leggera ma più interessi in totale.", min: 12, max: 120, step: 12, unit: "mesi", chips: [24, 36, 48, 60, 84, 120], rataHint: true },
+
+  { id: "eta", sec: 1, type: "number", title: "Quanti anni hai?", help: "Le finanziarie considerano l'età anche a fine prestito.", min: 18, max: 90, unit: "anni" },
+  { id: "residenza", sec: 1, type: "choice", title: "Risiedi in Italia?", options: [["si", "Sì"], ["no", "No, risiedo all'estero"]] },
+  { id: "cittadinanza", sec: 1, type: "choice", title: "Qual è la tua cittadinanza?", help: "Serve a sapere quali documenti preparare.",
+    options: [["it", "Italiana"], ["ue", "Di un altro Paese UE"], ["extra", "Extra UE", "con permesso di soggiorno"]] },
+  { id: "permesso", sec: 1, type: "choice", title: "Il tuo permesso di soggiorno è…", show: a => a.cittadinanza === "extra",
+    options: [["lungo", "Di lungo periodo", "carta di soggiorno UE"], ["oltre", "In scadenza oltre la fine del prestito"], ["prima", "In scadenza prima della fine del prestito"]] },
+
+  { id: "nucleo", sec: 2, type: "choice", title: "Quante persone vivono nella tua famiglia, te compreso?", help: "Serve a stimare le spese di vita del nucleo.",
+    options: [["1", "1", "vivo da solo"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5 o più"]] },
+  { id: "altriRedditi", sec: 2, type: "choice", title: "In famiglia c'è un altro reddito oltre al tuo?", show: a => +a.nucleo > 1,
+    options: [["si", "Sì"], ["no", "No"]] },
+  { id: "casa", sec: 2, type: "choice", title: "La casa in cui vivi è…",
+    options: [["proprieta", "Di proprietà", "senza mutuo"], ["mutuo", "Di proprietà con mutuo"], ["affitto", "In affitto"], ["famiglia", "Della famiglia", "vivo con genitori o parenti"]] },
+  { id: "costoCasa", sec: 2, type: "money", title: "Quanto paghi al mese di affitto o di mutuo?", show: a => ["mutuo", "affitto"].includes(a.casa), max: 5000 },
+
+  { id: "occupazione", sec: 3, type: "choice", title: "Che lavoro fai?", help: "La fonte di reddito è il primo criterio di valutazione.",
+    options: [["pubblico", "Dipendente pubblico", "statale, enti, forze armate"], ["privato_ind", "Dipendente privato", "a tempo indeterminato"], ["privato_det", "Dipendente a termine", "tempo determinato"], ["pensionato", "Pensionato"], ["autonomo", "Autonomo o P.IVA", "professionista, ditta individuale"], ["nessuno", "Al momento senza reddito"]] },
+  { id: "scadenza", sec: 3, type: "choice", title: "Quando scade il tuo contratto?", show: a => a.occupazione === "privato_det",
+    options: [["entro12", "Entro 12 mesi"], ["oltre12", "Tra più di 12 mesi"]] },
+  { id: "anzianita", sec: 3, type: "choice", title: a => a.occupazione === "autonomo" ? "Da quanti anni hai la partita IVA?" : "Da quanto tempo lavori per il datore di lavoro attuale?",
+    show: a => DIP(a) || a.occupazione === "autonomo",
+    options: [["0", "Meno di 1 anno"], ["1", "Da 1 a 3 anni"], ["3", "Più di 3 anni"]] },
+  { id: "reddito", sec: 3, type: "money", show: a => a.occupazione !== "nessuno", max: 20000,
+    title: a => a.occupazione === "autonomo" ? "Qual è il tuo reddito netto mensile medio?" : a.occupazione === "pensionato" ? "Quanto ricevi di pensione netta al mese?" : "Quanto ricevi di stipendio netto al mese?",
+    help: a => a.occupazione === "autonomo" ? "Calcolalo dall'ultima dichiarazione dei redditi: reddito netto annuo diviso 12." : "L'importo netto che ricevi sul conto, senza tredicesima." },
+  { id: "mensilita", sec: 3, type: "choice", title: "Quante mensilità ricevi in un anno?", show: a => DIP(a) || a.occupazione === "pensionato",
+    options: [["12", "12"], ["13", "13", "con tredicesima"], ["14", "14", "con tredicesima e quattordicesima"]] },
+
+  { id: "haRate", sec: 4, type: "choice", title: "Paghi già delle rate ogni mese?", help: "Prestiti, finanziamenti a rate, cessione del quinto o delega. Il mutuo l'hai già indicato.",
+    options: [["no", "No"], ["si", "Sì"]] },
+  { id: "rate", sec: 4, type: "money", title: "Quanto paghi in totale di rate ogni mese?", help: "Somma di tutte le rate, escluso il mutuo.", show: a => a.haRate === "si", max: 5000 },
+  { id: "rateChiuse", sec: 4, type: "money", title: "Di queste, quanto paghi per i prestiti che vuoi chiudere?", help: "Queste rate spariranno dal tuo bilancio.", show: a => a.haRate === "si" && a.finalita === "consolido", max: 5000 },
+  { id: "storia", sec: 4, type: "choice", title: "Come hai pagato i finanziamenti negli ultimi anni?", help: "Rispondi con sincerità: le finanziarie lo verificano nelle banche dati del credito.",
+    options: [["puntuale", "Sempre puntuale", "o non ho mai avuto prestiti"], ["ritardi", "Qualche ritardo in passato", "oggi sono in regola"], ["incorso", "Ho rate arretrate oggi"], ["segnalato", "Ho protesti o pignoramenti"]] },
+  { id: "gia", sec: 4, type: "multi", title: "Hai o hai avuto prodotti con queste finanziarie?", help: "Prestiti o carte di credito. Puoi sceglierne più di una, oppure nessuna.",
+    options: [["agos", "Agos"], ["compass", "Compass", "prestito ancora in corso"], ["conte", "Con.te"], ["nessuna", "Nessuna"]] },
+
+  { id: "conto", sec: 5, type: "choice", title: "Hai un conto corrente in Italia intestato a te?", help: "Le rate vengono addebitate sul conto e il prestito viene accreditato lì.",
+    options: [["si", "Sì"], ["no", "No"]] },
+  { id: "cpi", sec: 5, type: "choice", title: "Vuoi proteggere il prestito con un'assicurazione facoltativa?", help: "Copre le rate in caso di imprevisti come perdita del lavoro o infortunio. Non è obbligatoria.",
+    options: [["si", "Sì, mi interessa"], ["no", "No"]] },
+  { id: "documenti", sec: 5, type: "choice", title: "Per la richiesta online ti serviranno questi documenti. Li hai?", help: "Documento d'identità valido, tessera sanitaria, ultima busta paga o cedolino della pensione (o ultima dichiarazione dei redditi), IBAN e uno smartphone per la firma digitale.",
+    options: [["si", "Sì, ho tutto"], ["parte", "Mi manca qualcosa"]] },
+  { id: "fine", sec: 5, type: "end", title: "Ecco il prodotto per te" }
+];
+
+/* risposte di partenza: un profilo d'esempio, così il risultato è già leggibile */
+const A = { finalita: "liquidita", residuo: 0, importo: 12000, durata: 60, eta: 40, residenza: "si", cittadinanza: "it", permesso: "lungo",
+  nucleo: "2", altriRedditi: "no", casa: "affitto", costoCasa: 550, occupazione: "privato_ind", scadenza: "oltre12", anzianita: "3",
+  reddito: 1800, mensilita: "13", haRate: "no", rate: 0, rateChiuse: 0, storia: "puntuale", gia: [], conto: "si", cpi: "no", documenti: "si" };
+const answered = new Set();
+
+/* ============================================================
+   MOTORE
+   ============================================================ */
+function rata(P, tan, n){ const i = tan / 1200; return i === 0 ? P / n : P * i / (1 - Math.pow(1 + i, -n)); }
+function taeg(P, fee, R, n){
+  const net = P - fee; let lo = 1e-6, hi = 1;
+  for (let k = 0; k < 80; k++){ const m = (lo + hi) / 2; const pv = R * (1 - Math.pow(1 + m, -n)) / m; if (pv > net) lo = m; else hi = m; }
+  return (Math.pow(1 + (lo + hi) / 2, 12) - 1) * 100;
+}
+const vis = q => !q.show || q.show(A);
+
+function profileNumbers(a){
+  const nessunReddito = a.occupazione === "nessuno";
+  const mens = (DIP(a) || a.occupazione === "pensionato") ? +a.mensilita : 12;
+  const redditoMese = nessunReddito ? 0 : (+a.reddito || 0) * mens / 12;
+  const casa = ["mutuo", "affitto"].includes(a.casa) ? (+a.costoCasa || 0) : 0;
+  const rateRest = a.haRate === "si" ? Math.max(0, (+a.rate || 0) - (a.finalita === "consolido" ? (+a.rateChiuse || 0) : 0)) : 0;
+  return { redditoMese, casa, rateRest, nucleo: +a.nucleo || 1, mens };
+}
+
+// rischio 0 (ottimo) – 1 (alto): approssima le fasce di score dei finanziatori
+function risk(a, nuovaRata){
+  const n = profileNumbers(a);
+  const occ = { pubblico: 0, privato_ind: 0.08, pensionato: 0.10, autonomo: 0.32, privato_det: 0.40, nessuno: 1 }[a.occupazione] ?? 0.3;
+  const anz = (DIP(a) || a.occupazione === "autonomo") ? ({ "0": 0.18, "1": 0.07, "3": 0 }[a.anzianita] ?? 0) : 0;
+  const sca = a.occupazione === "privato_det" && a.scadenza === "entro12" ? 0.15 : 0;
+  const dti = n.redditoMese > 0 ? (n.rateRest + n.casa * 0.5 + nuovaRata) / n.redditoMese : 9;
+  const dtiR = dti <= 0.25 ? 0 : dti <= 0.33 ? 0.08 : dti <= 0.40 ? 0.20 : dti <= 0.50 ? 0.38 : 0.65;
+  const resto = n.redditoMese - n.casa - n.rateRest - nuovaRata;
+  const perTesta = resto / n.nucleo * (a.altriRedditi === "si" && n.nucleo > 1 ? 1.6 : 1);
+  const vita = perTesta >= 700 ? 0 : perTesta >= 450 ? 0.08 : perTesta >= 250 ? 0.2 : 0.4;
+  const casaR = { proprieta: -0.03, mutuo: 0, affitto: 0.03, famiglia: 0.02 }[a.casa] ?? 0;
+  const cit = a.cittadinanza === "extra" ? (a.permesso === "prima" ? 0.2 : 0.06) : 0;
+  const sto = { puntuale: 0, ritardi: 0.28, incorso: 0.7, segnalato: 1 }[a.storia] ?? 0;
+  return { r: Math.min(1, Math.max(0, occ + anz + sca + dtiR + vita + casaR + cit + sto)), dti, resto, perTesta, n };
+}
+
+function evaluate(a){
+  const alerts = [];
+  const imp = +a.importo, dur = +a.durata;
+  const ref = rata(imp, 12.5, dur);
+  const R = risk(a, ref);
+  const gia = a.gia.filter(x => x !== "nessuna");
+  const results = [];
+  for (const key of ["agos", "compass", "conte"]){
+    const L = LENDERS[key];
+    const o = { key, nome: L.nome, societa: L.societa, prodotto: L.prodotto, pro: [], contro: [], ok: true, motivo: "", det: [] };
+    if (imp < L.minImp || imp > L.maxImp){ o.ok = false; o.motivo = `Finanzia da ${eur(L.minImp)} a ${eur(L.maxImp)}`; }
+    const [dmin, dmax] = L.durRange ? L.durRange(imp) : [L.minDur, L.maxDur];
+    o.durata = Math.min(Math.max(dur, dmin), dmax);
+    if (o.durata !== dur) o.contro.push(`Durata adattata a ${o.durata} mesi (questo prodotto va da ${dmin} a ${dmax})`);
+    if (key === "compass"){ const t = L.tabella(imp, R.r); o.tan = t.tan; o.cpiOk = t.cpi; o.det.push(`tabella ${t.cod} ${t.nome}`); if (imp < 5000) o.pro.push("Pensato per piccoli importi, da 1.000 €"); }
+    else { o.tan = key === "agos" ? L.tan(R.r, gia.includes("agos")) : L.tan(R.r); o.cpiOk = L.cpi; }
+    o.fee = Math.round(L.fee(imp)); o.feeNote = L.feeNote;
+    o.rata = rata(imp, o.tan, o.durata);
+    o.interessi = o.rata * o.durata - imp;
+    o.costo = o.interessi + o.fee;
+    o.taeg = taeg(imp, o.fee, o.rata, o.durata);
+
+    if (key === "agos"){
+      if (imp > 30000) o.pro.push("L'unica che finanzia oltre 30.000 €, fino a 50.000 €");
+      if (dur > 84) o.pro.push("L'unica che arriva a 120 mesi: rata più leggera");
+      if (imp > L.softMax && o.ok) o.contro.push("Sopra 30.000 € l'importo è a discrezione di Agos");
+      if (gia.includes("agos")) o.pro.push("Sei già cliente: istruttoria più rapida");
+    }
+    if (key === "compass"){
+      if (a.finalita === "consolido") o.pro.push("Ha prodotti dedicati per estinguere e consolidare altri prestiti");
+      if (gia.includes("compass") && a.finalita !== "consolido") o.contro.push("Con un prestito Compass in corso la nuova richiesta è valutata con più attenzione");
+      if (gia.includes("compass") && a.finalita === "consolido") o.pro.push("Può rinnovare il tuo prestito Compass in corso");
+      if (o.tan >= 15) o.contro.push("Tasso più alto della media per questo profilo");
+    }
+    if (key === "conte"){ o.pro.push("Durate flessibili da 12 a 84 mesi"); o.contro.push("Spese di istruttoria stimate, da confermare"); }
+    if (a.cpi === "si") (o.cpiOk ? o.pro : o.contro).push(o.cpiOk ? "Puoi aggiungere la protezione del credito" : "Assicurazione facoltativa non disponibile per questo importo o profilo");
+
+    // ordinamento per TAEG (indicatore di costo confrontabile); penalità se la durata richiesta non è rispettata
+    let score = o.taeg;
+    if (o.durata !== dur) score *= 1 + 0.4 * Math.abs(o.durata - dur) / dur;
+    if (key === "compass" && a.finalita === "consolido") score *= 0.96;
+    if (key === "compass" && gia.includes("compass") && a.finalita !== "consolido") score *= 1.08;
+    if (key === "agos" && gia.includes("agos")) score *= 0.97;
+    if (a.cpi === "si" && !o.cpiOk) score *= 1.05;
+    o.score = score;
+    o.det.push(`TAN ${pct(o.tan)}`, `spese ${eur(o.fee)}`, `interessi ${eur(o.interessi)}`);
+    results.push(o);
+  }
+
+  // requisiti di base
+  let blocca = false;
+  const stop = t => { alerts.push(["bad", t]); blocca = true; };
+  if (a.occupazione === "nessuno") stop("Per un prestito personale serve un reddito dimostrabile: stipendio, pensione o reddito da lavoro autonomo.");
+  if (a.residenza === "no") stop("Il prestito è riservato a chi risiede in Italia.");
+  if (a.conto === "no") stop("Serve un conto corrente in Italia intestato a te, per l'accredito del prestito e l'addebito delle rate.");
+  if (a.storia === "segnalato") stop("Con protesti o pignoramenti in corso le finanziarie non possono concedere il prestito. Un consulente può valutare con te altre strade.");
+  if (a.storia === "incorso") alerts.push(["bad", "Con rate arretrate l'approvazione è difficile: ti consigliamo di regolarizzarle prima di fare richiesta."]);
+  if (a.cittadinanza === "extra" && a.permesso === "prima") alerts.push(["warn", "Il permesso di soggiorno scade prima della fine del prestito: valuta una durata più breve o il rinnovo."]);
+  if (a.occupazione === "privato_det" && a.scadenza === "entro12") alerts.push(["warn", "Con un contratto in scadenza entro 12 mesi la richiesta è più difficile: un consulente verificherà le possibilità con te."]);
+  const etaFine = +a.eta + Math.ceil(dur / 12);
+  if (+a.eta && etaFine > 75) alerts.push(["warn", `A fine prestito avresti circa ${etaFine} anni: le finanziarie applicano limiti di età che verificheremo insieme.`]);
+  if (a.finalita === "consolido" && +a.residuo > imp) alerts.push(["warn", `L'importo richiesto non basta a chiudere i ${eur(+a.residuo)} di debito residuo: aumentalo almeno a questa cifra.`]);
+  if (a.finalita === "consolido" && +a.residuo > 0 && +a.residuo <= imp) alerts.push(["good", `Chiudi ${eur(+a.residuo)} di debiti e ti restano circa ${eur(imp - +a.residuo)} di liquidità.`]);
+
+  const ok = results.filter(o => o.ok).sort((x, y) => x.score - y.score);
+  const best = ok[0];
+  if (best && R.n.redditoMese > 0 && !blocca){
+    const imp2 = (R.n.rateRest + best.rata) / R.n.redditoMese;
+    const resto = R.n.redditoMese - R.n.casa - R.n.rateRest - best.rata;
+    if (imp2 > 0.40) alerts.push(["warn", `Con questa rata le rate arrivano al ${Math.round(imp2 * 100)}% del reddito. Prova ad allungare la durata o a ridurre l'importo.`]);
+    else if (resto / R.n.nucleo < 300 && !(a.altriRedditi === "si")) alerts.push(["warn", `Dopo casa e rate restano circa ${eur(resto)} al mese per ${R.n.nucleo} persone: la richiesta potrebbe non essere sostenibile.`]);
+    else if (imp2 <= 0.33 && a.storia === "puntuale") alerts.push(["good", `Rata sostenibile: le rate restano al ${Math.round(imp2 * 100)}% del reddito.`]);
+  }
+  const ordered = [...ok, ...results.filter(o => !o.ok)];
+  if (blocca) ordered.forEach(o => { o.ok = false; o.motivo = o.motivo || "Requisiti di base non soddisfatti"; });
+  const bs = best ? best.score : 1;
+  ordered.forEach(o => { o.fit = o.ok ? Math.max(35, Math.round(100 - (o.score / bs - 1) * 160)) : 0; });
+  return { results: ordered, alerts, R };
+}
+
+/* ============================================================
+   FORMATI
+   ============================================================ */
+function grp(n){ return n.replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+function eur(x){ const v = Math.round(x); return (v < 0 ? "-" : "") + grp(String(Math.abs(v))) + " €"; }
+function eur2(x){ const [i, d] = x.toFixed(2).split("."); return grp(i) + "," + d + " €"; }
+function pct(x){ return x.toFixed(2).replace(".", ",") + "%"; }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+const txt = v => typeof v === "function" ? v(A) : (v || "");
+
+/* ============================================================
+   INTERVISTA
+   ============================================================ */
+let idx = 0;
+const qEl = document.getElementById("q");
+function visibleList(){ return Q.filter(vis); }
+
+function renderQ(){
+  const list = visibleList();
+  if (idx >= list.length) idx = list.length - 1;
+  const q = list[idx];
+  const pos = list.indexOf(q), total = list.length - 1;
+  document.getElementById("progress").style.width = Math.round(Math.min(pos, total) / total * 100) + "%";
+  document.getElementById("qcount").textContent = q.type === "end" ? "Intervista completata" : `Domanda ${pos + 1} di ${total}`;
+  document.getElementById("sections").innerHTML = SECTIONS.map((s, i) => `<span class="sec ${i === q.sec && q.type !== "end" ? "on" : i < q.sec || q.type === "end" ? "done" : ""}">${s}</span>`).join("");
+
+  let body = "";
+  if (q.type === "choice" || q.type === "multi"){
+    const cur = A[q.id];
+    body = `<div class="choices" role="group" aria-label="${esc(txt(q.title))}">` + q.options.map(([v, l, d]) => {
+      const on = q.type === "multi" ? (cur.includes(v) || (v === "nessuna" && cur.length === 0 && answered.has(q.id))) : cur === v && answered.has(q.id);
+      return `<button type="button" class="choice" data-v="${v}" aria-pressed="${on}"><b>${esc(l)}</b>${d ? `<i>${esc(d)}</i>` : ""}</button>`;
+    }).join("") + `</div>`;
+  } else if (q.type === "slider"){
+    body = `<div class="slider"><input type="range" id="inp" min="${q.min}" max="${q.max}" step="${q.step}" value="${A[q.id]}" aria-label="${esc(txt(q.title))}"><output class="out num" id="outv"></output></div>
+      <div class="chips">${q.chips.map(c => `<button type="button" class="chip num" data-c="${c}">${q.unit === "€" ? eur(c) : c + " mesi"}</button>`).join("")}</div>
+      ${q.rataHint ? `<div class="note num" id="rataHint"></div>` : ""}`;
+  } else if (q.type === "money" || q.type === "number"){
+    body = `<div class="big-input"><input type="number" id="inp" inputmode="numeric" min="${q.min || 0}" max="${q.max || 99999}" value="${A[q.id] ?? ""}" aria-label="${esc(txt(q.title))}"><span>${q.unit || "€"}</span></div>`;
+  } else if (q.type === "end"){
+    body = `<p class="help">Hai risposto a tutte le domande: il prodotto indicato qui accanto è calcolato sul tuo profilo completo. Premi <b>Richiedi</b> per inviare la domanda.</p>
+      <dl class="recap-list">${recapRows()}</dl>`;
+  }
+  const needsNext = !["choice"].includes(q.type) && q.type !== "end";
+  qEl.innerHTML = `<h2>${esc(txt(q.title))}</h2>${q.help ? `<p class="help">${esc(txt(q.help))}</p>` : ""}
+    <div class="q-body">${body}</div>
+    <div class="nav">
+      <button type="button" class="btn ghost" id="back" ${pos === 0 ? "disabled" : ""}>Indietro</button>
+      ${needsNext ? `<button type="button" class="btn primary" id="fwd">Avanti</button>` : q.type === "choice" && answered.has(q.id) ? `<button type="button" class="btn ghost" id="fwd">Avanti</button>` : q.type === "end" ? `<button type="button" class="btn ghost" id="restart">Ricomincia</button>` : ""}
+    </div>`;
+  wireQ(q);
+  updateSlider(q);
+}
+
+function wireQ(q){
+  qEl.querySelectorAll(".choice").forEach(b => b.addEventListener("click", () => {
+    const v = b.dataset.v;
+    if (q.type === "multi"){
+      if (v === "nessuna") A.gia = []; else A.gia = A.gia.includes(v) ? A.gia.filter(x => x !== v) : [...A.gia, v];
+      answered.add(q.id); renderQ(); renderResults(); return;
+    }
+    A[q.id] = v; answered.add(q.id); renderResults(); next();
+  }));
+  const inp = document.getElementById("inp");
+  if (inp){
+    inp.addEventListener("input", () => { A[q.id] = +inp.value; answered.add(q.id); updateSlider(q); renderResults(); });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); next(); } });
+    if (q.type !== "slider") setTimeout(() => inp.focus(), 0);
+  }
+  qEl.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => { A[q.id] = +c.dataset.c; answered.add(q.id); inp.value = A[q.id]; updateSlider(q); renderResults(); }));
+  const back = document.getElementById("back"); if (back) back.addEventListener("click", () => { idx = Math.max(0, idx - 1); renderQ(); });
+  const fwd = document.getElementById("fwd"); if (fwd) fwd.addEventListener("click", () => { answered.add(q.id); next(); });
+  const rs = document.getElementById("restart"); if (rs) rs.addEventListener("click", () => { idx = 0; renderQ(); });
+  qEl.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () => { idx = visibleList().findIndex(x => x.id === b.dataset.goto); renderQ(); }));
+}
+function updateSlider(q){
+  const o = document.getElementById("outv"); if (!o) return;
+  o.textContent = q.unit === "€" ? eur(A[q.id]) : A[q.id] + " mesi";
+  const h = document.getElementById("rataHint");
+  if (h){ const lo = rata(+A.importo, 9.95, +A.durata), hi = rata(+A.importo, 15.25, +A.durata); h.textContent = `Rata indicativa tra ${eur(lo)} e ${eur(hi)} al mese, in base al profilo.`; }
+}
+function next(){
+  const list = visibleList();
+  const curId = list[idx] && list[idx].id;
+  const fresh = visibleList(); idx = Math.min(fresh.findIndex(x => x.id === curId) + 1, fresh.length - 1);
+  renderQ();
+  if (visibleList()[idx].type === "end" && window.innerWidth <= 900) document.querySelector(".side").scrollIntoView({ behavior: "smooth" });
+}
+
+const LABEL = {};
+Q.forEach(q => { if (q.options) LABEL[q.id] = Object.fromEntries(q.options.map(([v, l]) => [v, l])); });
+function show(id){
+  const q = Q.find(x => x.id === id); const v = A[id];
+  if (id === "gia") return v.length ? v.map(x => LABEL.gia[x]).join(", ") : "Nessuna";
+  if (q.options) return LABEL[id][v] || "-";
+  if (q.unit === "mesi") return v + " mesi";
+  if (q.unit === "anni") return v + " anni";
+  return eur(+v || 0);
+}
+const RECAP = [["importo", "Importo"], ["durata", "Durata"], ["finalita", "Finalità"], ["residuo", "Debito da chiudere"], ["eta", "Età"], ["cittadinanza", "Cittadinanza"], ["nucleo", "Persone in famiglia"], ["casa", "Casa"], ["costoCasa", "Affitto/mutuo"], ["occupazione", "Lavoro"], ["anzianita", "Anzianità"], ["reddito", "Reddito netto"], ["mensilita", "Mensilità"], ["rate", "Rate in corso"], ["rateChiuse", "Rate da chiudere"], ["storia", "Pagamenti passati"], ["gia", "Già cliente di"], ["cpi", "Assicurazione"]];
+function recapRows(){
+  return RECAP.filter(([id]) => vis(Q.find(q => q.id === id))).map(([id, l]) => `<dt>${l}</dt><dd class="num">${esc(show(id))}</dd><dd><button type="button" data-goto="${id}">modifica</button></dd>`).join("");
+}
+
+/* ============================================================
+   PRODOTTO INDICATO
+   ============================================================ */
+let last = null;
+function renderResults(){
+  const ev = evaluate(A); last = ev;
+  const list = visibleList().filter(q => q.type !== "end");
+  const prec = Math.round(list.filter(q => answered.has(q.id)).length / list.length * 100);
+  document.getElementById("prec").style.width = prec + "%";
+  document.getElementById("precTxt").textContent = prec === 100 ? "completa" : prec + "%";
+  document.getElementById("profilo").textContent = `${eur(+A.importo)} · ${A.durata} mesi`;
+  document.getElementById("alerts").innerHTML = (prec < 100 ? `<div class="alert warn">Indicazione provvisoria: rispondi a tutte le domande per conoscere il prodotto adatto al tuo profilo.</div>` : "") + ev.alerts.map(([k, t]) => `<div class="alert ${k}">${esc(t)}</div>`).join("");
+  const best = ev.results.find(o => o.ok);
+  const cons = o => `<div class="details num">Consulente · rischio ${(ev.R.r * 10).toFixed(1)}/10 · rate+½casa/reddito ${Math.round(ev.R.dti * 100)}% · reddito mensile equivalente ${eur(ev.R.n.redditoMese)} · residuo per persona ${eur(ev.R.perTesta)} · ${o.det.map(esc).join(" · ")}${o.ok ? ` · TAEG ${pct(o.taeg)} · rata ${eur2(o.rata)}` : ""}</div>`;
+  let html = "";
+  if (best){
+    html += `<article class="offer best">
+      <div class="o-top"><div class="o-name"><h3>${esc(best.nome)}</h3><span>${esc(best.prodotto)} · ${esc(best.societa)}</span></div><span class="pill best">Disponibile per te</span></div>
+      <div class="metrics num">
+        <div class="m"><span>Rata stimata</span><strong>${eur2(best.rata)}</strong></div>
+        <div class="m"><span>Durata</span><strong>${best.durata} mesi</strong></div>
+        <div class="m"><span>TAN indicativo</span><strong>${pct(best.tan)}</strong></div>
+        <div class="m"><span>TAEG stimato</span><strong>${pct(best.taeg)}</strong></div>
+      </div>
+      <ul>${best.pro.map(t => `<li>${esc(t)}</li>`).join("")}${best.contro.map(t => `<li class="neg">${esc(t)}</li>`).join("")}
+        <li class="num">Importo ${eur(+A.importo)} · costo totale stimato ${eur(best.costo)}: interessi più spese di istruttoria (${esc(best.feeNote)})</li></ul>
+      <div class="o-actions"><button type="button" class="btn primary" data-pick="${best.key}">Richiedi il prestito ${esc(best.nome)}</button></div>
+      ${cons(best)}
+    </article>`;
+  } else {
+    html += `<div class="none">Con le risposte date nessun prodotto è disponibile per il tuo profilo. Leggi gli avvisi qui sopra: cambiando importo o durata la situazione può cambiare, oppure un consulente può valutare con te altre soluzioni.</div>`;
+  }
+  const others = ev.results.filter(o => o !== best);
+  if (others.length){
+    html += `<h3 class="others-h">Altri prodotti, non indicati per il tuo profilo</h3>`;
+    html += others.map(o => {
+      let why = o.motivo;
+      if (o.ok){
+        const parts = [];
+        if (o.durata !== +A.durata) parts.push(`non prevede la durata di ${A.durata} mesi`);
+        if (o.taeg > best.taeg + 0.05) parts.push(`costo più alto per il tuo profilo (TAEG stimato ${pct(o.taeg)} contro ${pct(best.taeg)})`);
+        if (!parts.length) parts.push("condizioni meno vantaggiose per il tuo profilo");
+        why = parts.join("; ").replace(/^./, c => c.toUpperCase());
+      }
+      return `<div class="other"><div><h3>${esc(o.nome)}</h3><p>${esc(why)}</p>${cons(o)}</div><span class="pill no">Non indicato</span></div>`;
+    }).join("");
+  }
+  document.getElementById("offers").innerHTML = html;
+}
+
+/* ============================================================
+   RICHIESTA
+   ============================================================ */
+const modal = document.getElementById("modal");
+let scelta = null;
+document.getElementById("offers").addEventListener("click", e => {
+  const b = e.target.closest("[data-pick]"); if (!b) return;
+  scelta = last.results.find(o => o.key === b.dataset.pick);
+  document.getElementById("m-title").textContent = `Richiedi il prestito con ${scelta.nome}`;
+  document.getElementById("recap").innerHTML = `
+    <dt>Finanziaria</dt><dd>${esc(scelta.nome)} – ${esc(scelta.prodotto)}</dd>
+    <dt>Importo</dt><dd>${eur(+A.importo)}</dd>
+    <dt>Durata</dt><dd>${scelta.durata} mesi</dd>
+    <dt>Rata stimata</dt><dd>${eur2(scelta.rata)}</dd>
+    <dt>TAN / TAEG stimati</dt><dd>${pct(scelta.tan)} / ${pct(scelta.taeg)}</dd>`;
+  document.getElementById("m-form").hidden = false; document.getElementById("m-done").hidden = true;
+  document.getElementById("err").textContent = "";
+  modal.classList.add("open"); document.getElementById("nome").focus();
+});
+function closeModal(){ modal.classList.remove("open"); }
+document.getElementById("close").addEventListener("click", closeModal);
+document.getElementById("close2").addEventListener("click", closeModal);
+modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+document.getElementById("lead").addEventListener("submit", async e => {
+  e.preventDefault();
+  const g = id => document.getElementById(id).value.trim();
+  const err = document.getElementById("err");
+  if (!g("nome") || !g("cognome")) return err.textContent = "Inserisci nome e cognome.";
+  if (!/^[+0-9\s]{8,16}$/.test(g("tel"))) return err.textContent = "Inserisci un numero di cellulare valido.";
+  if (!/^\S+@\S+\.\S+$/.test(g("email"))) return err.textContent = "Inserisci un indirizzo email valido.";
+  if (!document.getElementById("privacy").checked) return err.textContent = "Per inviare la richiesta serve il consenso privacy.";
+  const o = scelta;
+  const profilo = Object.fromEntries(RECAP.filter(([id]) => vis(Q.find(q => q.id === id))).map(([id, l]) => [l, show(id)]));
+  profilo["Residenza in Italia"] = show("residenza"); profilo["Conto corrente in Italia"] = show("conto"); profilo["Documenti pronti"] = show("documenti");
+  if (vis(Q.find(q => q.id === "permesso"))) profilo["Permesso di soggiorno"] = show("permesso");
+  if (vis(Q.find(q => q.id === "scadenza"))) profilo["Scadenza contratto"] = show("scadenza");
+  if (vis(Q.find(q => q.id === "altriRedditi"))) profilo["Altri redditi in famiglia"] = show("altriRedditi");
+  const lead = {
+    data: new Date().toISOString(), fonte: "Servizio Prestiti – comparatore",
+    nome: g("nome"), cognome: g("cognome"), cellulare: g("tel"), email: g("email"), provincia: g("prov"), orario: g("orario"),
+    consenso_privacy: true, consenso_marketing: document.getElementById("mkt").checked,
+    finanziaria: o.nome, importo: +A.importo, durata: o.durata, rata_stimata: +o.rata.toFixed(2), tan: o.tan, taeg_stimato: +o.taeg.toFixed(2),
+    rischio_stimato: +(last.R.r * 10).toFixed(1), profilo,
+    altri_prodotti: last.results.filter(x => x.key !== o.key).map(x => x.nome).join(", ")
+  };
+  const testo = `NUOVA RICHIESTA – SERVIZIO PRESTITI
+Cliente: ${lead.nome} ${lead.cognome}
+Cellulare: ${lead.cellulare} – Email: ${lead.email}
+Provincia: ${lead.provincia || "-"} – Richiamare: ${lead.orario}
+
+Scelta: ${lead.finanziaria} – ${eur(lead.importo)} in ${lead.durata} mesi
+Rata stimata ${eur2(lead.rata_stimata)} – TAN ${pct(lead.tan)} – TAEG stimato ${pct(lead.taeg_stimato)}
+Altri prodotti valutati: ${lead.altri_prodotti} – Rischio stimato ${lead.rischio_stimato}/10
+
+PROFILO
+${Object.entries(profilo).map(([k, v]) => `${k}: ${v}`).join("\n")}
+
+Consenso privacy: sì – Marketing: ${lead.consenso_marketing ? "sì" : "no"}`;
+
+  let inviato = false;
+  if (WEBHOOK_URL){ try { const r = await fetch(WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(lead) }); inviato = r.ok; } catch (_) { inviato = false; } }
+  document.getElementById("m-form").hidden = true; document.getElementById("m-done").hidden = false;
+  document.getElementById("summary").textContent = testo;
+  const mail = document.getElementById("mailto");
+  mail.href = `mailto:${LEAD_EMAIL}?subject=${encodeURIComponent(`Richiesta prestito ${lead.finanziaria} – ${lead.nome} ${lead.cognome}`)}&body=${encodeURIComponent(testo)}`;
+  if (inviato){
+    document.getElementById("done-msg").textContent = `Grazie ${lead.nome}, abbiamo ricevuto la tua richiesta. Un consulente di Servizio Prestiti ti richiamerà al ${lead.cellulare}.`;
+    mail.hidden = true; document.getElementById("mailhint").textContent = "";
+  } else {
+    document.getElementById("done-msg").textContent = `Grazie ${lead.nome}. Per completare, invia la richiesta con il pulsante qui sotto: un consulente di Servizio Prestiti ti richiamerà al ${lead.cellulare}.`;
+    mail.hidden = false; document.getElementById("mailhint").textContent = `Se il pulsante non apre la posta, copia il riepilogo e invialo a ${LEAD_EMAIL}.`;
+  }
+});
+document.getElementById("copy").addEventListener("click", async e => {
+  try { await navigator.clipboard.writeText(document.getElementById("summary").textContent); e.target.textContent = "Copiato"; }
+  catch (_) { e.target.textContent = "Seleziona il testo e copialo"; }
+});
+
+/* consulente */
+const cons = document.getElementById("consulente");
+if (!SHOW_CONSULENTE && location.hash !== "#consulente") document.getElementById("consToggle").hidden = true;
+if (location.hash === "#consulente"){ cons.checked = true; document.body.classList.add("consulente"); }
+cons.addEventListener("change", () => document.body.classList.toggle("consulente", cons.checked));
+
+renderQ(); renderResults();
+</script>
+</body>
+</html>

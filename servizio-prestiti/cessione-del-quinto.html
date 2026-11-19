@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Servizio Prestiti – Cessione del Quinto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Landing a colonna unica: promessa, tre punti chiave, modulo di richiesta. */
+:root{
+  --ink:#0B2A5B; --ink-2:#34507F; --muted:#62738F;
+  --bg:#F2F5FA; --surface:#FFFFFF; --line:#D9E1EE;
+  --brand-blue:#0D3F8F; --brand-orange:#F28A1A;
+  --accent:#F28A1A; --accent-ink:#3D1F00; --accent-soft:#FEEEDC;
+  --good:#1E7A4F; --good-soft:#E3F3EA; --warn:#9A5600; --warn-soft:#FFF2DC; --bad:#B3261E;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#E8EEF7; --ink-2:#B9C5D6; --muted:#8C9AB0; --bg:#0D1726; --surface:#15233A; --line:#26364F;
+    --accent:#F59A33; --accent-ink:#1B0E00; --accent-soft:#3A2510; --good:#58C48C; --good-soft:#143326; --warn:#F2B35C; --warn-soft:#3A2A12; --bad:#F08A80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E8EEF7; --ink-2:#B9C5D6; --muted:#8C9AB0; --bg:#0D1726; --surface:#15233A; --line:#26364F;
+  --accent:#F59A33; --accent-ink:#1B0E00; --accent-soft:#3A2510; --good:#58C48C; --good-soft:#143326; --warn:#F2B35C; --warn-soft:#3A2A12; --bad:#F08A80;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+.num{font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+header.top{background:var(--brand-blue);color:#fff;border-bottom:4px solid var(--brand-orange)}
+.wrap{max-width:780px;margin:0 auto;padding:0 20px}
+.top .wrap{padding-top:14px;padding-bottom:14px;max-width:1180px}
+.brand{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em}
+.brand b{color:var(--brand-orange)}
+.hero{padding:30px 0 10px}
+.eyebrow{display:inline-block;background:var(--accent-soft);color:var(--ink);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600;margin-bottom:12px}
+.hero h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.02em}
+.hero p{color:var(--ink-2);margin:12px 0 0;max-width:62ch}
+.points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:22px 0}
+@media (max-width:640px){.points{grid-template-columns:1fr}}
+.point{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.point b{display:block;font-family:var(--display);font-size:17px;margin-bottom:2px}
+.point span{font-size:14px;color:var(--ink-2)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:28px}
+.card h2{font-size:22px;margin-bottom:4px}
+.card .sub{color:var(--muted);margin:0 0 16px;font-size:15px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.row2{grid-template-columns:1fr}}
+.field{display:grid;gap:6px;margin-bottom:14px}
+.field label{font-weight:600;font-size:14.5px}
+.field input,.field select{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);width:100%}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;margin-bottom:10px}
+.check input{margin-top:4px}
+.err{color:var(--bad);font-size:13px;min-height:1em}
+.btn{border:0;border-radius:10px;padding:12px 20px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line)}
+.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px}
+.alert{border-radius:10px;padding:10px 12px;font-size:14.5px;border-left:4px solid;margin-bottom:12px}
+.alert.good{background:var(--good-soft);border-color:var(--good)}
+.alert.warn{background:var(--warn-soft);border-color:var(--warn)}
+pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:12px;font-size:13px;max-height:240px;overflow:auto}
+.hint{color:var(--muted);font-size:13px}
+.legal{font-size:12.5px;color:var(--muted);padding-bottom:32px}
+.legal p{margin:6px 0}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><div class="brand">Servizio <b>Prestiti</b></div></div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="eyebrow">Per dipendenti e pensionati</span>
+    <h1>Cessione del Quinto: il prestito con la rata trattenuta in busta paga</h1>
+    <p>La rata viene trattenuta direttamente dallo stipendio o dalla pensione e non supera mai un quinto del netto. È una soluzione valutata anche quando in passato ci sono stati ritardi nei pagamenti.</p>
+  </section>
+
+  <section class="points" aria-label="Caratteristiche">
+    <div class="point"><b>Rata fissa</b><span>Trattenuta ogni mese in busta paga o sulla pensione: non devi ricordarti di pagarla.</span></div>
+    <div class="point"><b>Fino a 120 mesi</b><span>Una durata lunga per una rata sostenibile, al massimo un quinto del netto.</span></div>
+    <div class="point"><b>Consulente dedicato</b><span>Ti richiamiamo per la valutazione e ti seguiamo fino all'erogazione.</span></div>
+  </section>
+
+  <section class="card" id="formCard">
+    <h2>Richiedi la tua valutazione gratuita</h2>
+    <p class="sub">Compila il modulo: un consulente ti richiama per un preventivo senza impegno.</p>
+    <form id="cq" novalidate>
+      <div class="row2">
+        <div class="field"><label for="nome">Nome</label><input id="nome" autocomplete="given-name"></div>
+        <div class="field"><label for="cognome">Cognome</label><input id="cognome" autocomplete="family-name"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="tel">Cellulare</label><input id="tel" type="tel" autocomplete="tel"></div>
+        <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="lavoro">Sei</label>
+          <select id="lavoro">
+            <option value="pubblico">Dipendente pubblico o statale</option>
+            <option value="privato_ind">Dipendente privato a tempo indeterminato</option>
+            <option value="privato_det">Dipendente a tempo determinato</option>
+            <option value="pensionato">Pensionato</option>
+            <option value="autonomo">Lavoratore autonomo</option>
+          </select></div>
+        <div class="field"><label for="prov">Provincia di residenza</label><input id="prov" maxlength="30"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="importo">Importo desiderato (€)</label><input id="importo" type="number" inputmode="numeric" min="1000" step="500"></div>
+        <div class="field"><label for="netto">Stipendio o pensione netta al mese (€)</label><input id="netto" type="number" inputmode="numeric" min="0" step="50"></div>
+      </div>
+      <p class="hint num" id="rataMax"></p>
+      <label class="check"><input type="checkbox" id="privacy"> <span>Ho letto l'informativa privacy e acconsento al trattamento dei miei dati per essere ricontattato in merito a questa richiesta (obbligatorio).</span></label>
+      <label class="check"><input type="checkbox" id="mkt"> <span>Acconsento a ricevere comunicazioni commerciali da Servizio Prestiti (facoltativo).</span></label>
+      <p class="err" id="err"></p>
+      <div class="nav"><span class="hint">Nessun impegno: la richiesta serve per essere ricontattato.</span><button type="submit" class="btn primary">Richiedi la valutazione</button></div>
+    </form>
+  </section>
+
+  <section class="card" id="doneCard" hidden>
+    <div id="doneMsg"></div>
+    <pre class="summary" id="sum"></pre>
+    <div class="nav" id="mailNav"><button type="button" class="btn ghost" id="copy">Copia riepilogo</button><a class="btn primary" id="mail" href="#">Invia via email</a></div>
+  </section>
+
+  <section class="legal">
+    <p>Messaggio pubblicitario con finalità promozionale. La concessione del finanziamento è subordinata alla valutazione e all'approvazione del finanziatore. Prima della firma riceverai il modulo "Informazioni europee di base sul credito ai consumatori" (SECCI) con TAN, TAEG e tutte le condizioni.</p>
+    <p>Servizio Prestiti è un portale di Aessefin Prestiti 24/7 S.r.l. (agente in attività finanziaria iscritto all'elenco OAM al n. A12056, P.IVA 12548990964) e di Magenta S.p.A. (agente in attività finanziaria iscritto all'elenco OAM al n. [DA INSERIRE]), che operano su mandato di Cofidis S.A. per la cessione del quinto.</p>
+  </section>
+</main>
+
+<script>
+/* CONFIGURAZIONE: webhook (es. Make) che crea il lead nel CRM. Vuoto = riepilogo via email. */
+const WEBHOOK_URL = "";
+const LEAD_EMAIL = "antonio.clemente@aessefin.it";
+
+const $ = id => document.getElementById(id);
+const P = new URLSearchParams(location.search);
+if (P.get("importo")) $("importo").value = P.get("importo");
+if (P.get("netto")) $("netto").value = P.get("netto");
+if (P.get("lavoro") && [...$("lavoro").options].some(o => o.value === P.get("lavoro"))) $("lavoro").value = P.get("lavoro");
+function grp(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+function hint(){
+  const n = +$("netto").value, l = $("lavoro").value;
+  $("rataMax").textContent = l === "autonomo" ? "La cessione del quinto è riservata a dipendenti e pensionati: un consulente valuterà con te la soluzione possibile."
+    : n ? `Rata massima indicativa: ${grp(n / 5)} € al mese (un quinto del netto).` : "";
+}
+["netto", "lavoro"].forEach(id => $(id).addEventListener("input", hint)); hint();
+
+$("cq").addEventListener("submit", async e => {
+  e.preventDefault();
+  const v = id => $(id).value.trim(), err = $("err");
+  if (!v("nome") || !v("cognome")) return err.textContent = "Inserisci nome e cognome.";
+  if (!/^[+0-9\s]{8,16}$/.test(v("tel"))) return err.textContent = "Inserisci un numero di cellulare valido.";
+  if (!/^\S+@\S+\.\S+$/.test(v("email"))) return err.textContent = "Inserisci un indirizzo email valido.";
+  if (!$("privacy").checked) return err.textContent = "Per inviare la richiesta serve il consenso privacy.";
+  err.textContent = "";
+  const lead = {
+    data: new Date().toISOString(), prodotto: "Cessione del Quinto", fonte: P.get("fonte") || "landing cessione del quinto",
+    motivo: P.get("fonte") === "servizio-prestiti" ? "Ritardi nei pagamenti dichiarati nel percorso prestiti personali" : "",
+    nome: v("nome"), cognome: v("cognome"), cellulare: v("tel"), email: v("email"), provincia: v("prov"),
+    lavoro: $("lavoro").selectedOptions[0].text, importo: +v("importo") || null, netto_mensile: +v("netto") || null,
+    durata_richiesta: +P.get("durata") || null, eta: +P.get("eta") || null,
+    consenso_privacy: true, consenso_marketing: $("mkt").checked
+  };
+  const testo = `NUOVA RICHIESTA – CESSIONE DEL QUINTO (Servizio Prestiti)
+Cliente: ${lead.nome} ${lead.cognome}
+Cellulare: ${lead.cellulare} – Email: ${lead.email} – Provincia: ${lead.provincia || "-"}
+Lavoro: ${lead.lavoro} – Netto mensile: ${lead.netto_mensile ? grp(lead.netto_mensile) + " €" : "-"}
+Importo desiderato: ${lead.importo ? grp(lead.importo) + " €" : "-"}${lead.durata_richiesta ? ` – durata indicata ${lead.durata_richiesta} mesi` : ""}${lead.eta ? ` – età ${lead.eta}` : ""}
+${lead.motivo ? "Provenienza: " + lead.motivo + "\n" : ""}Privacy: sì – Marketing: ${lead.consenso_marketing ? "sì" : "no"}`;
+  let ok = false;
+  if (WEBHOOK_URL){ try { const r = await fetch(WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(lead) }); ok = r.ok; } catch (_){ ok = false; } }
+  $("formCard").hidden = true; $("doneCard").hidden = false;
+  if (ok){
+    $("doneMsg").innerHTML = `<div class="alert good"><b>Richiesta inviata.</b> Grazie ${lead.nome}: un consulente di Servizio Prestiti ti richiamerà al ${lead.cellulare}.</div>`;
+    $("sum").hidden = true; $("mailNav").hidden = true;
+  } else {
+    $("doneMsg").innerHTML = `<div class="alert warn">${WEBHOOK_URL ? "L'invio automatico non è riuscito. " : ""}Per completare, invia la richiesta con il pulsante qui sotto: un consulente ti richiamerà al ${lead.cellulare}.</div>`;
+    $("sum").textContent = testo;
+    $("mail").href = `mailto:${LEAD_EMAIL}?subject=${encodeURIComponent("Richiesta cessione del quinto – " + lead.nome + " " + lead.cognome)}&body=${encodeURIComponent(testo)}`;
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+$("copy").addEventListener("click", async e => { try { await navigator.clipboard.writeText($("sum").textContent); e.target.textContent = "Copiato"; } catch (_){ e.target.textContent = "Seleziona il testo e copialo"; } });
+</script>
+</body>
+</html>

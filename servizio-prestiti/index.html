@@ -138,6 +138,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .other{border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start;background:var(--bg)}
 .other h3{font-size:16px;font-weight:700}
 .other p{margin:2px 0 0;font-size:13.5px;color:var(--ink-2)}
+.cq-p{margin:0;font-size:14.5px;color:var(--ink-2)}
 .none{border:1.5px dashed var(--line);border-radius:12px;padding:14px 16px;font-size:14.5px;color:var(--ink-2)}
 .details{font-size:12.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;display:none}
 body.consulente .details{display:block}
@@ -233,6 +234,8 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
 const WEBHOOK_URL = "";
 const LEAD_EMAIL = "antonio.clemente@aessefin.it";
 const SHOW_CONSULENTE = true;
+// Landing della cessione del quinto, proposta a chi ha avuto ritardi nei pagamenti
+const CQ_URL = "cessione-del-quinto.html";
 
 /* ============================================================
    PARAMETRI DEI FINANZIATORI (allegati Banca Sistema, nov. 2026)
@@ -424,8 +427,9 @@ function evaluate(a){
   if (a.occupazione === "nessuno") stop("Per un prestito personale serve un reddito dimostrabile: stipendio, pensione o reddito da lavoro autonomo.");
   if (a.residenza === "no") stop("Il prestito è riservato a chi risiede in Italia.");
   if (a.conto === "no") stop("Serve un conto corrente in Italia intestato a te, per l'accredito del prestito e l'addebito delle rate.");
-  if (a.storia === "segnalato") stop("Con protesti o pignoramenti in corso le finanziarie non possono concedere il prestito. Un consulente può valutare con te altre strade.");
-  if (a.storia === "incorso") alerts.push(["bad", "Con rate arretrate l'approvazione è difficile: ti consigliamo di regolarizzarle prima di fare richiesta."]);
+  // ritardi nei pagamenti, anche lievi: si propone la cessione del quinto al posto del prestito personale
+  const cq = ["ritardi", "incorso", "segnalato"].includes(a.storia) && !blocca;
+  if (cq){ blocca = true; results.forEach(o => { o.ok = false; o.motivo = "Con ritardi nei pagamenti il prestito personale non è indicato: per te c'è la cessione del quinto"; }); }
   if (a.cittadinanza === "extra" && a.permesso === "prima") alerts.push(["warn", "Il permesso di soggiorno scade prima della fine del prestito: valuta una durata più breve o il rinnovo."]);
   if (a.occupazione === "privato_det" && a.scadenza === "entro12") alerts.push(["warn", "Con un contratto in scadenza entro 12 mesi la richiesta è più difficile: un consulente verificherà le possibilità con te."]);
   const etaFine = +a.eta + Math.ceil(dur / 12);
@@ -446,7 +450,8 @@ function evaluate(a){
   if (blocca) ordered.forEach(o => { o.ok = false; o.motivo = o.motivo || "Requisiti di base non soddisfatti"; });
   const bs = best ? best.score : 1;
   ordered.forEach(o => { o.fit = o.ok ? Math.max(35, Math.round(100 - (o.score / bs - 1) * 160)) : 0; });
-  return { results: ordered, alerts, R };
+  const cqInfo = cq ? { ammesso: DIP(a) || a.occupazione === "pensionato", rataMax: (+a.reddito || 0) / 5 } : null;
+  return { results: ordered, alerts, R, cq: cqInfo };
 }
 
 /* ============================================================
@@ -581,6 +586,24 @@ function renderResults(){
         <li class="num">Importo ${eur(+A.importo)} · costo totale stimato ${eur(best.costo)}: interessi più spese di istruttoria (${esc(best.feeNote)})</li></ul>
       <div class="o-actions"><button type="button" class="btn primary" data-pick="${best.key}">Richiedi il prestito ${esc(best.nome)}</button></div>
       ${cons(best)}
+    </article>`;
+  } else if (ev.cq){
+    const q = new URLSearchParams({ importo: A.importo, durata: Math.max(+A.durata, 24), lavoro: A.occupazione, eta: A.eta, netto: A.reddito, fonte: "servizio-prestiti" });
+    const link = `${CQ_URL}?${q}`;
+    html += ev.cq.ammesso ? `<article class="offer best">
+      <div class="o-top"><div class="o-name"><h3>Cessione del Quinto</h3><span>${A.occupazione === "pensionato" ? "della pensione" : "dello stipendio"} · rata trattenuta direttamente ${A.occupazione === "pensionato" ? "sulla pensione" : "in busta paga"}</span></div><span class="pill best">La soluzione per te</span></div>
+      <p class="cq-p">Quando ci sono stati ritardi nei pagamenti, anche lievi, ti proponiamo la cessione del quinto: la rata è trattenuta ogni mese ${A.occupazione === "pensionato" ? "dalla pensione" : "dallo stipendio"}, non supera un quinto del netto e il prestito può durare fino a 120 mesi.</p>
+      <div class="metrics num">
+        <div class="m"><span>Importo richiesto</span><strong>${eur(+A.importo)}</strong></div>
+        <div class="m"><span>Rata massima</span><strong>${eur(ev.cq.rataMax)}</strong></div>
+        <div class="m"><span>Durata</span><strong>fino a 120 mesi</strong></div>
+        <div class="m"><span>Rata</span><strong>${A.occupazione === "pensionato" ? "sulla pensione" : "in busta"}</strong></div>
+      </div>
+      <div class="o-actions"><a class="btn primary" href="${esc(link)}" target="_blank" rel="noopener">Richiedi la cessione del quinto</a></div>
+    </article>` : `<article class="offer best">
+      <div class="o-top"><div class="o-name"><h3>Parla con un consulente</h3><span>Valutazione personalizzata</span></div><span class="pill best">Per te</span></div>
+      <p class="cq-p">Con ritardi nei pagamenti il prestito personale non è indicato, e la cessione del quinto è riservata a dipendenti e pensionati. Lascia i tuoi contatti: un consulente valuterà con te la soluzione possibile.</p>
+      <div class="o-actions"><a class="btn primary" href="${esc(link)}" target="_blank" rel="noopener">Lascia i tuoi contatti</a></div>
     </article>`;
   } else {
     html += `<div class="none">Con le risposte date nessun prodotto è disponibile per il tuo profilo. Leggi gli avvisi qui sopra: cambiando importo o durata la situazione può cambiare, oppure un consulente può valutare con te altre soluzioni.</div>`;

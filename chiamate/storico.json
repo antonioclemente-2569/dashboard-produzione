@@ -1,5 +1,5 @@
 {
- "aggiornato": "2026-11-18 18:40",
+ "aggiornato": "2026-11-19 19:38",
  "giorni": [
   {
    "data": "2026-11-18",
@@ -12,6 +12,19 @@
     {"interno": "208", "operatore": "Ludovica Baciucchi", "chiamate_dialer": 114, "conversato_dialer_sec": 7757, "chiamate_manuali": 70, "manuali_con_risposta": 13, "conversato_manuali_sec": 1537},
     {"interno": "215", "operatore": "Martina Giannotta", "chiamate_dialer": 134, "conversato_dialer_sec": 9564, "chiamate_manuali": 5, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
     {"interno": "233", "operatore": "Sara Camposano", "chiamate_dialer": 65, "conversato_dialer_sec": 5952, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0}
+   ]
+  },
+  {
+   "data": "2026-11-19",
+   "chiuso": true,
+   "operatori": [
+    {"interno": "202", "operatore": "Marco Firrincieli", "chiamate_dialer": 61, "conversato_dialer_sec": 3120, "chiamate_manuali": 42, "manuali_con_risposta": 21, "conversato_manuali_sec": 2359},
+    {"interno": "204", "operatore": "Marcel Honla", "chiamate_dialer": 205, "conversato_dialer_sec": 11734, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
+    {"interno": "205", "operatore": "Giovanni Sanglimbene", "chiamate_dialer": 54, "conversato_dialer_sec": 3279, "chiamate_manuali": 25, "manuali_con_risposta": 5, "conversato_manuali_sec": 989},
+    {"interno": "206", "operatore": "Letizia Biddeci", "chiamate_dialer": 94, "conversato_dialer_sec": 9651, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
+    {"interno": "208", "operatore": "Ludovica Baciucchi", "chiamate_dialer": 132, "conversato_dialer_sec": 9654, "chiamate_manuali": 15, "manuali_con_risposta": 5, "conversato_manuali_sec": 394},
+    {"interno": "215", "operatore": "Martina Giannotta", "chiamate_dialer": 152, "conversato_dialer_sec": 10433, "chiamate_manuali": 2, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
+    {"interno": "233", "operatore": "Sara Camposano", "chiamate_dialer": 85, "conversato_dialer_sec": 7355, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0}
    ]
   }
  ]

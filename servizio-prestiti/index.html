@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout: una domanda per schermata a sinistra, prodotto indicato che si affina a destra; su mobile si impilano. */
+/* Layout: una colonna centrata. Durante l'intervista solo la domanda; a fine percorso compare il prodotto indicato. */
 :root{
   --ink:#0B2A5B; --ink-2:#34507F; --muted:#62738F;
   --bg:#F2F5FA; --surface:#FFFFFF; --line:#D9E1EE;
@@ -52,12 +52,12 @@ header.top{background:var(--brand-blue);color:#FFFFFF;border-bottom:4px solid va
 .top small{opacity:.75;font-size:13px}
 .toggle{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
 
-.hero{padding:26px 0 6px}
+.hero{padding:26px 0 6px;max-width:780px;margin:0 auto}
 .hero h1{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-.02em;max-width:24ch}
 .hero p{color:var(--ink-2);max-width:64ch;margin:10px 0 0}
 
-.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:24px;padding:20px 0 36px;align-items:start}
-@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;padding:20px 0 36px;max-width:780px;margin:0 auto}
+body.done .side{order:-1}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px}
 
 /* intervista */
@@ -99,8 +99,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .recap-list button{border:0;background:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px;padding:0}
 
 /* prodotto indicato */
-.side{position:sticky;top:16px}
-@media (max-width:900px){.side{position:static}}
+
 .side-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:16px 18px 0;flex-wrap:wrap}
 .side-head h2{font-size:18px}
 .precision{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);padding:6px 18px 0}
@@ -143,7 +142,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .details{font-size:12.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;display:none}
 body.consulente .details{display:block}
 
-.legal{font-size:12.5px;color:var(--muted);padding:0 0 32px;max-width:115ch}
+.legal{font-size:12.5px;color:var(--muted);padding:0 0 32px;max-width:780px;margin:0 auto}
 .legal p{margin:6px 0}
 
 /* modale */
@@ -177,7 +176,7 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
 <main class="wrap">
   <section class="hero">
     <h1>Scopri il prestito personale disponibile per te</h1>
-    <p>Qualche domanda, una alla volta: raccogliamo le informazioni che Agos, Compass e Con.te usano per valutare la richiesta e ti indichiamo il prodotto disponibile per il tuo profilo, con rata e costi stimati. Poi fai la richiesta e un consulente ti accompagna nella firma online.</p>
+    <p>Rispondi a qualche domanda, una alla volta. Alla fine ti diciamo quale prestito tra Agos, Compass e Con.te è disponibile per il tuo profilo, con rata e costi stimati, e puoi fare subito la richiesta.</p>
   </section>
 
   <div class="grid">
@@ -190,13 +189,12 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
       <div class="q" id="q" aria-live="polite"></div>
     </section>
 
-    <aside class="side">
+    <aside class="side" hidden>
       <section class="card">
         <div class="side-head">
-          <h2>Il prodotto per te</h2>
+          <h2>Le finanziarie per il tuo profilo</h2>
           <span class="hint num" id="profilo"></span>
         </div>
-        <div class="precision"><span>Precisione della stima</span><div class="bar"><i id="prec"></i></div><span class="num" id="precTxt"></span></div>
         <div class="alerts" id="alerts"></div>
         <div class="offers" id="offers"></div>
       </section>
@@ -352,7 +350,7 @@ const Q = [
     options: [["si", "Sì, mi interessa"], ["no", "No"]] },
   { id: "documenti", sec: 5, type: "choice", title: "Per la richiesta online ti serviranno questi documenti. Li hai?", help: "Documento d'identità valido, tessera sanitaria, ultima busta paga o cedolino della pensione (o ultima dichiarazione dei redditi), IBAN e uno smartphone per la firma digitale.",
     options: [["si", "Sì, ho tutto"], ["parte", "Mi manca qualcosa"]] },
-  { id: "fine", sec: 5, type: "end", title: "Ecco il prodotto per te" }
+  { id: "fine", sec: 5, type: "end", title: "Le tue risposte" }
 ];
 
 /* risposte di partenza: un profilo d'esempio, così il risultato è già leggibile */
@@ -499,6 +497,10 @@ function renderQ(){
   const list = visibleList();
   if (idx >= list.length) idx = list.length - 1;
   const q = list[idx];
+  const end = q.type === "end";
+  document.querySelector(".side").hidden = !end;
+  document.body.classList.toggle("done", end);
+  document.querySelector(".hero").hidden = end;
   const pos = list.indexOf(q), total = list.length - 1;
   document.getElementById("progress").style.width = Math.round(Math.min(pos, total) / total * 100) + "%";
   document.getElementById("qcount").textContent = q.type === "end" ? "Intervista completata" : `Domanda ${pos + 1} di ${total}`;
@@ -518,7 +520,7 @@ function renderQ(){
   } else if (q.type === "money" || q.type === "number"){
     body = `<div class="big-input"><input type="number" id="inp" inputmode="numeric" min="${q.min || 0}" max="${q.max || 99999}" value="${A[q.id] ?? ""}" aria-label="${esc(txt(q.title))}"><span>${q.unit || "€"}</span></div>`;
   } else if (q.type === "end"){
-    body = `<p class="help">Hai risposto a tutte le domande: il prodotto indicato qui accanto è calcolato sul tuo profilo completo. Premi <b>Richiedi</b> per inviare la domanda.</p>
+    body = `<p class="help">Il risultato qui sopra è calcolato su queste risposte. Se vuoi correggerne una, premi "modifica": il risultato si aggiorna.</p>
       <dl class="recap-list">${recapRows()}</dl>`;
   }
   const needsNext = !["choice"].includes(q.type) && q.type !== "end";
@@ -564,7 +566,7 @@ function next(){
   const curId = list[idx] && list[idx].id;
   const fresh = visibleList(); idx = Math.min(fresh.findIndex(x => x.id === curId) + 1, fresh.length - 1);
   renderQ();
-  if (visibleList()[idx].type === "end" && window.innerWidth <= 900) document.querySelector(".side").scrollIntoView({ behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 const LABEL = {};
@@ -588,12 +590,8 @@ function recapRows(){
 let last = null;
 function renderResults(){
   const ev = evaluate(A); last = ev;
-  const list = visibleList().filter(q => q.type !== "end");
-  const prec = Math.round(list.filter(q => answered.has(q.id)).length / list.length * 100);
-  document.getElementById("prec").style.width = prec + "%";
-  document.getElementById("precTxt").textContent = prec === 100 ? "completa" : prec + "%";
   document.getElementById("profilo").textContent = `${eur(+A.importo)} · ${A.durata} mesi`;
-  document.getElementById("alerts").innerHTML = (prec < 100 ? `<div class="alert warn">Indicazione provvisoria: rispondi a tutte le domande per conoscere il prodotto adatto al tuo profilo.</div>` : "") + ev.alerts.map(([k, t]) => `<div class="alert ${k}">${esc(t)}</div>`).join("");
+  document.getElementById("alerts").innerHTML = ev.alerts.map(([k, t]) => `<div class="alert ${k}">${esc(t)}</div>`).join("");
   const best = ev.results.find(o => o.ok);
   const cons = o => `<div class="details num">Consulente · rischio ${(ev.R.r * 10).toFixed(1)}/10 · rate+½casa/reddito ${Math.round(ev.R.dti * 100)}% · reddito mensile equivalente ${eur(ev.R.n.redditoMese)} · residuo per persona ${eur(ev.R.perTesta)} · ${o.det.map(esc).join(" · ")}${o.ok ? ` · TAEG ${pct(o.taeg)} · rata ${eur2(o.rata)}` : ""}</div>`;
   let html = "";

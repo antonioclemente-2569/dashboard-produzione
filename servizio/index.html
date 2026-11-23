@@ -48,12 +48,12 @@
       <thead><tr><th>Lead manager</th><th>Attività assegnate</th><th>Orario previsto</th><th>Entrata effettiva</th><th>Uscita effettiva</th></tr></thead>
       <tbody id="tb"></tbody>
     </table></div>
-    <p class="note">Entrata e uscita effettive = prima e ultima chiamata del giorno registrata dal centralino. Tolleranza 10 minuti.</p>
+    <p class="note">Entrata e uscita effettive = prima e ultima chiamata del giorno registrata dal centralino. Tolleranza 5 minuti: oltre le 09:05 è ritardo.</p>
   </section>
 </div>
 <script>
 (function () {
-  var TOL = 10;
+  var TOL = 5;
   function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
   function min(h) { if (!h) return null; var p = h.split(':'); return +p[0] * 60 + +p[1]; }
   function render(d) {

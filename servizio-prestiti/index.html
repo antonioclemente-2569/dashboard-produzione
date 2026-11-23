@@ -6,29 +6,33 @@
 <title>Servizio Prestiti – Trova il tuo prestito</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* Layout: una colonna centrata. Durante l'intervista solo la domanda; a fine percorso compare il prodotto indicato. */
 :root{
-  --ink:#191C1F; --ink-2:#505A63; --muted:#7A848D;
-  --bg:#FFFFFF; --surface:#FFFFFF; --line:#E2E4E6;
-  --accent:#191C1F; --accent-ink:#FFFFFF; --accent-soft:#F4F4F4;
-  --good:#191C1F; --good-soft:#F4F4F4; --warn:#505A63; --warn-soft:#F4F4F4; --bad:#191C1F; --bad-soft:#F4F4F4; --error:#C62828;
-  /* Carattere: alternativa gratuita ad Aeonik Pro (Revolut). Con licenza Aeonik basta sostituire --display. */
-  --display:"Inter Tight", "Helvetica Neue", Arial, sans-serif;
-  --body:"Inter", "Helvetica Neue", Arial, sans-serif;
+  --ink:#0B2A5B; --ink-2:#34507F; --muted:#62738F;
+  --bg:#F2F5FA; --surface:#FFFFFF; --line:#D9E1EE;
+  --brand-blue:#0D3F8F; --brand-orange:#F28A1A;
+  --accent:#F28A1A; --accent-ink:#3D1F00; --accent-soft:#FEEEDC;
+  --good:#1E7A4F; --good-soft:#E3F3EA; --warn:#9A5600; --warn-soft:#FFF2DC; --bad:#B3261E; --bad-soft:#FBE6E4;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Instrument Sans", "Segoe UI", system-ui, sans-serif;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --ink:#FFFFFF; --ink-2:#C9CDD1; --muted:#8D969E; --bg:#111315; --surface:#191C1F; --line:#2E3236;
-    --accent:#FFFFFF; --accent-ink:#191C1F; --accent-soft:#24282C; --good:#FFFFFF; --good-soft:#24282C; --warn:#C9CDD1; --warn-soft:#24282C; --bad:#FFFFFF; --bad-soft:#24282C; --error:#FF8A80;
+    --ink:#E8EEF7; --ink-2:#B9C5D6; --muted:#8C9AB0;
+    --bg:#0D1726; --surface:#15233A; --line:#26364F;
+    --brand-blue:#0D3F8F; --brand-orange:#F28A1A; --accent:#F59A33; --accent-ink:#1B0E00; --accent-soft:#3A2510;
+    --good:#58C48C; --good-soft:#143326; --warn:#F2B35C; --warn-soft:#3A2A12; --bad:#F08A80; --bad-soft:#3B1C1A;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
-  --ink:#FFFFFF; --ink-2:#C9CDD1; --muted:#8D969E; --bg:#111315; --surface:#191C1F; --line:#2E3236;
-    --accent:#FFFFFF; --accent-ink:#191C1F; --accent-soft:#24282C; --good:#FFFFFF; --good-soft:#24282C; --warn:#C9CDD1; --warn-soft:#24282C; --bad:#FFFFFF; --bad-soft:#24282C; --error:#FF8A80;
+  --ink:#E8EEF7; --ink-2:#B9C5D6; --muted:#8C9AB0;
+  --bg:#0D1726; --surface:#15233A; --line:#26364F;
+  --brand-blue:#0D3F8F; --brand-orange:#F28A1A; --accent:#F59A33; --accent-ink:#1B0E00; --accent-soft:#3A2510;
+  --good:#58C48C; --good-soft:#143326; --warn:#F2B35C; --warn-soft:#3A2A12; --bad:#F08A80; --bad-soft:#3B1C1A;
   color-scheme: dark;
 }
 *{box-sizing:border-box}
@@ -40,18 +44,16 @@ button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 [hidden]{display:none!important}
 
-header.top{background:var(--surface);color:var(--ink);border-bottom:1px solid var(--line)}
+header.top{background:var(--brand-blue);color:#FFFFFF;border-bottom:4px solid var(--brand-orange)}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
-.brand{display:inline-flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--ink);font-family:var(--display);line-height:1}
-.brand-sp{font-size:42px;font-weight:700;letter-spacing:-.075em;line-height:.86;padding-right:.075em}
-.brand-sub{display:flex;align-items:baseline;gap:3px;font-size:10.5px;letter-spacing:-.01em;margin-top:3px}
-.brand-sub span{font-weight:500} .brand-sub b{font-weight:700}
+.brand{display:flex;align-items:baseline;gap:8px;font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em}
+.brand b{color:var(--brand-orange)}
 .top small{opacity:.75;font-size:13px}
 .toggle{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
 
 .hero{padding:26px 0 6px;max-width:780px;margin:0 auto}
-.hero h1{font-size:clamp(30px,4.4vw,44px);font-weight:600;letter-spacing:-.035em;max-width:24ch}
+.hero h1{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-.02em;max-width:24ch}
 .hero p{color:var(--ink-2);max-width:64ch;margin:10px 0 0}
 
 .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;padding:20px 0 36px;max-width:780px;margin:0 auto}
@@ -175,23 +177,12 @@ legend{font-family:var(--display);font-weight:700;padding:0 6px}
 pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:12px;font-size:13px;max-height:240px;overflow:auto}
 .hint{color:var(--muted);font-size:13px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
-
-/* stile bianco e nero, pulsanti a pillola, niente ombre */
-.btn{border-radius:999px!important;padding:12px 22px!important}
-.offer.best{border:2px solid var(--ink)!important;box-shadow:none!important}
-.pill.best{background:var(--ink)!important;color:var(--surface)!important}
-.pill.no,.pill.ok{background:var(--accent-soft)!important;color:var(--ink-2)!important}
-.err{color:var(--error)!important}
-.m,.note,.other,pre.summary,.recap{background:var(--accent-soft)!important}
-.alert{border-left-width:3px!important}
-.alert.bad{border-left-color:var(--ink)!important;font-weight:500}
-h1,h2,h3{letter-spacing:-.025em}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="./" aria-label="Servizio Prestiti 24/7"><span class="brand-sp">SP</span><span class="brand-sub"><span>servizio prestiti</span><b>24/7</b></span></a>
+    <div class="brand">Servizio <b>Prestiti</b></div>
     <label class="toggle" id="consToggle"><input type="checkbox" id="consulente"> Modalità consulente</label>
   </div>
 </header>

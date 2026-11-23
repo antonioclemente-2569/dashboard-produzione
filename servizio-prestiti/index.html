@@ -318,8 +318,7 @@ const Q = [
   { id: "rateChiuse", sec: 4, type: "money", title: "Di queste, quanto paghi per i prestiti che vuoi chiudere?", help: "Queste rate spariranno dal tuo bilancio.", show: a => a.haRate === "si" && a.finalita === "consolido", max: 5000 },
   { id: "storia", sec: 4, type: "choice", title: "Come hai pagato i finanziamenti negli ultimi anni?", help: "Rispondi con sincerità: le finanziarie lo verificano nelle banche dati del credito.",
     options: [["puntuale", "Sempre puntuale", "o non ho mai avuto prestiti"], ["ritardi", "Qualche ritardo in passato", "oggi sono in regola"], ["incorso", "Ho rate arretrate oggi"], ["segnalato", "Ho protesti o pignoramenti"]] },
-  { id: "gia", sec: 4, type: "choice", title: "Hai oggi un prestito o una carta di credito con una finanziaria?", help: "Escluse le rate che hai già indicato.",
-    options: [["no", "No"], ["prestito", "Sì, un prestito"], ["carta", "Sì, una carta di credito"]] },
+  { id: "gia", sec: 4, type: "lenders", title: "Con quali finanziarie hai o hai avuto prestiti o carte di credito?", help: "Scrivi il nome di ciascuna finanziaria, una per riga. Se non ne hai, lascia vuoto e vai avanti." },
 
   { id: "conto", sec: 5, type: "choice", title: "Hai un conto corrente in Italia intestato a te?", help: "Le rate vengono addebitate sul conto e il prestito viene accreditato lì.",
     options: [["si", "Sì"], ["no", "No"]] },
@@ -333,7 +332,7 @@ const Q = [
 /* risposte di partenza: un profilo d'esempio, così il risultato è già leggibile */
 const A = { finalita: "liquidita", residuo: 0, importo: 12000, durata: 60, eta: 40, residenza: "si", cittadinanza: "it", permesso: "lungo",
   nucleo: "2", altriRedditi: "no", casa: "affitto", costoCasa: 550, occupazione: "privato_ind", scadenza: "oltre12", anzianita: "3",
-  reddito: 1800, mensilita: "13", haRate: "no", rate: 0, rateChiuse: 0, storia: "puntuale", gia: "no", conto: "si", cpi: "no", documenti: "si", nome: "", cognome: "", cell: "", privacy: false, marketing: false };
+  reddito: 1800, mensilita: "13", haRate: "no", rate: 0, rateChiuse: 0, storia: "puntuale", gia: ["", "", ""], conto: "si", cpi: "no", documenti: "si", nome: "", cognome: "", cell: "", privacy: false, marketing: false };
 const answered = new Set();
 
 /* ============================================================
@@ -378,7 +377,8 @@ function evaluate(a){
   const imp = +a.importo, dur = +a.durata;
   const ref = rata(imp, 12.5, dur);
   const R = risk(a, ref);
-  const gia = []; // il cliente non sceglie più tra finanziarie con il nome
+  // nomi scritti liberamente dal cliente, ricondotti alle finanziarie del motore
+  const gia = a.gia.map(x => String(x).toLowerCase().replace(/[^a-z]/g, "")).flatMap(x => x.includes("agos") ? ["agos"] : x.includes("compass") ? ["compass"] : /^conte|admiral/.test(x) ? ["conte"] : []);
   const results = [];
   for (const key of ["agos", "compass", "conte"]){
     const L = LENDERS[key];
@@ -510,6 +510,8 @@ function renderQ(){
       ${q.rataHint ? `<div class="note num" id="rataHint"></div>` : ""}`;
   } else if (q.type === "money" || q.type === "number"){
     body = `<div class="big-input"><input type="number" id="inp" inputmode="numeric" min="${q.min || 0}" max="${q.max || 99999}" value="${A[q.id] ?? ""}" aria-label="${esc(txt(q.title))}"><span>${q.unit || "€"}</span></div>`;
+  } else if (q.type === "lenders"){
+    body = `<div style="display:grid;gap:10px;max-width:420px">${[0, 1, 2].map(i => `<div class="field" style="margin:0"><label for="g_${i}">Finanziaria ${i + 1}</label><input id="g_${i}" data-g="${i}" autocomplete="off" value="${esc(A.gia[i] || "")}"></div>`).join("")}</div>`;
   } else if (q.type === "contact"){
     body = `<div class="row2">
         <div class="field"><label for="c_nome">Nome</label><input id="c_nome" data-c="nome" autocomplete="given-name" value="${esc(A.nome)}"></div>
@@ -552,6 +554,7 @@ function wireQ(q){
   qEl.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => { A[q.id] = +c.dataset.c; answered.add(q.id); inp.value = A[q.id]; updateSlider(q); renderResults(); }));
   const back = document.getElementById("back"); if (back) back.addEventListener("click", () => { idx = Math.max(0, idx - 1); renderQ(); });
   qEl.querySelectorAll("[data-c]").forEach(i => i.addEventListener("input", () => { A[i.dataset.c] = i.value.trim(); }));
+  qEl.querySelectorAll("[data-g]").forEach(i => i.addEventListener("input", () => { A.gia[+i.dataset.g] = i.value.trim(); answered.add("gia"); renderResults(); }));
   const fwd = document.getElementById("fwd"); if (fwd) fwd.addEventListener("click", () => {
     if (q.type === "contact"){
       const err = document.getElementById("c_err");
@@ -586,12 +589,13 @@ Q.forEach(q => { if (q.options) LABEL[q.id] = Object.fromEntries(q.options.map((
 function show(id){
   const q = Q.find(x => x.id === id); const v = A[id];
   if (id === "contatti") return `${A.nome} ${A.cognome} · ${A.cell}`;
+  if (id === "gia") return A.gia.filter(Boolean).join(", ") || "Nessuna";
   if (q.options) return LABEL[id][v] || "-";
   if (q.unit === "mesi") return v + " mesi";
   if (q.unit === "anni") return v + " anni";
   return eur(+v || 0);
 }
-const RECAP = [["contatti", "Richiedente"], ["importo", "Importo"], ["durata", "Durata"], ["finalita", "Finalità"], ["residuo", "Debito da chiudere"], ["eta", "Età"], ["cittadinanza", "Cittadinanza"], ["nucleo", "Persone in famiglia"], ["casa", "Casa"], ["costoCasa", "Affitto/mutuo"], ["occupazione", "Lavoro"], ["anzianita", "Anzianità"], ["reddito", "Reddito netto"], ["mensilita", "Mensilità"], ["rate", "Rate in corso"], ["rateChiuse", "Rate da chiudere"], ["storia", "Pagamenti passati"], ["gia", "Prestiti o carte attivi"], ["cpi", "Assicurazione"]];
+const RECAP = [["contatti", "Richiedente"], ["importo", "Importo"], ["durata", "Durata"], ["finalita", "Finalità"], ["residuo", "Debito da chiudere"], ["eta", "Età"], ["cittadinanza", "Cittadinanza"], ["nucleo", "Persone in famiglia"], ["casa", "Casa"], ["costoCasa", "Affitto/mutuo"], ["occupazione", "Lavoro"], ["anzianita", "Anzianità"], ["reddito", "Reddito netto"], ["mensilita", "Mensilità"], ["rate", "Rate in corso"], ["rateChiuse", "Rate da chiudere"], ["storia", "Pagamenti passati"], ["gia", "Finanziarie indicate"], ["cpi", "Assicurazione"]];
 function recapRows(){
   return RECAP.filter(([id]) => vis(Q.find(q => q.id === id))).map(([id, l]) => `<dt>${l}</dt><dd class="num">${esc(show(id))}</dd><dd><button type="button" data-goto="${id}">modifica</button></dd>`).join("");
 }

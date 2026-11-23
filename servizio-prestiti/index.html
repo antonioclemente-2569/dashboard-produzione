@@ -190,7 +190,7 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
 <main class="wrap">
   <section class="hero">
     <h1>Scopri il prestito personale disponibile per te</h1>
-    <p>Rispondi a qualche domanda, una alla volta. Alla fine ti diciamo quale prestito tra Agos, Compass e Con.te è disponibile per il tuo profilo, con rata e costi stimati, e puoi fare subito la richiesta.</p>
+    <p>Rispondi a qualche domanda, una alla volta. Alla fine carichi i documenti e ricevi subito l'esito della tua richiesta.</p>
   </section>
 
   <div class="grid">
@@ -218,8 +218,8 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
   </div>
 
   <section class="legal">
-    <p><b>Messaggio pubblicitario con finalità promozionale.</b> I valori mostrati (TAN, TAEG, rata, costo totale) sono stime indicative calcolate sulle informazioni inserite e sulle condizioni dei finanziatori: non costituiscono offerta né promessa di finanziamento. Le condizioni definitive dipendono dalla valutazione del merito creditizio effettuata dal finanziatore. Il TAEG stimato comprende interessi e spese di istruttoria; non comprende imposte, assicurazioni facoltative e altri oneri eventualmente previsti. Prima della firma riceverai il modulo "Informazioni europee di base sul credito ai consumatori" (SECCI) con il TAEG effettivo.</p>
-    <p>Servizio Prestiti è un portale di Aessefin Prestiti 24/7 S.r.l. (agente in attività finanziaria iscritto all'elenco OAM al n. A12056, P.IVA 12548990964) e di Magenta S.p.A. (agente in attività finanziaria iscritto all'elenco OAM al n. [DA INSERIRE]), mandatari di Banca Sistema S.p.A. per il collocamento dei prestiti personali erogati da Agos Ducato S.p.A., Compass Banca S.p.A. e Admiral Financial Services Italia S.p.A. (Con.te). La concessione del finanziamento è subordinata all'approvazione del finanziatore.</p>
+    <p><b>Messaggio pubblicitario con finalità promozionale.</b> I valori mostrati (TAN, TAEG, rata, costo totale) nell'esito sono stime indicative calcolate sulle informazioni inserite e sulle condizioni dei finanziatori: non costituiscono offerta né promessa di finanziamento. Le condizioni definitive dipendono dalla valutazione del merito creditizio effettuata dal finanziatore. Il TAEG stimato comprende interessi e spese di istruttoria; non comprende imposte, assicurazioni facoltative e altri oneri eventualmente previsti. Prima della firma riceverai il modulo "Informazioni europee di base sul credito ai consumatori" (SECCI) con il TAEG effettivo.</p>
+    <p>Servizio Prestiti è un portale di Aessefin Prestiti 24/7 S.r.l. (agente in attività finanziaria iscritto all'elenco OAM al n. A12056, P.IVA 12548990964) e di Magenta S.p.A. (agente in attività finanziaria iscritto all'elenco OAM al n. [DA INSERIRE]), mandatari di Banca Sistema S.p.A. per il collocamento di prestiti personali erogati da primari istituti finanziari, indicati nell'esito della richiesta. La concessione del finanziamento è subordinata all'approvazione del finanziatore.</p>
   </section>
 </main>
 
@@ -233,7 +233,7 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
    ============================================================ */
 const WEBHOOK_URL = "";
 const LEAD_EMAIL = "antonio.clemente@aessefin.it";
-const SHOW_CONSULENTE = true;
+const SHOW_CONSULENTE = false;
 // Landing della cessione del quinto, proposta a chi ha avuto ritardi nei pagamenti
 const CQ_URL = "cessione-del-quinto.html";
 
@@ -283,6 +283,7 @@ const Q = [
   { id: "importo", sec: 0, type: "slider", title: "Di quanto hai bisogno in totale?", help: "Da 1.000 € a 50.000 €.", min: 1000, max: 50000, step: 500, unit: "€", chips: [3000, 5000, 10000, 15000, 20000, 30000] },
   { id: "durata", sec: 0, type: "slider", title: "In quanti mesi vuoi restituirlo?", help: "Più mesi significano una rata più leggera ma più interessi in totale.", min: 12, max: 120, step: 12, unit: "mesi", chips: [24, 36, 48, 60, 84, 120], rataHint: true },
 
+  { id: "contatti", sec: 1, type: "contact", title: "A chi intestiamo la richiesta?", help: "Nome, cognome e cellulare: ti servono per ricevere l'esito e per essere ricontattato da un consulente." },
   { id: "eta", sec: 1, type: "number", title: "Quanti anni hai?", help: "Le finanziarie considerano l'età anche a fine prestito.", min: 18, max: 90, unit: "anni" },
   { id: "residenza", sec: 1, type: "choice", title: "Risiedi in Italia?", options: [["si", "Sì"], ["no", "No, risiedo all'estero"]] },
   { id: "cittadinanza", sec: 1, type: "choice", title: "Qual è la tua cittadinanza?", help: "Serve a sapere quali documenti preparare.",
@@ -317,8 +318,8 @@ const Q = [
   { id: "rateChiuse", sec: 4, type: "money", title: "Di queste, quanto paghi per i prestiti che vuoi chiudere?", help: "Queste rate spariranno dal tuo bilancio.", show: a => a.haRate === "si" && a.finalita === "consolido", max: 5000 },
   { id: "storia", sec: 4, type: "choice", title: "Come hai pagato i finanziamenti negli ultimi anni?", help: "Rispondi con sincerità: le finanziarie lo verificano nelle banche dati del credito.",
     options: [["puntuale", "Sempre puntuale", "o non ho mai avuto prestiti"], ["ritardi", "Qualche ritardo in passato", "oggi sono in regola"], ["incorso", "Ho rate arretrate oggi"], ["segnalato", "Ho protesti o pignoramenti"]] },
-  { id: "gia", sec: 4, type: "multi", title: "Hai o hai avuto prodotti con queste finanziarie?", help: "Prestiti o carte di credito. Puoi sceglierne più di una, oppure nessuna.",
-    options: [["agos", "Agos"], ["compass", "Compass", "prestito ancora in corso"], ["conte", "Con.te"], ["nessuna", "Nessuna"]] },
+  { id: "gia", sec: 4, type: "choice", title: "Hai oggi un prestito o una carta di credito con una finanziaria?", help: "Escluse le rate che hai già indicato.",
+    options: [["no", "No"], ["prestito", "Sì, un prestito"], ["carta", "Sì, una carta di credito"]] },
 
   { id: "conto", sec: 5, type: "choice", title: "Hai un conto corrente in Italia intestato a te?", help: "Le rate vengono addebitate sul conto e il prestito viene accreditato lì.",
     options: [["si", "Sì"], ["no", "No"]] },
@@ -332,7 +333,7 @@ const Q = [
 /* risposte di partenza: un profilo d'esempio, così il risultato è già leggibile */
 const A = { finalita: "liquidita", residuo: 0, importo: 12000, durata: 60, eta: 40, residenza: "si", cittadinanza: "it", permesso: "lungo",
   nucleo: "2", altriRedditi: "no", casa: "affitto", costoCasa: 550, occupazione: "privato_ind", scadenza: "oltre12", anzianita: "3",
-  reddito: 1800, mensilita: "13", haRate: "no", rate: 0, rateChiuse: 0, storia: "puntuale", gia: [], conto: "si", cpi: "no", documenti: "si" };
+  reddito: 1800, mensilita: "13", haRate: "no", rate: 0, rateChiuse: 0, storia: "puntuale", gia: "no", conto: "si", cpi: "no", documenti: "si", nome: "", cognome: "", cell: "", privacy: false, marketing: false };
 const answered = new Set();
 
 /* ============================================================
@@ -377,7 +378,7 @@ function evaluate(a){
   const imp = +a.importo, dur = +a.durata;
   const ref = rata(imp, 12.5, dur);
   const R = risk(a, ref);
-  const gia = a.gia.filter(x => x !== "nessuna");
+  const gia = []; // il cliente non sceglie più tra finanziarie con il nome
   const results = [];
   for (const key of ["agos", "compass", "conte"]){
     const L = LENDERS[key];
@@ -455,6 +456,18 @@ function evaluate(a){
 }
 
 /* ============================================================
+   LEAD: invio al webhook (contatto iniziale, conferma)
+   ============================================================ */
+function sendLead(evento, extra){
+  if (!WEBHOOK_URL) return Promise.resolve(false);
+  const percorso = Object.fromEntries(RECAP.filter(([id]) => answered.has(id) && vis(Q.find(q => q.id === id))).map(([id, l]) => [l, show(id)]));
+  const body = { evento, data: new Date().toISOString(), fonte: "Servizio Prestiti", nome: A.nome, cognome: A.cognome, cellulare: A.cell,
+    consenso_privacy: A.privacy, consenso_marketing: A.marketing, importo: +A.importo, durata: +A.durata, percorso, ...extra };
+  return fetch(WEBHOOK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then(r => r.ok).catch(() => false);
+}
+window.SP_sendLead = sendLead;
+
+/* ============================================================
    FORMATI
    ============================================================ */
 function grp(n){ return n.replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
@@ -476,7 +489,7 @@ function renderQ(){
   if (idx >= list.length) idx = list.length - 1;
   const q = list[idx];
   const end = q.type === "end";
-  document.querySelector(".side").hidden = !end;
+  document.querySelector(".side").hidden = !(end && document.body.classList.contains("consulente"));
   document.body.classList.toggle("done", end);
   document.querySelector(".hero").hidden = end;
   const pos = list.indexOf(q), total = list.length - 1;
@@ -497,8 +510,17 @@ function renderQ(){
       ${q.rataHint ? `<div class="note num" id="rataHint"></div>` : ""}`;
   } else if (q.type === "money" || q.type === "number"){
     body = `<div class="big-input"><input type="number" id="inp" inputmode="numeric" min="${q.min || 0}" max="${q.max || 99999}" value="${A[q.id] ?? ""}" aria-label="${esc(txt(q.title))}"><span>${q.unit || "€"}</span></div>`;
+  } else if (q.type === "contact"){
+    body = `<div class="row2">
+        <div class="field"><label for="c_nome">Nome</label><input id="c_nome" data-c="nome" autocomplete="given-name" value="${esc(A.nome)}"></div>
+        <div class="field"><label for="c_cognome">Cognome</label><input id="c_cognome" data-c="cognome" autocomplete="family-name" value="${esc(A.cognome)}"></div>
+      </div>
+      <div class="field" style="max-width:320px"><label for="c_cell">Cellulare</label><input id="c_cell" data-c="cell" type="tel" autocomplete="tel" inputmode="tel" value="${esc(A.cell)}"></div>
+      <label class="check"><input type="checkbox" id="c_privacy" ${A.privacy ? "checked" : ""}> <span>Ho letto l'informativa privacy e acconsento al trattamento dei miei dati per la valutazione della richiesta e per essere ricontattato (obbligatorio).</span></label>
+      <label class="check"><input type="checkbox" id="c_mkt" ${A.marketing ? "checked" : ""}> <span>Acconsento a ricevere comunicazioni commerciali da Servizio Prestiti (facoltativo).</span></label>
+      <p class="err" id="c_err"></p>`;
   } else if (q.type === "end"){
-    body = `<p class="help">Il risultato qui sopra è calcolato su queste risposte. Se vuoi correggerne una, premi "modifica": il risultato si aggiorna.</p>
+    body = `<div class="alert good" style="margin-bottom:14px">Ultimo passo: carica i documenti. Li leggiamo in automatico e ti diamo subito l'esito della richiesta.</div>
       <dl class="recap-list">${recapRows()}</dl>`;
   }
   const needsNext = !["choice"].includes(q.type) && q.type !== "end";
@@ -506,7 +528,7 @@ function renderQ(){
     <div class="q-body">${body}</div>
     <div class="nav">
       <button type="button" class="btn ghost" id="back" ${pos === 0 ? "disabled" : ""}>Indietro</button>
-      ${needsNext ? `<button type="button" class="btn primary" id="fwd">Avanti</button>` : q.type === "choice" && answered.has(q.id) ? `<button type="button" class="btn ghost" id="fwd">Avanti</button>` : q.type === "end" ? `<button type="button" class="btn ghost" id="restart">Ricomincia</button>` : ""}
+      ${needsNext ? `<button type="button" class="btn primary" id="fwd">Avanti</button>` : q.type === "choice" && answered.has(q.id) ? `<button type="button" class="btn ghost" id="fwd">Avanti</button>` : q.type === "end" ? `<button type="button" class="btn primary" id="toDocs">Carica i documenti e ricevi l'esito</button>` : ""}
     </div>`;
   wireQ(q);
   updateSlider(q);
@@ -529,7 +551,19 @@ function wireQ(q){
   }
   qEl.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => { A[q.id] = +c.dataset.c; answered.add(q.id); inp.value = A[q.id]; updateSlider(q); renderResults(); }));
   const back = document.getElementById("back"); if (back) back.addEventListener("click", () => { idx = Math.max(0, idx - 1); renderQ(); });
-  const fwd = document.getElementById("fwd"); if (fwd) fwd.addEventListener("click", () => { answered.add(q.id); next(); });
+  qEl.querySelectorAll("[data-c]").forEach(i => i.addEventListener("input", () => { A[i.dataset.c] = i.value.trim(); }));
+  const fwd = document.getElementById("fwd"); if (fwd) fwd.addEventListener("click", () => {
+    if (q.type === "contact"){
+      const err = document.getElementById("c_err");
+      A.privacy = document.getElementById("c_privacy").checked; A.marketing = document.getElementById("c_mkt").checked;
+      if (!A.nome || !A.cognome) return err.textContent = "Inserisci nome e cognome.";
+      if (!/^[+0-9\s]{8,16}$/.test(A.cell)) return err.textContent = "Inserisci un numero di cellulare valido.";
+      if (!A.privacy) return err.textContent = "Per proseguire serve il consenso privacy.";
+      sendLead("contatto", {});
+    }
+    answered.add(q.id); next();
+  });
+  const td = document.getElementById("toDocs"); if (td) td.addEventListener("click", () => window.SP_startApply());
   const rs = document.getElementById("restart"); if (rs) rs.addEventListener("click", () => { idx = 0; renderQ(); });
   qEl.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () => { idx = visibleList().findIndex(x => x.id === b.dataset.goto); renderQ(); }));
 }
@@ -551,13 +585,13 @@ const LABEL = {};
 Q.forEach(q => { if (q.options) LABEL[q.id] = Object.fromEntries(q.options.map(([v, l]) => [v, l])); });
 function show(id){
   const q = Q.find(x => x.id === id); const v = A[id];
-  if (id === "gia") return v.length ? v.map(x => LABEL.gia[x]).join(", ") : "Nessuna";
+  if (id === "contatti") return `${A.nome} ${A.cognome} · ${A.cell}`;
   if (q.options) return LABEL[id][v] || "-";
   if (q.unit === "mesi") return v + " mesi";
   if (q.unit === "anni") return v + " anni";
   return eur(+v || 0);
 }
-const RECAP = [["importo", "Importo"], ["durata", "Durata"], ["finalita", "Finalità"], ["residuo", "Debito da chiudere"], ["eta", "Età"], ["cittadinanza", "Cittadinanza"], ["nucleo", "Persone in famiglia"], ["casa", "Casa"], ["costoCasa", "Affitto/mutuo"], ["occupazione", "Lavoro"], ["anzianita", "Anzianità"], ["reddito", "Reddito netto"], ["mensilita", "Mensilità"], ["rate", "Rate in corso"], ["rateChiuse", "Rate da chiudere"], ["storia", "Pagamenti passati"], ["gia", "Già cliente di"], ["cpi", "Assicurazione"]];
+const RECAP = [["contatti", "Richiedente"], ["importo", "Importo"], ["durata", "Durata"], ["finalita", "Finalità"], ["residuo", "Debito da chiudere"], ["eta", "Età"], ["cittadinanza", "Cittadinanza"], ["nucleo", "Persone in famiglia"], ["casa", "Casa"], ["costoCasa", "Affitto/mutuo"], ["occupazione", "Lavoro"], ["anzianita", "Anzianità"], ["reddito", "Reddito netto"], ["mensilita", "Mensilità"], ["rate", "Rate in corso"], ["rateChiuse", "Rate da chiudere"], ["storia", "Pagamenti passati"], ["gia", "Prestiti o carte attivi"], ["cpi", "Assicurazione"]];
 function recapRows(){
   return RECAP.filter(([id]) => vis(Q.find(q => q.id === id))).map(([id, l]) => `<dt>${l}</dt><dd class="num">${esc(show(id))}</dd><dd><button type="button" data-goto="${id}">modifica</button></dd>`).join("");
 }
@@ -639,7 +673,7 @@ document.getElementById("offers").addEventListener("click", e => {
 const cons = document.getElementById("consulente");
 if (!SHOW_CONSULENTE && location.hash !== "#consulente") document.getElementById("consToggle").hidden = true;
 if (location.hash === "#consulente"){ cons.checked = true; document.body.classList.add("consulente"); }
-cons.addEventListener("change", () => document.body.classList.toggle("consulente", cons.checked));
+cons.addEventListener("change", () => { document.body.classList.toggle("consulente", cons.checked); renderQ(); });
 
 renderQ(); renderResults();
 </script>

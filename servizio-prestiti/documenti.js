@@ -31,7 +31,8 @@ function slotsFor(key){
   ];
   if (A.cittadinanza === "extra") s.push({ id: "permesso", label: "Permesso di soggiorno", hint: "Fronte e retro, anche in un unico PDF", kind: "permesso", req: true });
   const occ = occType();
-  const n = (REDDITO_DOCS[key] || {})[occ] || 1;
+  // senza finanziaria scelta: si chiede il numero massimo di documenti tra quelle possibili
+  const n = Math.max(...Object.values(REDDITO_DOCS).map(x => x[occ] || 1));
   if (occ === "dipendente") for (let i = 1; i <= n; i++) s.push({ id: "busta_" + i, label: i === 1 ? "Ultima busta paga" : i === 2 ? "Penultima busta paga" : `Busta paga n. ${i}`, hint: "Foto leggibile o PDF", kind: "busta", req: true });
   if (occ === "pensionato") s.push({ id: "cedolino", label: "Ultimo cedolino della pensione", hint: "Scaricabile dal sito INPS", kind: "busta", req: true });
   if (occ === "autonomo") s.push({ id: "redditi", label: "Ultima dichiarazione dei redditi", hint: "Modello Redditi PF con la ricevuta di presentazione", kind: "redditi", req: true });
@@ -267,6 +268,7 @@ function mergeAll(){
     put("datore", r.datore, lab); put("assunzione", r.assunzione, lab); put("iban", r.iban, lab);
     if (r.cf) S["cfBusta" + i] = r.cf;
   });
+  put("nome", A.nome, "inserito da te"); put("cognome", A.cognome, "inserito da te"); put("cell", A.cell, "inserito da te");
   byKind("redditi").forEach(s => { const r = parseRedditi(S.texts[s.id]); put("redditoAnnuo", r.redditoAnnuo ? eur(r.redditoAnnuo) : "", "dichiarazione dei redditi"); put("netto", r.netto ? r.netto.toFixed(2).replace(".", ",") : "", "dichiarazione dei redditi"); put("iban", r.iban, "dichiarazione dei redditi"); if (r.cf) S.cfBusta0 = r.cf; });
 }
 
@@ -294,21 +296,20 @@ function checks(){
 /* ---------------- interfaccia ---------------- */
 function root(){ return $("apply"); }
 function stepsBar(){
-  const st = ["Carica i documenti", "Controlla i dati", "Invia"];
+  const st = ["Carica i documenti", "Controlla i dati", "Esito"];
   return `<div class="ap-steps">${st.map((t, i) => `<span class="sec ${i + 1 === S.step ? "on" : i + 1 < S.step ? "done" : ""}">${i + 1}. ${t}</span>`).join("")}</div>`;
 }
 function header(){
-  const o = S.offer;
-  return `<div class="ap-head"><div><h2>Richiesta di prestito ${esc(o.nome)}</h2>
-    <span class="hint num">${eur(+A.importo)} in ${o.durata} mesi · rata stimata ${eur2(o.rata)}</span></div>
-    <button type="button" class="btn ghost" id="apBack">Torna al risultato</button></div>${stepsBar()}`;
+  return `<div class="ap-head"><div><h2>${S.step === 3 ? "L'esito della tua richiesta" : "La tua richiesta di prestito"}</h2>
+    <span class="hint num">${eur(+A.importo)} in ${A.durata} mesi</span></div>
+    ${S.step === 3 ? "" : `<button type="button" class="btn ghost" id="apBack">Torna alle domande</button>`}</div>${stepsBar()}`;
 }
 function render(){
   const R = root();
   if (S.step === 1) R.innerHTML = header() + step1();
   if (S.step === 2) R.innerHTML = header() + step2();
   if (S.step === 3) R.innerHTML = header() + step3();
-  $("apBack").addEventListener("click", close);
+  if ($("apBack")) $("apBack").addEventListener("click", close);
   if (S.step === 1) wire1();
   if (S.step === 2) wire2();
   if (S.step === 3) wire3();
@@ -316,7 +317,7 @@ function render(){
 function step1(){
   const ready = S.slots.filter(s => s.req).every(s => S.files[s.id]);
   return `<div class="ap-body">
-    <p class="help">Carica una foto ben leggibile o il PDF di ogni documento. I documenti vengono letti in automatico per compilare i tuoi dati: dopo potrai controllarli e correggerli.</p>
+    <p class="help">Carica una foto ben leggibile o il PDF di ogni documento: li leggiamo in automatico per compilare i tuoi dati. Dopo averli controllati ricevi subito l'esito.</p>
     <div class="slots">${S.slots.map(s => {
       const f = S.files[s.id], st = S.status[s.id] || "";
       return `<label class="slot ${f ? "has" : ""}" for="f_${s.id}">
@@ -383,11 +384,11 @@ function step2(){
       </div>`).join("")}</div></fieldset>`).join("")}
     <div class="alerts" id="apChecks"></div>
     <label class="check"><input type="checkbox" id="apVer"> <span>Dichiaro che i dati sono veritieri e corrispondono ai documenti caricati.</span></label>
-    <label class="check"><input type="checkbox" id="apPriv"> <span>Ho letto l'informativa privacy e acconsento al trattamento dei dati e dei documenti per la valutazione della richiesta di finanziamento (obbligatorio).</span></label>
-    <label class="check"><input type="checkbox" id="apMkt"> <span>Acconsento a ricevere comunicazioni commerciali da Servizio Prestiti (facoltativo).</span></label>
+    <label class="check"><input type="checkbox" id="apPriv" ${A.privacy ? "checked" : ""}> <span>Ho letto l'informativa privacy e acconsento al trattamento dei dati e dei documenti per la valutazione della richiesta di finanziamento (obbligatorio).</span></label>
+    <label class="check"><input type="checkbox" id="apMkt" ${A.marketing ? "checked" : ""}> <span>Acconsento a ricevere comunicazioni commerciali da Servizio Prestiti (facoltativo).</span></label>
     <p class="err" id="apErr"></p>
     <div class="nav"><button type="button" class="btn ghost" id="apDocs">Torna ai documenti</button>
-      <button type="submit" class="btn primary">Invia la richiesta in valutazione</button></div>
+      <button type="submit" class="btn primary">Invia e ricevi l'esito</button></div>
     </form></div>`;
 }
 function renderChecks(){ const c = checks(); $("apChecks").innerHTML = c.map(([k, t]) => `<div class="alert ${k}">${esc(t)}</div>`).join(""); }
@@ -409,11 +410,20 @@ async function submit(){
   if (!/^\S+@\S+\.\S+$/.test(S.D.email)) return err.textContent = "Inserisci un indirizzo email valido.";
   if (checks().some(([k]) => k === "bad")) return err.textContent = "Correggi gli errori segnalati in rosso prima di inviare.";
   if (!$("apVer").checked || !$("apPriv").checked) return err.textContent = "Per inviare servono la dichiarazione di veridicità e il consenso privacy.";
-  const o = S.offer;
+  // l'esito usa il netto letto dal documento di reddito, se presente
+  const nettoDoc = toNum((S.D.netto || "0").replace(/[^\d,.]/g, "") || "0");
+  const ev = evaluate(nettoDoc > 0 ? { ...A, reddito: nettoDoc } : A);
+  const o = ev.results.find(x => x.ok) || null;
+  const motivi = [...ev.alerts.filter(a => a[0] !== "good").map(a => a[1]), ...new Set(ev.results.filter(x => !x.ok && x.motivo).map(x => x.motivo))];
+  S.offer = o;
   const profilo = Object.fromEntries(RECAP.filter(([id]) => vis(Q.find(q => q.id === id))).map(([id, l]) => [l, show(id)]));
   const req = {
     data: new Date().toISOString(), fonte: "Servizio Prestiti – richiesta online",
-    finanziaria: o.nome, importo: +A.importo, durata: o.durata, rata_stimata: +o.rata.toFixed(2), tan: o.tan, taeg_stimato: +o.taeg.toFixed(2),
+    esito: o ? "positivo" : "esame interno",
+    finanziaria: o ? o.nome : "", importo: +A.importo, durata: o ? o.durata : +A.durata,
+    rata_stimata: o ? +o.rata.toFixed(2) : null, tan: o ? o.tan : null, taeg_stimato: o ? +o.taeg.toFixed(2) : null,
+    motivi_esame_interno: o ? [] : motivi,
+    proporre_cessione_quinto: !!ev.cq,
     richiedente: S.D, fonti_dati: S.src, controlli: checks().map(c => c[1]), percorso: profilo,
     documenti: S.slots.filter(s => S.files[s.id]).map(s => ({ campo: s.id, tipo: s.label, file: S.files[s.id].name })),
     consenso_privacy: true, consenso_marketing: $("apMkt").checked, dichiarazione_veridicita: true
@@ -432,9 +442,9 @@ async function submit(){
 }
 function summaryText(){
   const r = S.req, D = r.richiedente;
-  return `NUOVA RICHIESTA IN VALUTAZIONE – SERVIZIO PRESTITI
-${r.finanziaria}: ${eur(r.importo)} in ${r.durata} mesi – rata stimata ${eur2(r.rata_stimata)} – TAN ${pct(r.tan)} – TAEG stimato ${pct(r.taeg_stimato)}
-
+  return `NUOVA RICHIESTA – SERVIZIO PRESTITI – ESITO: ${r.esito.toUpperCase()}
+${r.finanziaria ? `${r.finanziaria}: ${eur(r.importo)} in ${r.durata} mesi – rata stimata ${eur2(r.rata_stimata)} – TAN ${pct(r.tan)} – TAEG stimato ${pct(r.taeg_stimato)}` : `${eur(r.importo)} in ${r.durata} mesi – fuori parametri, da valutare internamente`}
+${r.motivi_esame_interno.length ? "Motivi: " + r.motivi_esame_interno.join(" | ") + "\n" : ""}${r.proporre_cessione_quinto ? "Ritardi nei pagamenti dichiarati: proporre la cessione del quinto\n" : ""}
 RICHIEDENTE
 ${fieldDefs().map(([g, fs]) => fs.map(([k, l]) => `${l}: ${D[k] || "-"}${r.fonti_dati[k] ? ` (letto da ${r.fonti_dati[k]})` : ""}`).join("\n")).join("\n")}
 
@@ -446,27 +456,49 @@ ${Object.entries(r.percorso).map(([k, v]) => `${k}: ${v}`).join("\n")}
 
 Dichiarazione di veridicità: sì – Privacy: sì – Marketing: ${r.consenso_marketing ? "sì" : "no"}`;
 }
+function esitoHtml(){
+  const nome = esc(S.D.nome || ""), o = S.offer;
+  if (!o) return `<article class="offer best">
+      <div class="o-top"><div class="o-name"><h3>Richiesta in esame interno</h3><span>Valutazione da parte di un consulente</span></div><span class="pill best">In esame</span></div>
+      <p class="cq-p">Grazie ${nome}. La tua richiesta non rientra nei parametri della valutazione automatica ed è passata all'esame interno dei nostri consulenti, che la analizzeranno insieme ai documenti caricati. Ti contatteremo al ${esc(S.D.cell)} con l'esito e con la soluzione più adatta a te.</p>
+    </article>`;
+  if (S.confirmed) return `<div class="alert good"><b>Perfetto, ${nome}.</b> Abbiamo registrato la tua conferma per il prestito ${esc(o.nome)}. Un consulente ti contatterà al ${esc(S.D.cell)} per completare la pratica e la firma online.</div>`;
+  return `<article class="offer best">
+      <div class="o-top"><div class="o-name"><h3>Esito positivo: ${esc(o.nome)}</h3><span>${esc(o.prodotto)} · ${esc(o.societa)}</span></div><span class="pill best">Disponibile per te</span></div>
+      <p class="cq-p">Grazie ${nome}: in base ai tuoi dati e ai documenti caricati, il prestito ${esc(o.nome)} è disponibile per te. Conferma per procedere: un consulente ti contatterà per completare la pratica.</p>
+      <div class="metrics num">
+        <div class="m"><span>Rata stimata</span><strong>${eur2(o.rata)}</strong></div>
+        <div class="m"><span>Durata</span><strong>${o.durata} mesi</strong></div>
+        <div class="m"><span>TAN indicativo</span><strong>${pct(o.tan)}</strong></div>
+        <div class="m"><span>TAEG stimato</span><strong>${pct(o.taeg)}</strong></div>
+      </div>
+      <ul><li class="num">Importo ${eur(+A.importo)} · costo totale stimato ${eur(o.costo)}: interessi più spese di istruttoria (${esc(o.feeNote)})</li>
+        <li>Esito soggetto alla verifica finale del finanziatore. Prima della firma riceverai il modulo SECCI con il TAEG effettivo.</li></ul>
+      <div class="o-actions"><button type="button" class="btn primary" id="apGo">Procedi con ${esc(o.nome)}</button></div>
+    </article>`;
+}
 function step3(){
-  const nome = esc(S.D.nome || "");
-  if (S.sent) return `<div class="ap-body"><div class="alert good"><b>Richiesta inviata.</b> Grazie ${nome}: la tua richiesta con i documenti è in valutazione. Un consulente di Servizio Prestiti ti contatterà al ${esc(S.D.cell)} per l'esito e per la firma online.</div>
-    <div class="nav"><button type="button" class="btn ghost" id="apNew">Torna alla pagina iniziale</button></div></div>`;
-  return `<div class="ap-body">
+  if (S.sent) return `<div class="ap-body">${esitoHtml()}</div>`;
+  return `<div class="ap-body">${esitoHtml()}
     <div class="alert ${WEBHOOK_URL ? "bad" : "warn"}">${WEBHOOK_URL ? "L'invio automatico non è riuscito. " : ""}Per completare, invia la richiesta via email e allega i documenti che hai caricato.</div>
     <pre class="summary" id="apSum">${esc(summaryText())}</pre>
     <div class="nav"><button type="button" class="btn ghost" id="apCopy">Copia riepilogo</button>
-      <a class="btn primary" id="apMail" href="mailto:${LEAD_EMAIL}?subject=${encodeURIComponent(`Richiesta prestito ${S.offer.nome} – ${S.D.nome || ""} ${S.D.cognome || ""}`)}&body=${encodeURIComponent(summaryText())}">Invia via email</a></div>
+      <a class="btn primary" id="apMail" href="mailto:${LEAD_EMAIL}?subject=${encodeURIComponent(`Richiesta prestito (${S.req.esito}) – ${S.D.nome || ""} ${S.D.cognome || ""}`)}&body=${encodeURIComponent(summaryText())}">Invia via email</a></div>
     <p class="hint">Se il pulsante non apre la posta, copia il riepilogo e invialo a ${esc(LEAD_EMAIL)} con i documenti allegati.</p>
   </div>`;
 }
 function wire3(){
   const c = $("apCopy"); if (c) c.addEventListener("click", async () => { try { await navigator.clipboard.writeText(summaryText()); c.textContent = "Copiato"; } catch (_){ c.textContent = "Seleziona il testo e copialo"; } });
-  const n = $("apNew"); if (n) n.addEventListener("click", () => { close(); });
+  const g = $("apGo"); if (g) g.addEventListener("click", async () => {
+    g.disabled = true;
+    await window.SP_sendLead("conferma", { esito: "positivo", finanziaria: S.offer.nome, rata_stimata: +S.offer.rata.toFixed(2), durata: S.offer.durata, codice_fiscale: S.D.cf || "" });
+    S.confirmed = true; render();
+  });
 }
 
 /* ---------------- apertura e chiusura ---------------- */
-function open(key, offer){
-  if (S.key !== key){ S.files = {}; S.status = {}; S.texts = {}; S.D = {}; S.src = {}; }
-  S.key = key; S.offer = offer; S.slots = slotsFor(key); S.step = Object.keys(S.D).length ? S.step : 1;
+function open(){
+  S.slots = slotsFor(); S.step = Object.keys(S.D).length ? S.step : 1; S.confirmed = false;
   if (S.step === 3) S.step = 2;
   document.querySelector(".side").hidden = true;
   document.querySelector('section[aria-label="Domande"]').hidden = true;
@@ -474,7 +506,6 @@ function open(key, offer){
 }
 function close(){
   root().hidden = true;
-  document.querySelector(".side").hidden = false;
   document.querySelector('section[aria-label="Domande"]').hidden = false;
   window.scrollTo({ top: 0, behavior: "smooth" });
 }

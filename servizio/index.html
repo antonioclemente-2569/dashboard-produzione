@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ordine di servizio lead manager</title><style>
+  html, body { margin: 0; background: #000; }
+  .ae { --red: #E50041; --yellow: #FFC400; --panel: #121212; --line: #2e2e2e; --muted: #b8b8b8;
+    background: #000; color: #fff; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.45;
+    font-variant-numeric: tabular-nums; padding: clamp(20px, 4vw, 40px) clamp(16px, 4vw, 40px) 40px;
+    display: flex; flex-direction: column; gap: 32px; }
+  .head { display: flex; flex-direction: column; gap: 10px; border-bottom: 4px solid var(--red); padding-bottom: 20px; }
+  .brand { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--yellow); margin: 0; }
+  h1 { font-size: clamp(26px, 5vw, 40px); line-height: 1.1; margin: 0; }
+  .period { color: var(--muted); font-size: 13px; margin: 0; }
+  h2 { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+  .orario { display: flex; flex-wrap: wrap; gap: 14px; }
+  .box { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px 20px; min-width: 150px; }
+  .box p { margin: 0; font-size: 12px; color: var(--muted); }
+  .box b { display: block; font-size: 26px; color: var(--yellow); margin-top: 4px; }
+  .wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-size: 12px; color: var(--muted); padding: 8px 10px 8px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 14px 10px 14px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td.name { font-weight: 700; font-size: 16px; white-space: nowrap; }
+  td.name span { color: var(--muted); font-weight: 400; font-size: 13px; }
+  .tag { display: inline-block; background: var(--red); color: #fff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 4px; margin: 0 6px 6px 0; white-space: nowrap; }
+  .t { white-space: nowrap; font-weight: 700; }
+  .ok { color: #3ddc84; } .ko { color: #ff6b6b; } .na { color: var(--muted); font-weight: 400; }
+  .small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); }
+  .note { font-size: 12px; color: var(--muted); margin: 10px 0 0; }
+</style></head><body>
+<div class="ae">
+  <header class="head">
+    <p class="brand">Aessefin Prestiti 24/7</p>
+    <h1>Ordine di servizio lead manager</h1>
+    <p class="period" id="agg">Caricamento…</p>
+  </header>
+  <section>
+    <h2>Orario di servizio</h2>
+    <div class="orario">
+      <div class="box"><p>Turno</p><b id="o-turno">—</b></div>
+      <div class="box"><p>Entrata</p><b id="o-in">—</b></div>
+      <div class="box"><p>Pausa</p><b id="o-pausa">—</b></div>
+      <div class="box"><p>Uscita</p><b id="o-out">—</b></div>
+    </div>
+  </section>
+  <section>
+    <h2>Dove essere attivi e presenze di oggi</h2>
+    <div class="wrap"><table>
+      <thead><tr><th>Lead manager</th><th>Attività assegnate</th><th>Orario previsto</th><th>Entrata effettiva</th><th>Uscita effettiva</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table></div>
+    <p class="note">Entrata e uscita effettive = prima e ultima chiamata del giorno registrata dal centralino. Tolleranza 10 minuti.</p>
+  </section>
+</div>
+<script>
+(function () {
+  var TOL = 10;
+  function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
+  function min(h) { if (!h) return null; var p = h.split(':'); return +p[0] * 60 + +p[1]; }
+  function render(d) {
+    document.getElementById('agg').textContent = 'Situazione aggiornata al ' + d.aggiornato.split(' ')[0].split('-').reverse().join('/') + ' alle ' + d.aggiornato.split(' ')[1];
+    document.getElementById('o-turno').textContent = d.orario.turno;
+    document.getElementById('o-in').textContent = d.orario.entrata;
+    document.getElementById('o-pausa').textContent = d.orario.pausa;
+    document.getElementById('o-out').textContent = d.orario.uscita;
+    var adesso = min(d.aggiornato.split(' ')[1]);
+    var tb = document.getElementById('tb'); tb.replaceChildren();
+    d.operatori.forEach(function (o) {
+      var tr = el('tr');
+      var n = el('td', 'name', o.nome + ' '); n.appendChild(el('span', null, o.interno)); tr.appendChild(n);
+      var a = el('td'); o.attivita.forEach(function (x) { a.appendChild(el('span', 'tag', x)); }); tr.appendChild(a);
+      tr.appendChild(el('td', 't', o.entrata_prevista + ' – ' + o.uscita_prevista));
+      var ei = el('td', 't'), ep = min(o.entrata_prevista), ea = min(o.prima_attivita);
+      if (ea == null) { ei.appendChild(el('span', adesso > ep + TOL ? 'ko' : 'na', adesso > ep + TOL ? 'Nessuna attività' : '—')); }
+      else { var r = ea - ep; ei.appendChild(el('span', r > TOL ? 'ko' : 'ok', o.prima_attivita)); ei.appendChild(el('span', 'small', r > TOL ? 'ritardo ' + r + ' min' : 'in orario')); }
+      tr.appendChild(ei);
+      var eu = el('td', 't'), up = min(o.uscita_prevista), ua = min(o.ultima_attivita);
+      if (ua == null) { eu.appendChild(el('span', 'na', '—')); }
+      else if (adesso < up) { eu.appendChild(el('span', 'na', 'in servizio')); eu.appendChild(el('span', 'small', 'ultima attività ' + o.ultima_attivita)); }
+      else { var u = up - ua; eu.appendChild(el('span', u > TOL ? 'ko' : 'ok', o.ultima_attivita)); eu.appendChild(el('span', 'small', u > TOL ? 'uscita anticipata ' + u + ' min' : 'in orario')); }
+      tr.appendChild(eu);
+      tb.appendChild(tr);
+    });
+  }
+  var last = '';
+  function load() {
+    fetch('dati.json?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : null; })
+      .then(function (t) { if (t && t !== last) { last = t; render(JSON.parse(t)); } })
+      .catch(function () { if (!last) document.getElementById('agg').textContent = 'Dati non disponibili al momento.'; });
+  }
+  load(); setInterval(load, 300000);
+})();
+</script>
+</body></html>

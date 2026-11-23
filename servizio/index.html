@@ -38,7 +38,8 @@
     <div class="orario">
       <div class="box"><p>Turno</p><b id="o-turno">—</b></div>
       <div class="box"><p>Entrata</p><b id="o-in">—</b></div>
-      <div class="box"><p>Pausa</p><b id="o-pausa">—</b></div>
+      <div class="box"><p>Pausa caffè</p><b id="o-caffe">—</b><p id="o-caffe-nota"></p></div>
+      <div class="box"><p>Pausa pranzo</p><b id="o-pausa">—</b></div>
       <div class="box"><p>Uscita</p><b id="o-out">—</b></div>
     </div>
   </section>
@@ -60,6 +61,8 @@
     document.getElementById('agg').textContent = 'Situazione aggiornata al ' + d.aggiornato.split(' ')[0].split('-').reverse().join('/') + ' alle ' + d.aggiornato.split(' ')[1];
     document.getElementById('o-turno').textContent = d.orario.turno;
     document.getElementById('o-in').textContent = d.orario.entrata;
+    document.getElementById('o-caffe').textContent = d.orario.pausa_caffe || '—';
+    document.getElementById('o-caffe-nota').textContent = d.orario.pausa_caffe_durata || '';
     document.getElementById('o-pausa').textContent = d.orario.pausa;
     document.getElementById('o-out').textContent = d.orario.uscita;
     var adesso = min(d.aggiornato.split(' ')[1]);

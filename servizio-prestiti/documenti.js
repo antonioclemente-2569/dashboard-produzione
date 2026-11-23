@@ -335,11 +335,11 @@ function checks(){
 /* ---------------- interfaccia ---------------- */
 function root(){ return $("apply"); }
 function stepsBar(){
-  const st = ["Carica i documenti", "Controlla i dati", "Esito"];
+  const st = ["Carica i documenti", "Controlla i dati", "Prevalutazione"];
   return `<div class="ap-steps">${st.map((t, i) => `<span class="sec ${i + 1 === S.step ? "on" : i + 1 < S.step ? "done" : ""}">${i + 1}. ${t}</span>`).join("")}</div>`;
 }
 function header(){
-  return `<div class="ap-head"><div><h2>${S.step === 3 ? (S.waiting ? "Stiamo valutando la tua richiesta" : "L'esito della tua richiesta") : "La tua richiesta di prestito"}</h2>
+  return `<div class="ap-head"><div><h2>${S.step === 3 ? (S.waiting ? "Stiamo valutando la tua richiesta" : "La prevalutazione della tua richiesta") : "La tua richiesta di prestito"}</h2>
     <span class="hint num">${eur(+A.importo)} in ${A.durata} mesi</span></div>
     ${S.step === 3 ? "" : `<button type="button" class="btn ghost" id="apBack">Torna alle domande</button>`}</div>${stepsBar()}`;
 }
@@ -356,7 +356,7 @@ function render(){
 function step1(){
   const ready = S.slots.filter(s => s.req).every(s => S.files[s.id]);
   return `<div class="ap-body">
-    <p class="help">Carica una foto ben leggibile o il PDF di ogni documento: li leggiamo in automatico per compilare i tuoi dati. Dopo averli controllati ricevi subito l'esito.</p>
+    <p class="help">Carica una foto ben leggibile o il PDF di ogni documento: li leggiamo in automatico per compilare i tuoi dati. Dopo averli controllati ricevi subito la prevalutazione.</p>
     <div class="slots">${S.slots.map(s => {
       const f = S.files[s.id], st = S.status[s.id] || "";
       return `<label class="slot ${f ? "has" : ""}" for="f_${s.id}">
@@ -427,7 +427,7 @@ function step2(){
     <label class="check"><input type="checkbox" id="apMkt" ${A.marketing ? "checked" : ""}> <span>Acconsento a ricevere comunicazioni commerciali da Servizio Prestiti (facoltativo).</span></label>
     <p class="err" id="apErr"></p>
     <div class="nav"><button type="button" class="btn ghost" id="apDocs">Torna ai documenti</button>
-      <button type="submit" class="btn primary">Invia e ricevi l'esito</button></div>
+      <button type="submit" class="btn primary">Invia e ricevi la prevalutazione</button></div>
     </form></div>`;
 }
 function renderChecks(){ const c = checks(); $("apChecks").innerHTML = c.map(([k, t]) => `<div class="alert ${k}">${esc(t)}</div>`).join(""); }
@@ -521,7 +521,7 @@ function esitoHtml(){
     </article>`;
 }
 function attesaHtml(){
-  const fasi = ["Controllo dei documenti caricati", "Verifica dei dati anagrafici", "Analisi del reddito e degli impegni", "Valutazione della sostenibilità della rata", "Calcolo dell'esito"];
+  const fasi = ["Controllo dei documenti caricati", "Verifica dei dati anagrafici", "Analisi del reddito e degli impegni", "Valutazione della sostenibilità della rata", "Calcolo della prevalutazione"];
   const passo = ATTESA_MS / (fasi.length + 1);
   return `<div class="ap-body"><div class="wait" role="status" aria-live="polite">
     <svg viewBox="0 0 64 96" aria-hidden="true"><rect x="6" y="2" width="52" height="8" rx="4" class="c-blue"/><rect x="6" y="86" width="52" height="8" rx="4" class="c-blue"/>
@@ -529,7 +529,7 @@ function attesaHtml(){
       <path d="M19 20h26c-2 9-9 14-13 20-4-6-11-11-13-20z" class="c-orange"/><path d="M32 52v20" class="s-orange" stroke-width="2" stroke-dasharray="2 4"/>
       <path d="M18 84c3-8 9-12 14-12s11 4 14 12z" class="c-orange"/></svg>
     <h3>Un momento, stiamo valutando la tua richiesta</h3>
-    <p>Stiamo controllando i dati e i documenti che hai inviato. Non chiudere questa pagina: tra pochi secondi ricevi l'esito.</p>
+    <p>Stiamo controllando i dati e i documenti che hai inviato. Non chiudere questa pagina: tra pochi secondi ricevi la prevalutazione.</p>
     <div class="wait-bar" aria-hidden="true"><i></i></div>
     <ul>${fasi.map((f, i) => `<li class="ok-anim" style="animation-delay:${Math.round(passo * (i + 1))}ms">${f}</li>`).join("")}</ul>
   </div></div>`;

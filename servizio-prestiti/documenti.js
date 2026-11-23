@@ -18,6 +18,32 @@ const REDDITO_DOCS = {
   conte:   { dipendente: 2, pensionato: 1, autonomo: 1 }
 };
 
+/* ---------------- stile: attesa ed esito ---------------- */
+const ATTESA_MS = 15000; // durata minima della schermata di attesa
+(function(){
+  const css = `
+.wait{display:grid;justify-items:center;text-align:center;gap:14px;padding:18px 6px 8px}
+.wait svg{width:86px;height:auto;animation:sp-flip 3s ease-in-out infinite}
+@keyframes sp-flip{0%,80%{transform:rotate(0)}100%{transform:rotate(180deg)}}
+.wait h3{font-size:22px;font-weight:700}
+.wait p{margin:0;color:var(--ink-2);max-width:46ch}
+.wait-bar{width:100%;max-width:420px;height:8px;border-radius:8px;background:var(--line);overflow:hidden}
+.wait-bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:8px;animation:sp-fill ${ATTESA_MS}ms linear forwards}
+@keyframes sp-fill{to{width:100%}}
+.wait ul{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:8px;text-align:left}
+.wait li{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:15px;opacity:.45;animation:sp-on .4s ease forwards}
+.wait li::before{content:"";width:16px;height:16px;border-radius:50%;border:2px solid var(--line);flex:none}
+@keyframes sp-on{to{opacity:1;color:var(--ink)}}
+.wait li.ok-anim::before{animation:sp-dot .4s ease forwards;animation-delay:inherit}
+@keyframes sp-dot{to{background:var(--good);border-color:var(--good)}}
+.esito-stato{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:5px 12px 5px 10px;font-size:13.5px;font-weight:700;white-space:nowrap}
+.esito-stato .dot{width:12px;height:12px;border-radius:50%;flex:none}
+.esito-stato.giallo{background:#FFF6D6;color:#6B5200} .esito-stato.giallo .dot{background:#F5C400;box-shadow:0 0 0 4px rgba(245,196,0,.25)}
+.esito-stato.verde{background:var(--good-soft);color:var(--good)} .esito-stato.verde .dot{background:#22A05A;box-shadow:0 0 0 4px rgba(34,160,90,.22)}
+@media (prefers-reduced-motion: reduce){.wait svg{animation:none}}`;
+  const st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
+})();
+
 /* ---------------- stato ---------------- */
 const S = { key: null, offer: null, slots: [], files: {}, status: {}, texts: {}, D: {}, src: {}, step: 1, sending: false };
 const $ = id => document.getElementById(id);
@@ -213,6 +239,19 @@ function parseID(text){
   const cf = findCF(text); if (cf) r.cf = cf;
   return r;
 }
+/* IBAN: formato italiano (27 caratteri) e cifre di controllo (mod 97, ISO 13616) */
+function ibanCheck(raw){
+  const iban = (raw || "").toUpperCase().replace(/[\s\-.]/g, "");
+  if (!iban) return { ok: false, msg: "" };
+  if (!/^IT/.test(iban)) return { ok: false, msg: "L'IBAN deve essere di un conto italiano: inizia con IT." };
+  if (iban.length !== 27) return { ok: false, msg: `L'IBAN italiano ha 27 caratteri: quello inserito ne ha ${iban.length}.` };
+  if (!/^IT\d{2}[A-Z]\d{10}[0-9A-Z]{12}$/.test(iban)) return { ok: false, msg: "L'IBAN non ha la struttura corretta: IT, 2 cifre, una lettera, 5 cifre ABI, 5 cifre CAB e 12 caratteri del conto." };
+  const num = (iban.slice(4) + iban.slice(0, 4)).replace(/[A-Z]/g, c => String(c.charCodeAt(0) - 55));
+  let r = 0; for (const d of num) r = (r * 10 + +d) % 97;
+  if (r !== 1) return { ok: false, msg: "L'IBAN non è valido: le cifre di controllo non corrispondono. Controlla di averlo copiato correttamente." };
+  return { ok: true, iban, abi: iban.slice(5, 10), cab: iban.slice(10, 15) };
+}
+window.SP_ibanCheck = ibanCheck;
 function toNum(s){ return +s.replace(/[.\s]/g, "").replace(",", "."); }
 function amountAfter(T, labels, min, max){
   for (const l of labels){
@@ -289,7 +328,7 @@ function checks(){
   if (nas){ const eta = Math.floor((Date.now() - nas) / 31557600000); if (Math.abs(eta - (+A.eta || eta)) > 1) out.push(["warn", `Dai documenti risulti avere ${eta} anni, nel percorso avevi indicato ${A.eta}.`]); }
   const netto = toNum((D.netto || "0").replace(/[^\d,.]/g, "") || "0");
   if (netto && +A.reddito && Math.abs(netto - A.reddito) / A.reddito > 0.15) out.push(["warn", `Il netto letto (${eur(netto)}) è diverso da quello indicato nel percorso (${eur(+A.reddito)}): la valutazione userà quello del documento.`]);
-  if (D.iban && !/^IT\d{2}[A-Z]\d{10}[0-9A-Z]{12}$/.test(D.iban.replace(/\s/g, "").toUpperCase())) out.push(["warn", "L'IBAN non ha il formato italiano corretto (27 caratteri, inizia con IT)."]);
+  if (D.iban){ const ib = ibanCheck(D.iban); if (!ib.ok) out.push(["bad", ib.msg]); }
   return out;
 }
 
@@ -300,7 +339,7 @@ function stepsBar(){
   return `<div class="ap-steps">${st.map((t, i) => `<span class="sec ${i + 1 === S.step ? "on" : i + 1 < S.step ? "done" : ""}">${i + 1}. ${t}</span>`).join("")}</div>`;
 }
 function header(){
-  return `<div class="ap-head"><div><h2>${S.step === 3 ? "L'esito della tua richiesta" : "La tua richiesta di prestito"}</h2>
+  return `<div class="ap-head"><div><h2>${S.step === 3 ? (S.waiting ? "Stiamo valutando la tua richiesta" : "L'esito della tua richiesta") : "La tua richiesta di prestito"}</h2>
     <span class="hint num">${eur(+A.importo)} in ${A.durata} mesi</span></div>
     ${S.step === 3 ? "" : `<button type="button" class="btn ghost" id="apBack">Torna alle domande</button>`}</div>${stepsBar()}`;
 }
@@ -408,6 +447,8 @@ async function submit(){
   if (!cfValid((S.D.cf || "").toUpperCase().replace(/\s/g, ""))) return err.textContent = "Il codice fiscale non è valido.";
   if (!/^[+0-9\s]{8,16}$/.test(S.D.cell)) return err.textContent = "Inserisci un numero di cellulare valido.";
   if (!/^\S+@\S+\.\S+$/.test(S.D.email)) return err.textContent = "Inserisci un indirizzo email valido.";
+  const ib = ibanCheck(S.D.iban); if (!ib.ok) return err.textContent = ib.msg || "Inserisci un IBAN valido.";
+  S.D.iban = ib.iban;
   if (checks().some(([k]) => k === "bad")) return err.textContent = "Correggi gli errori segnalati in rosso prima di inviare.";
   if (!$("apVer").checked || !$("apPriv").checked) return err.textContent = "Per inviare servono la dichiarazione di veridicità e il consenso privacy.";
   // l'esito usa il netto letto dal documento di reddito, se presente
@@ -428,17 +469,19 @@ async function submit(){
     documenti: S.slots.filter(s => S.files[s.id]).map(s => ({ campo: s.id, tipo: s.label, file: S.files[s.id].name })),
     consenso_privacy: true, consenso_marketing: $("apMkt").checked, dichiarazione_veridicita: true
   };
-  S.req = req; S.sent = false;
+  if (S.sending) return;
+  S.req = req; S.sent = false; S.sending = true;
+  S.step = 3; S.waiting = true; render(); window.scrollTo({ top: 0, behavior: "smooth" });
+  const t0 = Date.now();
   if (WEBHOOK_URL){
-    S.sending = true; err.textContent = "Invio in corso…";
     try {
       const fd = new FormData(); fd.append("dati", JSON.stringify(req));
       S.slots.forEach(s => { if (S.files[s.id]) fd.append(s.id, S.files[s.id], S.files[s.id].name); });
       const r = await fetch(WEBHOOK_URL, { method: "POST", body: fd }); S.sent = r.ok;
     } catch (_){ S.sent = false; }
-    S.sending = false;
   }
-  S.step = 3; render(); window.scrollTo({ top: 0, behavior: "smooth" });
+  await new Promise(res => setTimeout(res, Math.max(0, ATTESA_MS - (Date.now() - t0))));
+  S.sending = false; S.waiting = false; render(); window.scrollTo({ top: 0, behavior: "smooth" });
 }
 function summaryText(){
   const r = S.req, D = r.richiedente;
@@ -459,12 +502,12 @@ Dichiarazione di veridicità: sì – Privacy: sì – Marketing: ${r.consenso_m
 function esitoHtml(){
   const nome = esc(S.D.nome || ""), o = S.offer;
   if (!o) return `<article class="offer best">
-      <div class="o-top"><div class="o-name"><h3>Richiesta in esame interno</h3><span>Valutazione da parte di un consulente</span></div><span class="pill best">In esame</span></div>
+      <div class="o-top"><div class="o-name"><h3>Richiesta in esame interno</h3><span>Valutazione da parte di un consulente</span></div><span class="esito-stato giallo"><span class="dot"></span>In esame interno</span></div>
       <p class="cq-p">Grazie ${nome}. La tua richiesta non rientra nei parametri della valutazione automatica ed è passata all'esame interno dei nostri consulenti, che la analizzeranno insieme ai documenti caricati. Ti contatteremo al ${esc(S.D.cell)} con l'esito e con la soluzione più adatta a te.</p>
     </article>`;
-  if (S.confirmed) return `<div class="alert good"><b>Perfetto, ${nome}.</b> Abbiamo registrato la tua conferma per il prestito ${esc(o.nome)}. Un consulente ti contatterà al ${esc(S.D.cell)} per completare la pratica e la firma online.</div>`;
+  if (S.confirmed) return `<div class="alert good"><span class="esito-stato verde" style="margin-right:6px"><span class="dot"></span>Approvata</span> <b>Perfetto, ${nome}.</b> Abbiamo registrato la tua conferma per il prestito ${esc(o.nome)}. Un consulente ti contatterà al ${esc(S.D.cell)} per completare la pratica e la firma online.</div>`;
   return `<article class="offer best">
-      <div class="o-top"><div class="o-name"><h3>Esito positivo: ${esc(o.nome)}</h3><span>${esc(o.prodotto)} · ${esc(o.societa)}</span></div><span class="pill best">Disponibile per te</span></div>
+      <div class="o-top"><div class="o-name"><h3>Richiesta approvata: ${esc(o.nome)}</h3><span>${esc(o.prodotto)} · ${esc(o.societa)}</span></div><span class="esito-stato verde"><span class="dot"></span>Approvata</span></div>
       <p class="cq-p">Grazie ${nome}: in base ai tuoi dati e ai documenti caricati, il prestito ${esc(o.nome)} è disponibile per te. Conferma per procedere: un consulente ti contatterà per completare la pratica.</p>
       <div class="metrics num">
         <div class="m"><span>Rata stimata</span><strong>${eur2(o.rata)}</strong></div>
@@ -477,18 +520,25 @@ function esitoHtml(){
       <div class="o-actions"><button type="button" class="btn primary" id="apGo">Procedi con ${esc(o.nome)}</button></div>
     </article>`;
 }
+function attesaHtml(){
+  const fasi = ["Controllo dei documenti caricati", "Verifica dei dati anagrafici", "Analisi del reddito e degli impegni", "Valutazione della sostenibilità della rata", "Calcolo dell'esito"];
+  const passo = ATTESA_MS / (fasi.length + 1);
+  return `<div class="ap-body"><div class="wait" role="status" aria-live="polite">
+    <svg viewBox="0 0 64 96" aria-hidden="true"><rect x="6" y="2" width="52" height="8" rx="4" class="c-blue"/><rect x="6" y="86" width="52" height="8" rx="4" class="c-blue"/>
+      <path d="M12 10h40c0 18-14 26-14 38s14 20 14 38H12c0-18 14-26 14-38S12 28 12 10z" class="c-surf s-blue" stroke-width="3"/>
+      <path d="M19 20h26c-2 9-9 14-13 20-4-6-11-11-13-20z" class="c-orange"/><path d="M32 52v20" class="s-orange" stroke-width="2" stroke-dasharray="2 4"/>
+      <path d="M18 84c3-8 9-12 14-12s11 4 14 12z" class="c-orange"/></svg>
+    <h3>Un momento, stiamo valutando la tua richiesta</h3>
+    <p>Stiamo controllando i dati e i documenti che hai inviato. Non chiudere questa pagina: tra pochi secondi ricevi l'esito.</p>
+    <div class="wait-bar" aria-hidden="true"><i></i></div>
+    <ul>${fasi.map((f, i) => `<li class="ok-anim" style="animation-delay:${Math.round(passo * (i + 1))}ms">${f}</li>`).join("")}</ul>
+  </div></div>`;
+}
 function step3(){
-  if (S.sent) return `<div class="ap-body">${esitoHtml()}</div>`;
-  return `<div class="ap-body">${esitoHtml()}
-    <div class="alert ${WEBHOOK_URL ? "bad" : "warn"}">${WEBHOOK_URL ? "L'invio automatico non è riuscito. " : ""}Per completare, invia la richiesta via email e allega i documenti che hai caricato.</div>
-    <pre class="summary" id="apSum">${esc(summaryText())}</pre>
-    <div class="nav"><button type="button" class="btn ghost" id="apCopy">Copia riepilogo</button>
-      <a class="btn primary" id="apMail" href="mailto:${LEAD_EMAIL}?subject=${encodeURIComponent(`Richiesta prestito (${S.req.esito}) – ${S.D.nome || ""} ${S.D.cognome || ""}`)}&body=${encodeURIComponent(summaryText())}">Invia via email</a></div>
-    <p class="hint">Se il pulsante non apre la posta, copia il riepilogo e invialo a ${esc(LEAD_EMAIL)} con i documenti allegati.</p>
-  </div>`;
+  if (S.waiting) return attesaHtml();
+  return `<div class="ap-body">${esitoHtml()}</div>`;
 }
 function wire3(){
-  const c = $("apCopy"); if (c) c.addEventListener("click", async () => { try { await navigator.clipboard.writeText(summaryText()); c.textContent = "Copiato"; } catch (_){ c.textContent = "Seleziona il testo e copialo"; } });
   const g = $("apGo"); if (g) g.addEventListener("click", async () => {
     g.disabled = true;
     await window.SP_sendLead("conferma", { esito: "positivo", finanziaria: S.offer.nome, rata_stimata: +S.offer.rata.toFixed(2), durata: S.offer.durata, codice_fiscale: S.D.cf || "" });
@@ -510,4 +560,10 @@ function close(){
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 window.SP_startApply = open;
+document.querySelectorAll("a.brand").forEach(a => a.addEventListener("click", e => {
+  if (typeof showHome !== "function") return;              // pagine senza percorso: il link porta alla home
+  e.preventDefault(); root().hidden = true;
+  const dom = document.querySelector('section[aria-label="Domande"]'); if (dom) dom.hidden = false;
+  showHome();
+}));
 })();

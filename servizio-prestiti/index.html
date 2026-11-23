@@ -218,6 +218,15 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
 .h-faq details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
 .h-faq summary{font-weight:600;cursor:pointer}
 .h-faq p{margin:8px 0 2px;color:var(--ink-2);font-size:15px}
+.h-app{margin-top:26px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px 24px;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}
+@media (max-width:720px){.h-app{grid-template-columns:1fr;text-align:center;justify-items:center}}
+.h-app-ico{width:64px;height:64px;border-radius:16px;background:var(--brand-blue);display:grid;place-items:center;color:#fff;font-family:"Inter Tight","Helvetica Neue",Arial,sans-serif;line-height:1;text-align:center}
+.h-app-ico b{display:block;font-size:24px;letter-spacing:-.07em} .h-app-ico i{display:block;font-style:normal;font-size:8px;font-weight:700;color:var(--brand-orange);margin-top:2px}
+.h-app h2{font-size:clamp(20px,2.6vw,26px);font-weight:800}
+.h-app p{margin:4px 0 0;color:var(--ink-2)}
+.stores{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.store{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--surface);border-radius:12px;padding:9px 16px;text-decoration:none;line-height:1.1}
+.store svg{width:22px;height:22px;flex:none} .store small{display:block;font-size:10.5px;opacity:.8} .store b{font-size:16px}
 .h-final{margin-top:30px;background:var(--brand-blue);color:#fff;border-radius:18px;padding:26px 28px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
 .h-final h2{font-size:clamp(22px,3vw,30px);font-weight:800}
 .h-final p{margin:4px 0 0;opacity:.85}
@@ -242,7 +251,7 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
       <div class="h-copy">
         <span class="eyebrow">Prestiti personali · 100% online</span>
         <h1>Il tuo prestito personale in <b>4 semplici passi</b></h1>
-        <p>Rispondi a poche domande, una alla volta. Carica i documenti con lo smartphone: li leggiamo noi. Ricevi subito l'esito, senza code, senza carta e senza impegno.</p>
+        <p>Rispondi a poche domande, una alla volta. Carica i documenti con lo smartphone: li leggiamo noi. Ricevi subito la prevalutazione, senza code, senza carta e senza impegno.</p>
         <p class="h-q">Iniziamo: a cosa ti serve il prestito?</p>
         <div class="h-chips" id="hChips"></div>
         <div class="h-cta"><button type="button" class="btn primary big" data-start>Inizia ora</button><span class="hint">Circa 5 minuti · gratis e senza impegno</span></div>
@@ -297,21 +306,30 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
           <rect x="34" y="76" width="172" height="3" rx="1.5" class="c-orange" opacity=".85"/></svg><span class="step-n">3</span><h3>Carica i documenti</h3><p>Fotografa documento, tessera sanitaria e busta paga. Leggiamo i dati in automatico: tu controlli e confermi.</p><span class="t">2 minuti</span></li>
       <li class="step"><svg viewBox="0 0 240 140" aria-hidden="true"><rect x="28" y="18" width="184" height="104" rx="14" class="c-surf s-line" stroke-width="1.5"/>
           <circle cx="68" cy="70" r="26" class="c-goodsoft"/><path d="M56 71l8 8 16-18" fill="none" class="s-good" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          <text x="108" y="56" class="svg-b c-muted" font-size="11">Esito</text><text x="108" y="78" class="svg-t c-ink" font-size="17">Disponibile</text>
-          <rect x="108" y="90" width="80" height="18" rx="9" class="c-orange"/><text x="122" y="103" class="svg-b" font-size="10" fill="#3D1F00">Procedi</text></svg><span class="step-n">4</span><h3>Ricevi l'esito</h3><p>Ti diciamo subito il prestito disponibile per te, con rata e costi. Confermi e un consulente ti segue fino alla firma.</p><span class="t">subito</span></li>
+          <text x="108" y="56" class="svg-b c-muted" font-size="11">Prevalutazione</text><text x="108" y="78" class="svg-t c-ink" font-size="17">Disponibile</text>
+          <rect x="108" y="90" width="80" height="18" rx="9" class="c-orange"/><text x="122" y="103" class="svg-b" font-size="10" fill="#3D1F00">Procedi</text></svg><span class="step-n">4</span><h3>Ricevi la prevalutazione</h3><p>Ti diciamo subito il prestito disponibile per te, con rata e costi. Confermi e un consulente ti segue fino alla firma.</p><span class="t">subito</span></li>
     </ol>
 
     <div class="h-two">
       <div class="h-box"><h3>Cosa tenere a portata di mano</h3>
         <ul class="ticks"><li><span><b>Documento d'identità</b> valido: carta d'identità, patente o passaporto</span></li><li><span><b>Tessera sanitaria</b>, per il codice fiscale</span></li><li><span><b>Ultime buste paga</b>, il cedolino della pensione o l'ultima dichiarazione dei redditi</span></li><li><span><b>IBAN</b> del tuo conto e lo <b>smartphone</b> per la firma digitale</span></li></ul></div>
       <div class="h-box"><h3>Perché Servizio Prestiti</h3>
-        <ul class="ticks"><li><span><b>Tutto online</b>, dal telefono o dal computer, quando vuoi</span></li><li><span><b>Esito immediato</b> con rata, TAN e TAEG stimati</span></li><li><span><b>Un consulente dedicato</b> che ti richiama e ti segue fino all'erogazione</span></li><li><span><b>Agenti iscritti all'OAM</b>, mandatari di Banca Sistema S.p.A.</span></li></ul></div>
+        <ul class="ticks"><li><span><b>Tutto online</b>, dal telefono o dal computer, quando vuoi</span></li><li><span><b>Prevalutazione immediata</b> con rata, TAN e TAEG stimati</span></li><li><span><b>Un consulente dedicato</b> che ti richiama e ti segue fino all'erogazione</span></li><li><span><b>Agenti iscritti all'OAM</b>, mandatari di Banca Sistema S.p.A.</span></li></ul></div>
     </div>
 
     <div class="h-faq">
       <details><summary>Fare la richiesta mi impegna?</summary><p>No. La richiesta è gratuita e senza impegno: il contratto si firma solo dopo aver ricevuto e letto tutte le condizioni, compreso il modulo SECCI.</p></details>
       <details><summary>Che fine fanno i miei documenti?</summary><p>Restano sul tuo dispositivo finché non invii la richiesta. Dopo l'invio li usiamo solo per valutare il finanziamento, nel rispetto della normativa privacy.</p></details>
-      <details><summary>E se l'esito non è immediato?</summary><p>Se la tua richiesta ha bisogno di un approfondimento, la esamina un nostro consulente insieme ai documenti e ti richiama con la soluzione più adatta.</p></details>
+      <details><summary>E se la prevalutazione non è immediata?</summary><p>Se la tua richiesta ha bisogno di un approfondimento, la esamina un nostro consulente insieme ai documenti e ti richiama con la soluzione più adatta.</p></details>
+    </div>
+
+    <div class="h-app" id="app">
+      <div class="h-app-ico" aria-hidden="true"><div><b>SP</b><i>24/7</i></div></div>
+      <div><h2>Scarica l'app Servizio Prestiti</h2><p>Segui la tua richiesta, carica i documenti con la fotocamera e ricevi gli aggiornamenti direttamente sul telefono.</p></div>
+      <div class="stores">
+        <a class="store" id="storeIos" href="#app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.9-3.5.9s-1.9-.8-3.1-.8c-1.6 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3.1.7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.6-.1 0-2.5-1-2.5-3.8zM14.1 5.8c.6-.8 1.1-1.8 1-2.8-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.7-1 2.7 1 .1 2-.5 2.7-1.3z"/></svg><span><small>Scarica su</small><b>App Store</b></span></a>
+        <a class="store" id="storeAndroid" href="#app"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 3.5v17c0 .4.4.7.8.5l9.4-9.5L4.8 3c-.4-.2-.8.1-.8.5zm11.3 9.1l2.5 2.5-11 6.3 8.5-8.8zm0-1.2L6.8 2.6l11 6.3-2.5 2.5zm4.2-1.7l-2.6-1.5-2.8 2.8 2.8 2.8 2.6-1.5c.9-.5.9-2.1 0-2.6z"/></svg><span><small>Disponibile su</small><b>Google Play</b></span></a>
+      </div>
     </div>
 
     <div class="h-final"><div><h2>Pronto? Bastano pochi minuti.</h2><p>Rispondi alla prima domanda e scopri il prestito disponibile per te.</p></div><button type="button" class="btn primary big" data-start>Inizia ora</button></div>
@@ -342,8 +360,8 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
   </div>
 
   <section class="legal">
-    <p><b>Messaggio pubblicitario con finalità promozionale.</b> I valori mostrati (TAN, TAEG, rata, costo totale) nell'esito sono stime indicative calcolate sulle informazioni inserite e sulle condizioni dei finanziatori: non costituiscono offerta né promessa di finanziamento. Le condizioni definitive dipendono dalla valutazione del merito creditizio effettuata dal finanziatore. Il TAEG stimato comprende interessi e spese di istruttoria; non comprende imposte, assicurazioni facoltative e altri oneri eventualmente previsti. Prima della firma riceverai il modulo "Informazioni europee di base sul credito ai consumatori" (SECCI) con il TAEG effettivo.</p>
-    <p>Servizio Prestiti è un portale di Aessefin Prestiti 24/7 S.r.l. (agente in attività finanziaria iscritto all'elenco OAM al n. A12056, P.IVA 12548990964) e di Magenta S.p.A. (agente in attività finanziaria iscritto all'elenco OAM al n. [DA INSERIRE]), mandatari di Banca Sistema S.p.A. per il collocamento di prestiti personali erogati da primari istituti finanziari, indicati nell'esito della richiesta. La concessione del finanziamento è subordinata all'approvazione del finanziatore.</p>
+    <p><b>Messaggio pubblicitario con finalità promozionale.</b> I valori mostrati (TAN, TAEG, rata, costo totale) nella prevalutazione sono stime indicative calcolate sulle informazioni inserite e sulle condizioni dei finanziatori: non costituiscono offerta né promessa di finanziamento. Le condizioni definitive dipendono dalla valutazione del merito creditizio effettuata dal finanziatore. Il TAEG stimato comprende interessi e spese di istruttoria; non comprende imposte, assicurazioni facoltative e altri oneri eventualmente previsti. Prima della firma riceverai il modulo "Informazioni europee di base sul credito ai consumatori" (SECCI) con il TAEG effettivo.</p>
+    <p>Servizio Prestiti è un portale di Aessefin Prestiti 24/7 S.r.l. (agente in attività finanziaria iscritto all'elenco OAM al n. A12056, P.IVA 12548990964) e di Magenta S.p.A. (agente in attività finanziaria iscritto all'elenco OAM al n. [DA INSERIRE]), mandatari di Banca Sistema S.p.A. per il collocamento di prestiti personali erogati da primari istituti finanziari, indicati nella prevalutazione della richiesta. La concessione del finanziamento è subordinata all'approvazione del finanziatore.</p>
   </section>
 </main>
 
@@ -360,6 +378,9 @@ const LEAD_EMAIL = "antonio.clemente@aessefin.it";
 const SHOW_CONSULENTE = false;
 // Landing della cessione del quinto, proposta a chi ha avuto ritardi nei pagamenti
 const CQ_URL = "cessione-del-quinto.html";
+// Link dell'app Servizio Prestiti negli store (da inserire quando l'app è pubblicata)
+const APP_IOS_URL = "";
+const APP_ANDROID_URL = "";
 
 /* ============================================================
    PARAMETRI DEI FINANZIATORI (allegati Banca Sistema, nov. 2026)
@@ -407,7 +428,7 @@ const Q = [
   { id: "importo", sec: 0, type: "slider", title: "Di quanto hai bisogno in totale?", help: "Da 1.000 € a 50.000 €.", min: 1000, max: 50000, step: 500, unit: "€", chips: [3000, 5000, 10000, 15000, 20000, 30000] },
   { id: "durata", sec: 0, type: "slider", title: "In quanti mesi vuoi restituirlo?", help: "Più mesi significano una rata più leggera ma più interessi in totale.", min: 12, max: 120, step: 12, unit: "mesi", chips: [24, 36, 48, 60, 84, 120], rataHint: true },
 
-  { id: "contatti", sec: 1, type: "contact", title: "A chi intestiamo la richiesta?", help: "Nome, cognome e cellulare: ti servono per ricevere l'esito e per essere ricontattato da un consulente." },
+  { id: "contatti", sec: 1, type: "contact", title: "A chi intestiamo la richiesta?", help: "Nome, cognome e cellulare: ti servono per ricevere la prevalutazione e per essere ricontattato da un consulente." },
   { id: "eta", sec: 1, type: "number", title: "Quanti anni hai?", help: "Le finanziarie considerano l'età anche a fine prestito.", min: 18, max: 90, unit: "anni" },
   { id: "residenza", sec: 1, type: "choice", title: "Risiedi in Italia?", options: [["si", "Sì"], ["no", "No, risiedo all'estero"]] },
   { id: "cittadinanza", sec: 1, type: "choice", title: "Qual è la tua cittadinanza?", help: "Serve a sapere quali documenti preparare.",
@@ -645,7 +666,7 @@ function renderQ(){
       <label class="check"><input type="checkbox" id="c_mkt" ${A.marketing ? "checked" : ""}> <span>Acconsento a ricevere comunicazioni commerciali da Servizio Prestiti (facoltativo).</span></label>
       <p class="err" id="c_err"></p>`;
   } else if (q.type === "end"){
-    body = `<div class="alert good" style="margin-bottom:14px">Ultimo passo: carica i documenti. Li leggiamo in automatico e ti diamo subito l'esito della richiesta.</div>
+    body = `<div class="alert good" style="margin-bottom:14px">Ultimo passo: carica i documenti. Li leggiamo in automatico e ti diamo subito la prevalutazione della richiesta.</div>
       <dl class="recap-list">${recapRows()}</dl>`;
   }
   const needsNext = !["choice"].includes(q.type) && q.type !== "end";
@@ -653,7 +674,7 @@ function renderQ(){
     <div class="q-body">${body}</div>
     <div class="nav">
       <button type="button" class="btn ghost" id="back">Indietro</button>
-      ${needsNext ? `<button type="button" class="btn primary" id="fwd">Avanti</button>` : q.type === "choice" && answered.has(q.id) ? `<button type="button" class="btn ghost" id="fwd">Avanti</button>` : q.type === "end" ? `<button type="button" class="btn primary" id="toDocs">Carica i documenti e ricevi l'esito</button>` : ""}
+      ${needsNext ? `<button type="button" class="btn primary" id="fwd">Avanti</button>` : q.type === "choice" && answered.has(q.id) ? `<button type="button" class="btn ghost" id="fwd">Avanti</button>` : q.type === "end" ? `<button type="button" class="btn primary" id="toDocs">Carica i documenti e ricevi la prevalutazione</button>` : ""}
     </div>`;
   wireQ(q);
   updateSlider(q);
@@ -813,6 +834,7 @@ document.getElementById("hChips").innerHTML = Q[0].options.map(([v, l]) => `<but
 document.getElementById("hChips").addEventListener("click", e => { const b = e.target.closest("[data-fin]"); if (b) startPercorso(b.dataset.fin); });
 document.querySelectorAll("[data-start]").forEach(b => b.addEventListener("click", () => startPercorso()));
 if (location.hash === "#consulente") startPercorso();
+[["storeIos", APP_IOS_URL], ["storeAndroid", APP_ANDROID_URL]].forEach(([id, url]) => { const a = document.getElementById(id); if (url){ a.href = url; a.target = "_blank"; a.rel = "noopener"; } else a.title = "In arrivo"; });
 
 renderQ(); renderResults();
 </script>

@@ -6,7 +6,7 @@
 <title>Servizio Prestiti – Trova il tuo prestito</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=Inter+Tight:wght@500;700&display=swap" rel="stylesheet">
 <style>
 /* Layout: una colonna centrata. Durante l'intervista solo la domanda; a fine percorso compare il prodotto indicato. */
 :root{
@@ -47,8 +47,11 @@ button,input,select{font:inherit;color:inherit}
 header.top{background:var(--brand-blue);color:#FFFFFF;border-bottom:4px solid var(--brand-orange)}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
-.brand{display:flex;align-items:baseline;gap:8px;font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em}
-.brand b{color:var(--brand-orange)}
+/* logo SP · servizio prestiti 24/7 (bianco e arancio sulla barra blu) */
+.brand{display:inline-flex;flex-direction:column;align-items:center;text-decoration:none;color:#FFFFFF;font-family:"Inter Tight","Helvetica Neue",Arial,sans-serif;line-height:1}
+.brand-sp{font-size:40px;font-weight:700;letter-spacing:-.075em;line-height:.86;padding-right:.075em}
+.brand-sub{display:flex;align-items:baseline;gap:3px;font-size:10.5px;letter-spacing:-.01em;margin-top:4px;white-space:nowrap}
+.brand-sub span{font-weight:500} .brand-sub b{font-weight:700;color:var(--brand-orange)}
 .top small{opacity:.75;font-size:13px}
 .toggle{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
 
@@ -228,7 +231,7 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
 <body>
 <header class="top">
   <div class="wrap">
-    <div class="brand">Servizio <b>Prestiti</b></div>
+    <a class="brand" href="./" aria-label="Servizio Prestiti 24/7"><span class="brand-sp">SP</span><span class="brand-sub"><span>servizio prestiti</span><b>24/7</b></span></a>
     <label class="toggle" id="consToggle"><input type="checkbox" id="consulente"> Modalità consulente</label>
   </div>
 </header>
@@ -251,7 +254,8 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
         <rect x="24" y="18" width="252" height="70" rx="30" class="c-blue"/><rect x="24" y="58" width="252" height="34" class="c-blue"/>
         <rect x="24" y="88" width="252" height="4" class="c-orange"/>
         <rect x="118" y="26" width="64" height="8" rx="4" class="c-ink"/>
-        <text x="44" y="73" class="svg-t" font-size="17" fill="#fff">Servizio <tspan class="c-orange">Prestiti</tspan></text>
+        <text x="150" y="66" text-anchor="middle" font-family="Inter Tight, Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="27" letter-spacing="-2" fill="#fff">SP</text>
+        <text x="150" y="80" text-anchor="middle" font-family="Inter Tight, Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="8" fill="#fff">servizio prestiti <tspan font-weight="700" class="c-orange">24/7</tspan></text>
         <rect x="40" y="108" width="220" height="6" rx="3" class="c-line"/><rect x="40" y="108" width="40" height="6" rx="3" class="c-orange"/>
         <text x="40" y="136" class="svg-b c-muted" font-size="11">Domanda 1</text>
         <text x="40" y="162" class="svg-t c-ink" font-size="17">A cosa ti serve</text>

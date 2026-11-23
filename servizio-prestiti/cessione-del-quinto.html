@@ -6,7 +6,7 @@
 <title>Servizio Prestiti – Cessione del Quinto</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=Inter+Tight:wght@500;700&display=swap" rel="stylesheet">
 <style>
 /* Landing a colonna unica: promessa, tre punti chiave, modulo di richiesta. */
 :root{
@@ -42,8 +42,11 @@ button,input,select{font:inherit;color:inherit}
 header.top{background:var(--brand-blue);color:#fff;border-bottom:4px solid var(--brand-orange)}
 .wrap{max-width:780px;margin:0 auto;padding:0 20px}
 .top .wrap{padding-top:14px;padding-bottom:14px;max-width:1180px}
-.brand{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em}
-.brand b{color:var(--brand-orange)}
+/* logo SP · servizio prestiti 24/7 (bianco e arancio sulla barra blu) */
+.brand{display:inline-flex;flex-direction:column;align-items:center;text-decoration:none;color:#FFFFFF;font-family:"Inter Tight","Helvetica Neue",Arial,sans-serif;line-height:1}
+.brand-sp{font-size:40px;font-weight:700;letter-spacing:-.075em;line-height:.86;padding-right:.075em}
+.brand-sub{display:flex;align-items:baseline;gap:3px;font-size:10.5px;letter-spacing:-.01em;margin-top:4px;white-space:nowrap}
+.brand-sub span{font-weight:500} .brand-sub b{font-weight:700;color:var(--brand-orange)}
 .hero{padding:30px 0 10px}
 .eyebrow{display:inline-block;background:var(--accent-soft);color:var(--ink);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:600;margin-bottom:12px}
 .hero h1{font-size:clamp(28px,4.4vw,42px);font-weight:800;letter-spacing:-.02em}
@@ -78,7 +81,7 @@ pre.summary{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap"><div class="brand">Servizio <b>Prestiti</b></div></div></header>
+<header class="top"><div class="wrap"><a class="brand" href="./index.html" aria-label="Servizio Prestiti 24/7"><span class="brand-sp">SP</span><span class="brand-sub"><span>servizio prestiti</span><b>24/7</b></span></a></div></header>
 
 <main class="wrap">
   <section class="hero">

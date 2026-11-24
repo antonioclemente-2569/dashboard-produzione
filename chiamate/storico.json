@@ -1,44 +1,10 @@
 {
- "aggiornato": "2026-11-20 19:36",
+ "nota": "Conversazioni con clienti dei lead manager per giorno = chiamate dialer con risposta passate all'operatore + chiamate manuali con risposta. Storico disponibile dal 18/11/2026 (avvio del report).",
  "giorni": [
-  {
-   "data": "2026-11-18",
-   "chiuso": true,
-   "operatori": [
-    {"interno": "202", "operatore": "Marco Firrincieli", "chiamate_dialer": 29, "conversato_dialer_sec": 1878, "chiamate_manuali": 65, "manuali_con_risposta": 30, "conversato_manuali_sec": 2585},
-    {"interno": "204", "operatore": "Marcel Honla", "chiamate_dialer": 168, "conversato_dialer_sec": 10264, "chiamate_manuali": 2, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-    {"interno": "205", "operatore": "Giovanni Sanglimbene", "chiamate_dialer": 48, "conversato_dialer_sec": 2889, "chiamate_manuali": 43, "manuali_con_risposta": 10, "conversato_manuali_sec": 806},
-    {"interno": "206", "operatore": "Letizia Biddeci", "chiamate_dialer": 123, "conversato_dialer_sec": 11903, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-    {"interno": "208", "operatore": "Ludovica Baciucchi", "chiamate_dialer": 114, "conversato_dialer_sec": 7757, "chiamate_manuali": 70, "manuali_con_risposta": 13, "conversato_manuali_sec": 1537},
-    {"interno": "215", "operatore": "Martina Giannotta", "chiamate_dialer": 134, "conversato_dialer_sec": 9564, "chiamate_manuali": 5, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-    {"interno": "233", "operatore": "Sara Camposano", "chiamate_dialer": 65, "conversato_dialer_sec": 5952, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0}
-   ]
-  },
-  {
-   "data": "2026-11-19",
-   "chiuso": true,
-   "operatori": [
-    {"interno": "202", "operatore": "Marco Firrincieli", "chiamate_dialer": 61, "conversato_dialer_sec": 3120, "chiamate_manuali": 42, "manuali_con_risposta": 21, "conversato_manuali_sec": 2359},
-    {"interno": "204", "operatore": "Marcel Honla", "chiamate_dialer": 205, "conversato_dialer_sec": 11734, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-    {"interno": "205", "operatore": "Giovanni Sanglimbene", "chiamate_dialer": 54, "conversato_dialer_sec": 3279, "chiamate_manuali": 25, "manuali_con_risposta": 5, "conversato_manuali_sec": 989},
-    {"interno": "206", "operatore": "Letizia Biddeci", "chiamate_dialer": 94, "conversato_dialer_sec": 9651, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-    {"interno": "208", "operatore": "Ludovica Baciucchi", "chiamate_dialer": 132, "conversato_dialer_sec": 9654, "chiamate_manuali": 15, "manuali_con_risposta": 5, "conversato_manuali_sec": 394},
-    {"interno": "215", "operatore": "Martina Giannotta", "chiamate_dialer": 152, "conversato_dialer_sec": 10433, "chiamate_manuali": 2, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-    {"interno": "233", "operatore": "Sara Camposano", "chiamate_dialer": 85, "conversato_dialer_sec": 7355, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0}
-   ]
-  },
-  {
-   "data": "2026-11-20",
-   "chiuso": true,
-   "operatori": [
-    {"interno": "202", "operatore": "Marco Firrincieli", "chiamate_dialer": 45, "conversato_dialer_sec": 2260, "chiamate_manuali": 70, "manuali_con_risposta": 41, "conversato_manuali_sec": 3599},
-    {"interno": "204", "operatore": "Marcel Honla", "chiamate_dialer": 188, "conversato_dialer_sec": 10356, "chiamate_manuali": 1, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-    {"interno": "205", "operatore": "Giovanni Sanglimbene", "chiamate_dialer": 63, "conversato_dialer_sec": 4588, "chiamate_manuali": 75, "manuali_con_risposta": 23, "conversato_manuali_sec": 2987},
-    {"interno": "206", "operatore": "Letizia Biddeci", "chiamate_dialer": 79, "conversato_dialer_sec": 7980, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-    {"interno": "208", "operatore": "Ludovica Baciucchi", "chiamate_dialer": 89, "conversato_dialer_sec": 6509, "chiamate_manuali": 9, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-    {"interno": "215", "operatore": "Martina Giannotta", "chiamate_dialer": 133, "conversato_dialer_sec": 7857, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0},
-    {"interno": "233", "operatore": "Sara Camposano", "chiamate_dialer": 75, "conversato_dialer_sec": 6729, "chiamate_manuali": 0, "manuali_con_risposta": 0, "conversato_manuali_sec": 0}
-   ]
-  }
+  {"data": "2026-11-18", "aggiornato": "18:15", "chiusa": true, "dialer_con_risposta": 681, "manuali_con_risposta": 53, "clienti_parlati": 734},
+  {"data": "2026-11-19", "aggiornato": "19:36", "chiusa": true, "dialer_con_risposta": 783, "manuali_con_risposta": 31, "clienti_parlati": 814},
+  {"data": "2026-11-20", "aggiornato": "19:36", "chiusa": true, "dialer_con_risposta": 672, "manuali_con_risposta": 64, "clienti_parlati": 736},
+  {"data": "2026-11-23", "aggiornato": "19:37", "chiusa": true, "dialer_con_risposta": 627, "manuali_con_risposta": 83, "clienti_parlati": 710},
+  {"data": "2026-11-24", "aggiornato": "16:08", "chiusa": false, "dialer_con_risposta": 525, "manuali_con_risposta": 48, "clienti_parlati": 573}
  ]
 }

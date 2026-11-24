@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Consuntivo Marketing Aessefin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: filtri in alto, consuntivo per canale e campagna, andamento mensile, griglia della spesa (consuntivo). Fondo chiaro con riquadri bianchi ed etichette colorate. */
+:root {
+  color-scheme: light;
+  --bg: #e8e5f1;
+  --card: #ffffff;
+  --line: #c9c4db;
+  --ink: #14111f;
+  --ink-2: #2d2842;
+  --ink-3: #46415e;
+  --accent: #4b2fa3;
+  --accent-soft: #d9d0f5;
+  --cost: #a79fc4;
+  --track: #dcd7ea;
+  --good-bg: #c9ecd8; --good: #0d5c35;
+  --warn-bg: #f9e1a0; --warn: #6b4200;
+  --bad-bg: #f8cfcb; --bad: #8c150d;
+  --info-bg: #d9d0f5; --info: #371c85;
+  --vio-bg: #d9d0f5; --vio: #371c85;
+  --neu-bg: #dedaea; --neu: #3b3652;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948;
+  --spesa: #4b2fa3; --fat: #4b2fa3;
+  --f-display: "Bricolage Grotesque", system-ui, sans-serif; --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.45; }
+body { padding: 20px 16px 56px; }
+.wrap { max-width: 1320px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1, h2, h3 { margin: 0; font-weight: 600; text-wrap: balance; }
+h1, h2, .tile .v { font-family: var(--f-display); }
+h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.1; font-weight: 700; } h2 { font-size: 19px; } h3 { font-size: 14px; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.top { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: flex-end; justify-content: space-between; }
+.sub { color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+.tile.hl { background: var(--accent-soft); border-color: transparent; }
+.tile.hl .v { color: var(--accent); }
+.filters { box-shadow: 0 1px 4px rgba(40,30,90,.10); display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.filters label { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 13px; }
+select, input[type=number], input[type=text] { background: #fff; color: var(--ink); border: 1px solid #8f89ab; border-radius: 8px; padding: 6px 8px; font: inherit; }
+select:focus-visible, input:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type=checkbox] { accent-color: var(--accent); width: 16px; height: 16px; }
+section.card { background: var(--card); border: 1px solid var(--line); box-shadow: 0 1px 4px rgba(40,30,90,.10); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.stitle { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: baseline; justify-content: space-between; }
+.stitle p { margin: 0; color: var(--ink-3); font-size: 14px; }
+.pill { display: inline-block; font-size: 13px; font-weight: 600; padding: 2px 9px; border-radius: 99px; white-space: nowrap; background: var(--neu-bg); color: var(--neu); }
+.pill.good { background: var(--good-bg); color: var(--good); } .pill.warn { background: var(--warn-bg); color: var(--warn); }
+.pill.bad { background: var(--bad-bg); color: var(--bad); } .pill.info { background: var(--info-bg); color: var(--info); }
+.pill.vio { background: var(--vio-bg); color: var(--vio); }
+.banner { background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 500; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(max(150px, calc((100% - 30px) / 4)), 1fr)); gap: 10px; }
+.tile { border: 1px solid #bdb7d3; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 6px; min-width: 0; background: #fff; }
+.tile .v { font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tile .n { color: var(--ink-3); font-size: 13px; min-height: 17px; }
+.tile .v.dim { color: #7a7592; }
+.bar { height: 6px; border-radius: 99px; background: var(--track); overflow: hidden; display: flex; }
+.bar i { display: block; height: 100%; }
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 14px; }
+.chart.wide { grid-column: 1 / -1; }
+.chart { border: 1px solid #bdb7d3; border-radius: 12px; padding: 14px; position: relative; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.chart .cap { color: var(--ink-3); font-size: 13px; }
+.empty { color: var(--ink-2); font-size: 14px; background: #f1eff7; border-radius: 10px; padding: 14px; }
+.hrow { display: grid; grid-template-columns: minmax(110px, 200px) 1fr minmax(96px, auto); gap: 10px; align-items: center; padding: 4px 0; }
+.hl { font-size: 14px; color: var(--ink); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hrow { grid-template-columns: minmax(150px, 260px) 1fr minmax(120px, auto); }
+.hv { font-size: 13px; font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); white-space: nowrap; }
+.ht { position: relative; height: 16px; background: var(--track); border-radius: 4px; overflow: hidden; display: flex; }
+.ht i { display: block; height: 100%; }
+.ht .mk { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--ink); }
+.duo { display: flex; flex-direction: column; gap: 3px; }
+.duo .dl { height: 9px; background: var(--track); border-radius: 3px; overflow: hidden; }
+.duo .dl i { display: block; height: 100%; border-radius: 3px; }
+.duon { font-size: 12px; color: var(--ink-3); padding: 0 0 8px 2px; border-bottom: 1px solid #e4e0ef; margin-bottom: 2px; }
+.hv.pos { color: var(--good); font-weight: 700; } .hv.neg { color: var(--bad); font-weight: 700; } .hv.young { color: var(--ink-3); font-weight: 500; font-style: italic; }
+.div-ht { position: relative; height: 16px; }
+.div-ht .axis { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; background: #6e6890; }
+.div-ht i { position: absolute; top: 2px; height: 12px; border-radius: 3px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--ink); font-size: 13px; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.tablebox { overflow-x: auto; border: 1px solid #a9a3c4; border-radius: 12px; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+.t-res { min-width: 1000px; font-size: 14px; }
+.t-w { min-width: 820px; font-size: 14px; }
+#wtiles { grid-template-columns: repeat(auto-fit, minmax(max(150px, calc((100% - 50px) / 6)), 1fr)); }
+.tile .d { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+th, td { padding: 9px 8px; text-align: right; white-space: nowrap; border-bottom: 1px solid #d6d1e6; }
+th { color: #fff; font-weight: 600; font-size: 13px; background: #34267c; border-bottom: 0; }
+th:first-child, td:first-child { text-align: left; white-space: normal; min-width: 210px; max-width: 300px; }
+tr:last-child td { border-bottom: 0; }
+tr.ch td { font-weight: 700; background: #ece8f9; background: color-mix(in srgb, var(--chc, #4b2fa3) 14%, #fff); border-top: 2px solid #bdb5df; border-top-color: color-mix(in srgb, var(--chc, #4b2fa3) 45%, #fff); color: var(--ink); }
+tr.ch td:first-child { border-left: 7px solid var(--chc, #4b2fa3); }
+tr.sub td:first-child { border-left: 7px solid #ddd8ea; border-left-color: color-mix(in srgb, var(--chc, #4b2fa3) 45%, #fff); }
+td.partial, .partial { font-weight: 500; font-size: 12px; color: var(--ink-3); }
+tr.sub td:first-child { padding-left: 32px; color: var(--ink); }
+tr.sub td { color: var(--ink); background: #fff; }
+tr.total td { font-weight: 700; background: #34267c; color: #fff; }
+tr.total td.muted, tr.total td.ro { color: #d8d1f3; }
+td.muted { color: #7a7592; }
+.t-grid td, .t-grid th { padding: 5px 4px; }
+.t-grid input[type=number] { width: 62px; text-align: right; padding: 5px 6px; -moz-appearance: textfield; appearance: textfield; }
+.t-grid input[type=number]::-webkit-inner-spin-button, .t-grid input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.t-grid input::placeholder { color: #8d88a6; }
+.t-grid input.nm { width: 112px; text-align: left; margin-left: 8px; }
+.t-grid td.ro { color: var(--ink); font-weight: 500; }
+.seg { display: inline-flex; border: 1px solid #8f89ab; border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: #fff; color: var(--ink-2); padding: 6px 14px; font: inherit; cursor: pointer; }
+.seg button[aria-pressed=true] { background: var(--accent); color: #fff; }
+.tip { position: absolute; pointer-events: none; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 12px; z-index: 5; display: none; min-width: 160px; box-shadow: 0 6px 20px rgba(27,34,54,.15); }
+.tip b { display: block; margin-bottom: 4px; font-weight: 600; }
+.tip div { display: flex; justify-content: space-between; gap: 14px; font-variant-numeric: tabular-nums; }
+.note { color: var(--ink-3); font-size: 13px; margin: 0; }
+details { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 18px; color: var(--ink-2); }
+summary { cursor: pointer; font-weight: 500; color: var(--ink); }
+details ul { margin: 10px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+svg text { fill: var(--ink-2); font-size: 12px; font-family: var(--font); }
+@media (max-width: 520px) { .charts { grid-template-columns: 1fr; } .hrow { grid-template-columns: 1fr; } .hrow { grid-template-columns: 1fr; gap: 2px; } .hv { text-align: left; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div><span class="eyebrow" id="fonte"></span><h1>Consuntivo marketing Aessefin</h1></div>
+    <div class="filters">
+      <label>Periodo <select id="per"></select></label>
+      <label><input type="checkbox" id="noDup"> Escludi doppi</label>
+      <label><input type="checkbox" id="ex510" checked> Escludi "In lavorazione 5" e "Caricata 10" dalla 2ª conv.</label>
+      <span class="pill" id="savestate"></span>
+    </div>
+  </header>
+
+  <section class="card" id="a" aria-labelledby="at">
+    <div class="stitle"><h2 id="at">Consuntivo per canale e campagna</h2><p id="aper"></p></div>
+    <div class="banner" id="abanner" hidden></div>
+    <div class="tiles" id="atiles"></div>
+    <div class="charts">
+      <div class="chart"><h3>Spesa per canale</h3><div class="cap">Spesa di consuntivo nel colore del canale, solo mesi chiusi. Il mese in corso non ha ancora spesa.</div><div id="c1"></div></div>
+      <div class="chart"><h3>Dove rende di più: ROAS</h3><div class="cap">Fatturato diviso spesa, per canale e campagna. La linea nera è la media.</div><div id="c2"></div></div>
+      <div class="chart wide"><h3>Quanto hai speso e quanto è tornato</h3><div class="cap">Per ogni canale e campagna: barra chiara = spesa, barra piena = fatturato liquidato, nel colore del canale. A destra il saldo, cioè fatturato meno spesa (prima degli altri costi).</div><div id="c3"></div><div class="legend" id="c3leg"></div></div>
+    </div>
+    <div class="tablebox"><table class="t-res" id="atable"></table></div>
+    <p class="note" id="anote"></p>
+  </section>
+
+  <section class="card" id="w" aria-labelledby="wt">
+    <div class="stitle"><h2 id="wt">Focus sulla settimana</h2><p id="wper"></p></div>
+    <div class="filters" style="align-self:flex-start">
+      <label>Canale <select id="wch"></select></label>
+      <label>Settimana <select id="wwk"></select></label>
+      <label>Confronto <select id="wcmp"><option value="eq">A parità di giorni</option><option value="full">Con la settimana precedente intera</option></select></label>
+    </div>
+    <div class="banner" id="wbanner" hidden></div>
+    <div class="tiles" id="wtiles"></div>
+    <div class="charts">
+      <div class="chart" id="w1"><h3>Contatti giorno per giorno</h3><div class="cap" id="w1cap"></div><div id="w1svg"></div><div class="legend" id="w1leg"></div><div class="tip" id="tipw1"></div></div>
+      <div class="chart" id="w2"><h3>Ultime 8 settimane</h3><div class="cap" id="w2cap"></div><div id="w2svg"></div><div class="legend" id="w2leg"></div><div class="tip" id="tipw2"></div></div>
+    </div>
+    <div class="tablebox"><table class="t-w" id="wtable"></table></div>
+    <p class="note" id="wnote"></p>
+  </section>
+
+  <section class="card" id="b" aria-labelledby="bt">
+    <div class="stitle"><h2 id="bt">Andamento mensile</h2><p>Per vedere come cambiano spesa, fatturato e contatti mese dopo mese.</p></div>
+    <div class="filters" style="align-self:flex-start"><label>Canale <select id="bch"></select></label></div>
+    <div class="charts">
+      <div class="chart" id="h1"><h3>Spesa e fatturato per mese</h3><div class="cap" id="h1cap"></div><div id="h1svg"></div><div class="legend" id="h1leg"></div><div class="tip" id="tip1"></div></div>
+      <div class="chart" id="h2"><h3>Contatti per mese</h3><div class="cap" id="h2cap"></div><div id="h2svg"></div><div class="legend" id="h2leg"></div><div class="tip" id="tip2"></div></div>
+    </div>
+  </section>
+
+  <section class="card" id="c" aria-labelledby="ct">
+    <div class="stitle"><h2 id="ct">Spesa (consuntivo)</h2><p>I valori si salvano da soli e restano per tutti. Il totale annuale è la somma dei mesi.</p></div>
+    <div class="filters" style="align-self:flex-start">
+      <span class="note" id="gnote"></span>
+    </div>
+    <div class="tablebox"><table class="t-grid" id="gtable"></table></div>
+    <p class="note">Inserisci la spesa solo a mese chiuso: è un dato di consuntivo e non si cambia più. Kova è a success fee: come spesa inserisci le provvigioni pagate nel mese. Per Google Ads inserisci la spesa di ogni campagna. Per Meta inserisci la spesa di ogni campagna con il nome identico a quello di Meta Ads Manager (compare qui quando arrivano lead di quella campagna).</p>
+  </section>
+
+  <details>
+    <summary>Regole di calcolo e punti da confermare</summary>
+    <ul id="regole"></ul>
+  </details>
+</div>
+
+<script>
+/* I dati stanno in dati.js (si aggiorna da solo ogni giorno). Il parametro con l'ora evita che il browser usi una copia vecchia. */
+document.write('<script src="dati.js?v=' + Date.now() + '"><\/script>');
+</script>
+<script>
+(function () {
+  var D = window.__DATI;
+  var MESI = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+  var LAST = D.meta.ultimoMese;
+  var SLOT = { 'Google Ads': '#2a78d6', 'Meta': '#f26b21', 'Younited': '#e3a600', 'Kova': '#0e9aa7', 'Sito web': '#e0709b', 'WhatsApp': '#1c9c4b', 'Cofidis KO': '#5b6b86', 'Altri': '#8e8aa3' };
+  D.channels.forEach(function (c) { if (!SLOT[c]) SLOT[c] = '#8e8aa3'; });
+  function tint(hex, a) { var n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')'; }
+  var state = { per: String(LAST), noDup: false, ex510: true, bch: 'Tutti', wch: 'Google Ads', wk: 0, wcmp: 'eq' };
+
+  /* ---------- formati ---------- */
+  var nf0 = new Intl.NumberFormat('it-IT', { maximumFractionDigits: 0, useGrouping: 'always' });
+  var nf2 = new Intl.NumberFormat('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: 'always' });
+  var pf = new Intl.NumberFormat('it-IT', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  function fN(v) { return nf0.format(v); }
+  function fE(v) { return v == null ? '—' : '€ ' + nf0.format(v); }
+  function fE2(v) { return v == null ? '—' : '€ ' + nf2.format(v); }
+  function fP(v) { return v == null ? '—' : pf.format(v); }
+  function fR(v) { return v == null ? '—' : nf2.format(v) + '×'; }
+  function fPP(v) { return (v >= 0 ? '+' : '−') + nf2.format(Math.abs(v)) + ' pp'; }
+
+  /* ---------- DOM ---------- */
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function pill(txt, kind) { return el('span', 'pill' + (kind ? ' ' + kind : ''), txt); }
+  function clear(id) { var e = document.getElementById(id); e.textContent = ''; return e; }
+
+  /* ---------- periodo ---------- */
+  function periodOpts() {
+    var o = [['y', 'Anno intero'], ['q', 'Ultimi 3 mesi']];
+    for (var i = 1; i <= 12; i++) o.push([String(i), MESI[i - 1]]);
+    return o;
+  }
+  function monthsOf(per) {
+    if (per === 'y') { var a = []; for (var i = 1; i <= 12; i++) a.push(i); return a; }
+    if (per === 'q') { var q = []; for (var j = Math.max(1, LAST - 2); j <= LAST; j++) q.push(j); return q; }
+    return [Number(per)];
+  }
+  function periodLabel(per) {
+    if (per === 'y') return 'Anno ' + D.meta.anno;
+    if (per === 'q') return MESI[Math.max(1, LAST - 2) - 1] + ' – ' + MESI[LAST - 1] + ' ' + D.meta.anno;
+    return MESI[Number(per) - 1] + ' ' + D.meta.anno;
+  }
+
+  /* ---------- spesa (consuntivo): dati salvati ---------- */
+  var SAVED = { voci: {}, nomi: {} };
+  var dbDoc = null, writeQ = Promise.resolve();
+  var saveMode = 'init';
+  function setSave(mode) {
+    saveMode = mode;
+    var p = document.getElementById('savestate');
+    var map = {
+      init: ['Verifico il salvataggio…', 'neu'], ok: ['Spesa salvata', 'good'], saving: ['Salvataggio…', 'info'],
+      local: ['Non salvato: apri la pagina da claude.ai', 'warn'], ro: ['Sola lettura: serve il permesso di modifica', 'warn'],
+      err: ['Salvataggio non riuscito, riprova', 'bad'], slow: ['Salvataggio non raggiungibile per ora', 'warn']
+    };
+    var m = map[mode] || map.init;
+    p.className = 'pill ' + m[1]; p.textContent = m[0];
+  }
+  function normalize(d) {
+    var o = { voci: {}, nomi: {} };
+    if (d && d.voci && typeof d.voci === 'object') o.voci = d.voci;
+    if (d && d.nomi && typeof d.nomi === 'object') o.nomi = d.nomi;
+    return o;
+  }
+  function mergeLocal(patch) {
+    if (patch.voci) for (var k in patch.voci) { SAVED.voci[k] = Object.assign({}, SAVED.voci[k] || {}, patch.voci[k]); }
+    if (patch.nomi) for (var n in patch.nomi) SAVED.nomi[n] = patch.nomi[n];
+  }
+  function persist(patch) {
+    mergeLocal(patch);
+    if (!dbDoc) { setSave('local'); return; }
+    setSave('saving');
+    writeQ = writeQ.then(function () {
+      return dbDoc.get().then(function (s) { return s.exists ? dbDoc.update(patch) : dbDoc.set(patch); });
+    }).then(function () { setSave('ok'); }).catch(function (e) {
+      setSave(e && e.code === 'invalid_argument' ? 'ro' : 'err');
+    });
+  }
+  function initDb() {
+    if (!window.claude || !window.claude.use) { setSave('local'); return; }
+    var timer = setTimeout(function () { if (saveMode === 'init') setSave('slow'); }, 10000);
+    window.claude.use('db').then(function (db) {
+      if (!db) { clearTimeout(timer); setSave('local'); return; }
+      dbDoc = db.doc('marketing/spesa-' + D.meta.anno);
+      dbDoc.onSnapshot(function (snap) {
+        clearTimeout(timer);
+        var next = snap.exists ? normalize(snap.data()) : { voci: {}, nomi: {} };
+        var changed = JSON.stringify(next) !== JSON.stringify(SAVED);
+        SAVED = next;
+        if (saveMode === 'init' || saveMode === 'slow') setSave('ok');
+        if (changed) renderAll();
+      }, function () { clearTimeout(timer); setSave('err'); });
+    }).catch(function () { clearTimeout(timer); setSave('local'); });
+  }
+  /* La spesa è un dato di consuntivo: il mese in corso (l'ultimo presente nei dati CRM) non ha ancora spesa
+     definitiva, quindi non viene mai conteggiato, nemmeno se in archivio c'è un valore provvisorio. */
+  function sp(months, ch, g, field) {
+    var t = 0;
+    for (var k in SAVED.voci) {
+      var p = k.split('|'); var m = Number(p[0]);
+      if (m >= LAST) continue;
+      if (months.indexOf(m) < 0) continue;
+      if (ch && p[1] !== ch) continue;
+      if (g != null && p[2] !== g) continue;
+      t += Number(SAVED.voci[k][field]) || 0;
+    }
+    return t;
+  }
+
+  /* ---------- calcolo ---------- */
+  function zero() { return { l: 0, ld: 0, p: 0, pd: 0, ok: 0, a0: 0, a5: 0, f: 0, mo: 0 }; }
+  function agg(months, ch, g) {
+    var s = zero();
+    D.rows.forEach(function (r) {
+      if (months.indexOf(r.m) < 0) return;
+      if (ch && r.c !== ch) return;
+      if (g != null && r.g !== g) return;
+      for (var k in s) s[k] += r[k];
+    });
+    return s;
+  }
+  /* "giovane" = spesa solo dell'ultimo mese chiuso: le pratiche sono ancora in maturazione */
+  function isYoung(mm) { return mm.length > 0 && mm.every(function (m) { return m >= LAST - 1; }); }
+  function spendMonths(months, ch, g) { return months.filter(function (m) { return sp([m], ch, g, 's') > 0; }); }
+  function met(s, spesa) {
+    var contatti = s.l + s.p, doppi = s.ld + s.pd;
+    var net = state.noDup ? contatti - doppi : contatti;
+    var prat = state.noDup ? s.p - s.pd : s.p;
+    var aperte = s.a0 + (state.ex510 ? s.a5 : 0);
+    var den2 = net - aperte;
+    return {
+      lead: state.noDup ? s.l - s.ld : s.l, pratiche: prat, contatti: net, doppi: doppi,
+      tDoppi: contatti ? doppi / contatti : null, t1: net ? prat / net : null,
+      ok: s.ok, aperte: aperte, t2: den2 > 0 ? s.ok / den2 : null,
+      fat: s.f, mo: s.mo, spesa: spesa || 0,
+      cpl: spesa > 0 && net ? spesa / net : null, roas: spesa > 0 ? s.f / spesa : null
+    };
+  }
+  function campaignsOf(ch) {
+    var c = {};
+    D.rows.forEach(function (r) { if (r.c === ch && r.g) c[r.g] = (c[r.g] || 0) + r.l + r.p; });
+    return Object.keys(c).sort(function (a, b) { return c[b] - c[a]; });
+  }
+  function entries() {
+    var out = [];
+    D.channels.forEach(function (ch) {
+      var gs = campaignsOf(ch); if (!gs.length) gs = [''];
+      gs.forEach(function (g) { out.push({ ch: ch, g: g, multi: gs.length > 1 }); });
+    });
+    return out;
+  }
+  function campLabel(e) {
+    if (!e.g) return e.ch;
+    if (/^\d+$/.test(e.g)) return SAVED.nomi[e.g] ? SAVED.nomi[e.g] + ' (' + e.g + ')' : 'Campagna ' + e.g;
+    if (e.g === 'Senza ID campagna' && e.ch !== 'Google Ads') return 'Campagna non tracciata';
+    return e.g;
+  }
+  function unitLabel(e) { return e.multi ? e.ch + ' · ' + campLabel(e) : (e.g ? e.ch + ' · ' + campLabel(e) : e.ch); }
+  function units(months) {
+    return entries().map(function (e) {
+      var spesa = sp(months, e.ch, e.g, 's');
+      var m = met(agg(months, e.ch, e.g), spesa);
+      var mp = met(agg(spendMonths(months, e.ch, e.g), e.ch, e.g), spesa);
+      m.cpl = mp.cpl; m.roas = mp.roas; m.fatS = mp.fat; m.young = isYoung(spendMonths(months, e.ch, e.g));
+      m.e = e; m.label = unitLabel(e); return m;
+    });
+  }
+  function tone(r, avg) { if (r == null || avg == null) return null; if (r >= avg * 1.2) return 'good'; if (r <= avg * 0.8) return 'bad'; return 'neu'; }
+  function toneText(t) { return t === 'young' ? 'Troppo presto per giudicare' : t === 'good' ? 'ROAS sopra la media' : t === 'bad' ? 'ROAS sotto la media' : t === 'neu' ? 'In linea con la media' : 'Spesa non inserita'; }
+  function doppiTone(v) { if (v == null) return null; return v >= 0.25 ? 'bad' : v >= 0.15 ? 'warn' : 'good'; }
+  var TONECOL = { good: 'var(--good)', bad: 'var(--s8)', neu: '#8b93ab', warn: 'var(--s4)' };
+
+  /* ---------- sezione A ---------- */
+  function renderA() {
+    var months = monthsOf(state.per);
+    document.getElementById('aper').textContent = periodLabel(state.per);
+    var immature = months.some(function (m) { return m >= LAST - 1; });
+    var ban = document.getElementById('abanner');
+    ban.hidden = !immature;
+    ban.textContent = immature ? 'Il periodo comprende gli ultimi due mesi: molte pratiche sono ancora aperte e il fatturato è incompleto, quindi ROAS e 2ª conversione sono sottostimati. Per decidere dove investire guarda anche mesi già chiusi.' : '';
+
+    var spTot = sp(months, null, null, 's');
+    var tot = met(agg(months), spTot);
+    var baseS = 0, baseF = 0, baseC = 0;
+    var anyMature = D.channels.some(function (ch) { var mm = spendMonths(months, ch, null); return mm.length > 0 && !isYoung(mm); });
+    D.channels.forEach(function (ch) { var s = sp(months, ch, null, 's'); var mm0 = spendMonths(months, ch, null); if (s > 0 && !(anyMature && isYoung(mm0))) { var m = met(agg(mm0, ch), s); baseS += s; baseF += m.fat; baseC += m.contatti; } });
+    var avg = baseS > 0 ? baseF / baseS : null;
+    var cplBase = baseS > 0 && baseC ? baseS / baseC : null;
+    var tiles = clear('atiles');
+    function tile(chip, kind, v, sub, dim, extra, hl) {
+      var t = el('div', 'tile' + (hl ? ' hl' : '')); var h = el('div'); h.appendChild(pill(chip, kind)); t.appendChild(h);
+      t.appendChild(el('div', 'v' + (dim ? ' dim' : ''), v)); if (extra) t.appendChild(extra); t.appendChild(el('div', 'n', sub || '')); tiles.appendChild(t);
+    }
+    tile('Spesa', 'vio', spTot > 0 ? fE(spTot) : '—', spTot > 0 ? 'consuntivo, solo mesi chiusi' : 'spesa non inserita per il periodo', spTot <= 0);
+    tile('Contatti', 'info', fN(tot.contatti), fN(tot.lead) + ' lead + ' + fN(tot.pratiche) + ' pratiche');
+    tile('Costo per contatto', 'info', fE2(cplBase), 'spesa / contatti, canali con spesa', cplBase == null);
+    var dt = doppiTone(tot.tDoppi);
+    tile('Tasso doppi', dt || 'neu', fP(tot.tDoppi), fN(tot.doppi) + ' doppi su ' + fN(tot.lead + tot.pratiche + (state.noDup ? tot.doppi : 0)) + ' contatti');
+    tile('1ª conversione', 'info', fP(tot.t1), 'pratiche / contatti');
+    tile('2ª conversione', 'info', fP(tot.t2), fN(tot.ok) + ' pratiche OK, ' + fN(tot.aperte) + ' aperte escluse');
+    tile('Fatturato liquidato', 'good', fE(tot.fat), 'montante ' + fE(tot.mo) + (tot.mo ? ' (commissione ' + fP(tot.fat / tot.mo) + ')' : ''));
+    tile('ROAS', avg == null ? 'neu' : 'good', fR(avg), 'fatturato / spesa, canali con spesa', avg == null, null, avg != null);
+
+    var U = units(months);
+    var withSpend = U.filter(function (u) { return u.spesa > 0; });
+    drawSpend(months);
+    drawRoas(withSpend, avg);
+    drawShare(withSpend, tot);
+    drawTable(U, Object.assign({}, tot, { cpl: cplBase, roas: avg }), avg, months);
+    document.getElementById('anote').textContent = 'CPL e ROAS di ogni riga usano solo i mesi in cui la spesa è inserita, così un canale con spesa solo da novembre non viene confrontato con tutto l\'anno. ROAS e CPL del riepilogo sono calcolati solo sui canali con la spesa inserita. ROAS = fatturato liquidato / spesa. Le etichette di giudizio confrontano ogni voce con il ROAS medio del periodo: sopra del 20% è sopra la media, sotto del 20% è sotto la media.';
+  }
+
+  function hrow(box, label, swatch, track, value, title) {
+    var r = el('div', 'hrow'); if (title) r.title = title;
+    var l = el('div', 'hl'); if (swatch) { var s = el('span', 'sw'); s.style.background = swatch; l.appendChild(s); } l.appendChild(document.createTextNode(label)); l.title = label;
+    r.appendChild(l); r.appendChild(track); r.appendChild(el('div', 'hv', value)); box.appendChild(r);
+  }
+  function emptyMsg(box, txt) { box.appendChild(el('div', 'empty', txt)); }
+
+  function drawSpend(months) {
+    var box = clear('c1');
+    var rows = D.channels.map(function (ch) { return { ch: ch, s: sp(months, ch, null, 's') }; }).filter(function (r) { return r.s > 0; });
+    if (!rows.length) { emptyMsg(box, 'Nessuna spesa di consuntivo per questo periodo. Il mese in corso non ha ancora spesa' + (D.spend ? '.' : '; gli altri mesi si compilano nella griglia in fondo alla pagina.')); return; }
+    var mx = Math.max.apply(null, rows.map(function (r) { return r.s; }));
+    rows.forEach(function (r) {
+      var t = el('div', 'ht');
+      var a = el('i'); a.style.width = (r.s / mx * 100) + '%'; a.style.background = SLOT[r.ch]; t.appendChild(a);
+      hrow(box, r.ch, SLOT[r.ch], t, fE(r.s), '');
+    });
+    var ts = rows.reduce(function (a, r) { return a + r.s; }, 0);
+    box.appendChild(el('div', 'cap', 'Totale spesa del periodo: ' + fE(ts) + '.'));
+  }
+
+  function drawRoas(list, avg) {
+    var box = clear('c2');
+    if (!list.length) { emptyMsg(box, 'Il ROAS compare appena inserisci la spesa di almeno un canale o campagna.'); return; }
+    var L = list.slice().sort(function (a, b) { return b.roas - a.roas; });
+    var mx = Math.max.apply(null, L.map(function (u) { return u.roas; }).concat([avg || 0]));
+    L.forEach(function (u) {
+      var t = el('div', 'ht'); var t0 = u.young ? 'neu' : tone(u.roas, avg);
+      var i = el('i'); i.style.width = (u.roas / mx * 100) + '%'; i.style.background = SLOT[u.e.ch]; t.appendChild(i);
+      if (avg != null) { var mk = el('div', 'mk'); mk.style.left = (avg / mx * 100) + '%'; t.appendChild(mk); }
+      hrow(box, u.label, SLOT[u.e.ch], t, fR(u.roas), fE(u.fatS) + ' di fatturato su ' + fE(u.spesa) + ' di spesa');
+      if (t0 === 'good' || t0 === 'bad') box.lastChild.lastChild.className = 'hv ' + (t0 === 'good' ? 'pos' : 'neg');
+    });
+    if (avg != null) box.appendChild(el('div', 'cap', 'Media del periodo: ' + fR(avg) + '. Il colore della barra è quello del canale. Il valore è verde se è sopra la media, rosso se è sotto, nero se in linea o se la spesa è solo dell\'ultimo mese chiuso.'));
+  }
+
+  function drawShare(list, tot) {
+    var box = clear('c3'), lg = clear('c3leg');
+    if (!list.length) { emptyMsg(box, 'Il confronto compare appena inserisci la spesa di almeno un canale o campagna.'); return; }
+    [['Barra chiara: spesa', '#c9c6d6'], ['Barra piena: fatturato liquidato', '#4a4560']].forEach(function (x) { var sp1 = el('span'); var w = el('span', 'sw'); w.style.background = x[1]; sp1.appendChild(w); sp1.appendChild(document.createTextNode(x[0])); lg.appendChild(sp1); });
+    var L = list.slice().sort(function (a, b) { if (a.young !== b.young) return a.young ? 1 : -1; return (b.fatS - b.spesa) - (a.fatS - a.spesa); });
+    var mx = Math.max.apply(null, L.map(function (u) { return Math.max(u.spesa, u.fatS); }));
+    L.forEach(function (u) {
+      var t = el('div', 'duo');
+      var b1 = el('i'); b1.style.width = (u.spesa / mx * 100) + '%'; b1.style.background = tint(SLOT[u.e.ch], 0.38);
+      var b2 = el('i'); b2.style.width = Math.max(u.fatS > 0 ? 0.6 : 0, u.fatS / mx * 100) + '%'; b2.style.background = SLOT[u.e.ch];
+      var r1 = el('div', 'dl'); r1.appendChild(b1); var r2 = el('div', 'dl'); r2.appendChild(b2); t.appendChild(r1); t.appendChild(r2);
+      var saldo = u.fatS - u.spesa;
+      var txt = u.young ? 'ancora in maturazione' : (saldo >= 0 ? '+' : '−') + fE(Math.abs(saldo));
+      var row = el('div', 'hrow'); row.title = 'Spesa ' + fE(u.spesa) + ', fatturato liquidato ' + fE(u.fatS) + (u.young ? '. La spesa è solo dell\'ultimo mese chiuso: le pratiche sono ancora aperte, il fatturato salirà.' : '');
+      var l = el('div', 'hl'); var sw = el('span', 'sw'); sw.style.background = SLOT[u.e.ch]; l.appendChild(sw); l.appendChild(document.createTextNode(u.label)); l.title = u.label;
+      row.appendChild(l); row.appendChild(t); row.appendChild(el('div', 'hv ' + (u.young ? 'young' : saldo >= 0 ? 'pos' : 'neg'), txt)); box.appendChild(row);
+      var nums = el('div', 'duon', 'Spesa ' + fE(u.spesa) + ' · Fatturato ' + fE(u.fatS)); box.appendChild(nums);
+    });
+    box.appendChild(el('div', 'cap', 'Il saldo è fatturato liquidato meno spesa pubblicitaria: non tiene conto di stipendi e altri costi. Le righe con spesa solo recente restano grigie finché le pratiche non maturano.'));
+  }
+
+  function drawTable(U, tot, avg, months) {
+    var t = clear('atable');
+    var hr = el('tr');
+    ['Canale / campagna', 'Spesa', 'Contatti', 'CPL', 'Tasso doppi', '1ª conv.', 'Pratiche OK', '2ª conv.', 'Fatturato', 'ROAS', 'Giudizio'].forEach(function (h) { hr.appendChild(el('th', null, h)); });
+    var th = el('thead'); th.appendChild(hr); t.appendChild(th);
+    var tb = el('tbody');
+    function cells(tr, m, noJudge) {
+      tr.appendChild(el('td', m.spesa > 0 ? '' : 'muted', m.spesa > 0 ? fE(m.spesa) : '—'));
+      tr.appendChild(el('td', null, fN(m.contatti)));
+      tr.appendChild(el('td', m.cpl == null ? 'muted' : '', fE2(m.cpl)));
+      var cd = el('td'); if (m.tDoppi == null) { cd.className = 'muted'; cd.textContent = '—'; } else cd.appendChild(pill(fP(m.tDoppi), doppiTone(m.tDoppi))); tr.appendChild(cd);
+      tr.appendChild(el('td', null, fP(m.t1)));
+      tr.appendChild(el('td', null, fN(m.ok)));
+      tr.appendChild(el('td', null, fP(m.t2)));
+      tr.appendChild(el('td', null, fE(m.fat)));
+      tr.appendChild(el('td', m.roas == null ? 'muted' : '', fR(m.roas)));
+      var cj = el('td'); var tn = noJudge ? null : (m.young && m.roas != null ? 'young' : tone(m.roas, avg)); if (tn) cj.appendChild(pill(toneText(tn), tn === 'young' ? 'neu' : tn)); else { cj.className = 'muted'; cj.textContent = '—'; } tr.appendChild(cj);
+    }
+    D.channels.forEach(function (ch) {
+      var mine = U.filter(function (u) { return u.e.ch === ch; });
+      var spesa = sp(months, ch, null, 's');
+      var chm = met(agg(months, ch), spesa);
+      var smm = spendMonths(months, ch, null);
+      var mpc = met(agg(smm, ch), spesa); chm.cpl = mpc.cpl; chm.roas = mpc.roas; chm.young = isYoung(smm);
+      var withC = months.filter(function (m) { var a = agg([m], ch); return a.l + a.p > 0; }).length;
+      var tr = el('tr', 'ch'); tr.style.setProperty('--chc', SLOT[ch]); var c0 = el('td'); var s = el('span', 'sw'); s.style.background = SLOT[ch]; c0.appendChild(s); c0.appendChild(document.createTextNode(ch));
+      if (smm.length > 0 && smm.length < withC) c0.appendChild(el('span', 'partial', ' · CPL e ROAS su ' + smm.length + (smm.length === 1 ? ' mese' : ' mesi') + ' con spesa'));
+      tr.appendChild(c0);
+      cells(tr, chm); tb.appendChild(tr);
+      if (mine.length > 1) mine.forEach(function (u) {
+        var r = el('tr', 'sub'); r.style.setProperty('--chc', SLOT[ch]); r.appendChild(el('td', null, campLabel(u.e))); cells(r, u); tb.appendChild(r);
+      });
+    });
+    var tr = el('tr', 'total'); tr.appendChild(el('td', null, 'Totale'));
+    cells(tr, tot, true); tb.appendChild(tr);
+    t.appendChild(tb);
+  }
+
+
+  /* ---------- sezione W: focus sulla settimana (Google Ads e Meta) ---------- */
+  var DAY = 86400000;
+  var GIORNI = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+  var WCH = ['Google Ads', 'Meta'];
+  var WR = [], WLAST = 0, WMON = 0;
+  function tOf(s) { var p = s.split('-'); return Date.UTC(Number(p[0]), Number(p[1]) - 1, Number(p[2])); }
+  function monOf(t) { return t - ((new Date(t).getUTCDay() + 6) % 7) * DAY; }
+  function fDay(t) { var d = new Date(t); return d.getUTCDate() + ' ' + MESI[d.getUTCMonth()].slice(0, 3).toLowerCase(); }
+  function fRange(a, b) { return fDay(a) + ' – ' + fDay(b); }
+  function initW() {
+    WR = (D.days || []).map(function (r) { var o = Object.assign({}, r); o.t = tOf(r.d); return o; });
+    WLAST = D.meta.ultimoGiorno ? tOf(D.meta.ultimoGiorno) : (WR.length ? Math.max.apply(null, WR.map(function (r) { return r.t; })) : 0);
+    WMON = monOf(WLAST);
+  }
+  function aggW(t0, t1, ch, g) {
+    var s = zero();
+    WR.forEach(function (r) {
+      if (r.t < t0 || r.t > t1) return;
+      if (ch && r.c !== ch) return;
+      if (g != null && r.g !== g) return;
+      for (var k in s) s[k] += r[k] || 0;
+    });
+    return s;
+  }
+  function weekSel() {
+    var a0 = WMON - state.wk * 7 * DAY, a1 = a0 + 6 * DAY;
+    var partial = a1 > WLAST, end = Math.min(a1, WLAST);
+    var b0 = a0 - 7 * DAY, eq = state.wcmp === 'eq' && partial;
+    var b1 = eq ? b0 + (end - a0) : b0 + 6 * DAY;
+    return { a0: a0, a1: a1, end: end, partial: partial, b0: b0, b1: b1, eq: eq };
+  }
+  /* variazione rispetto alla settimana precedente: kind 'n' conteggi, 'p' percentuali (punti); upGood = salire è positivo */
+  function dTxt(cur, prev, kind, upGood) {
+    if (cur == null || prev == null) return { txt: '—', cls: '' };
+    var good, neutral, txt;
+    if (kind === 'p') {
+      var pp = (cur - prev) * 100; txt = fPP(pp); neutral = Math.abs(pp) < 0.5; good = upGood ? pp > 0 : pp < 0;
+    } else {
+      var diff = cur - prev, pct = prev > 0 ? diff / prev : null; var sg = diff >= 0 ? '+' : '−';
+      txt = sg + fN(Math.abs(diff)) + (pct != null ? ' (' + sg + pf.format(Math.abs(pct)) + ')' : '');
+      neutral = diff === 0 || (pct != null && Math.abs(pct) < 0.05); good = upGood ? diff > 0 : diff < 0;
+    }
+    return { txt: txt, cls: neutral ? '' : (good ? 'good' : 'bad') };
+  }
+
+  function renderW() {
+    var sec = document.getElementById('w');
+    if (!WR.length) { sec.style.display = 'none'; return; }
+    var ch = state.wch, w = weekSel();
+    var cur = met(aggW(w.a0, w.end, ch), 0), prv = met(aggW(w.b0, w.b1, ch), 0);
+    document.getElementById('wper').textContent = fRange(w.a0, w.end) + ' contro ' + fRange(w.b0, w.b1) + (w.eq ? ' (stessi giorni)' : '');
+    var ban = document.getElementById('wbanner');
+    var recent = state.wk <= 1;
+    ban.hidden = !recent;
+    ban.textContent = recent ? 'Le pratiche si aggiungono nei giorni dopo il lead: per le ultime due settimane pratiche, 1ª conversione e pratiche OK sono ancora sottostimate rispetto alle settimane precedenti. Per leggere il cambiamento affidati a lead, contatti e tasso doppi.' : '';
+
+    var tiles = clear('wtiles');
+    function tile(chip, v, prevTxt, d, immature) {
+      if (immature && recent) d = { txt: d.txt, cls: '' };
+      var t = el('div', 'tile'); var h = el('div'); h.appendChild(pill(chip, 'info')); t.appendChild(h);
+      t.appendChild(el('div', 'v', v));
+      var r = el('div', 'd'); r.appendChild(pill(d.txt, d.cls)); t.appendChild(r);
+      t.appendChild(el('div', 'n', prevTxt)); tiles.appendChild(t);
+    }
+    tile('Contatti', fN(cur.contatti), 'settimana prec. ' + fN(prv.contatti), dTxt(cur.contatti, prv.contatti, 'n', true));
+    tile('Lead', fN(cur.lead), 'settimana prec. ' + fN(prv.lead), dTxt(cur.lead, prv.lead, 'n', true));
+    tile('Pratiche', fN(cur.pratiche), 'settimana prec. ' + fN(prv.pratiche), dTxt(cur.pratiche, prv.pratiche, 'n', true), true);
+    tile('Tasso doppi', fP(cur.tDoppi), 'settimana prec. ' + fP(prv.tDoppi), dTxt(cur.tDoppi, prv.tDoppi, 'p', false));
+    tile('1ª conversione', fP(cur.t1), 'settimana prec. ' + fP(prv.t1), dTxt(cur.t1, prv.t1, 'p', true), true);
+    tile('Pratiche OK', fN(cur.ok), 'settimana prec. ' + fN(prv.ok), dTxt(cur.ok, prv.ok, 'n', true), true);
+
+    /* giorno per giorno: questa settimana contro la precedente */
+    var cC = SLOT[ch], cP = tint(SLOT[ch], 0.4), days = [0, 1, 2, 3, 4, 5, 6];
+    var vC = days.map(function (i) { var t = w.a0 + i * DAY; return t > WLAST ? 0 : met(aggW(t, t, ch), 0).contatti; });
+    var vP = days.map(function (i) { var t = w.b0 + i * DAY; return met(aggW(t, t, ch), 0).contatti; });
+    document.getElementById('w1cap').textContent = ch + ', ' + (state.noDup ? 'doppi esclusi' : 'doppi inclusi') + '. Ogni giorno è confrontato con lo stesso giorno della settimana precedente.';
+    barChart('w1svg', 'w1', 'tipw1', days, [{ name: 'Settimana precedente', color: cP, values: vP }, { name: 'Questa settimana', color: cC, values: vC }], false, fN,
+      function (i) {
+        var t = w.a0 + i * DAY, inFut = t > WLAST;
+        var lines = [{ sw: cC, k: 'Questa settimana', v: inFut ? 'non ancora' : fN(vC[i]) }, { sw: cP, k: 'Sett. precedente', v: fN(vP[i]) }];
+        if (!inFut) lines.push({ k: 'Variazione', v: dTxt(vC[i], vP[i], 'n', true).txt });
+        return lines;
+      },
+      function (c) { return GIORNI[c]; },
+      function (c) { return GIORNI[c] + ' ' + fDay(w.a0 + c * DAY) + ' contro ' + fDay(w.b0 + c * DAY); });
+    var lg1 = clear('w1leg');
+    [['Questa settimana', cC], ['Settimana precedente', cP]].forEach(function (x) { var s = el('span'); var sw = el('span', 'sw'); sw.style.background = x[1]; s.appendChild(sw); s.appendChild(document.createTextNode(x[0])); lg1.appendChild(s); });
+
+    /* ultime 8 settimane: contatti utili e doppi */
+    var offs = [7, 6, 5, 4, 3, 2, 1, 0];
+    var wk = offs.map(function (o) { var a = WMON - o * 7 * DAY; var s = aggW(a, Math.min(a + 6 * DAY, WLAST), ch); return { a: a, s: s, m: met(s, 0), part: a + 6 * DAY > WLAST }; });
+    var cU = SLOT[ch], cD = tint(SLOT[ch], 0.4);
+    document.getElementById('w2cap').textContent = ch + '. Barra piena = contatti utili, barra chiara = doppi. L\'ultima settimana è parziale (fino al ' + fDay(WLAST) + ').';
+    barChart('w2svg', 'w2', 'tipw2', offs.map(function (o, i) { return i; }), [
+      { name: 'Contatti utili', color: cU, values: wk.map(function (x) { return x.s.l + x.s.p - x.s.ld - x.s.pd; }) },
+      { name: 'Doppi', color: cD, values: wk.map(function (x) { return x.s.ld + x.s.pd; }) }], true, fN,
+      function (i) {
+        var x = wk[i];
+        return [{ sw: cU, k: 'Contatti utili', v: fN(x.s.l + x.s.p - x.s.ld - x.s.pd) }, { sw: cD, k: 'Doppi', v: fN(x.s.ld + x.s.pd) }, { k: 'Lead', v: fN(x.s.l) }, { k: 'Pratiche', v: fN(x.s.p) }, { k: 'Tasso doppi', v: fP(x.m.tDoppi) }];
+      },
+      function (i) { return (window.innerWidth < 520 && i % 2 === 0) ? '' : fDay(wk[i].a); },
+      function (i) { return 'Settimana ' + fRange(wk[i].a, wk[i].a + 6 * DAY) + (wk[i].part ? ' (parziale)' : ''); });
+    var lg2 = clear('w2leg');
+    [['Contatti utili', cU], ['Doppi', cD]].forEach(function (x) { var s = el('span'); var sw = el('span', 'sw'); sw.style.background = x[1]; s.appendChild(sw); s.appendChild(document.createTextNode(x[0])); lg2.appendChild(s); });
+
+    /* tabella per campagna */
+    var gs = {};
+    WR.forEach(function (r) { if (r.c === ch && r.t >= w.b0 && r.t <= w.a1) gs[r.g] = 1; });
+    var list = Object.keys(gs).map(function (g) {
+      return { g: g, cur: met(aggW(w.a0, w.end, ch, g), 0), prv: met(aggW(w.b0, w.b1, ch, g), 0) };
+    }).filter(function (x) { return x.cur.contatti + x.prv.contatti > 0; })
+      .sort(function (a, b) { return (b.cur.contatti - a.cur.contatti) || (b.prv.contatti - a.prv.contatti); });
+    var t = clear('wtable');
+    var hr = el('tr');
+    ['Campagna', 'Contatti', 'Sett. prec.', 'Variazione', 'Lead', 'Pratiche', 'Tasso doppi', 'Variaz. doppi', '1ª conv.', 'Pratiche OK'].forEach(function (h) { hr.appendChild(el('th', null, h)); });
+    var th = el('thead'); th.appendChild(hr); t.appendChild(th);
+    var tb = el('tbody');
+    function row(label, c, p, cls) {
+      var tr = el('tr', cls);
+      var c0 = el('td'); if (!cls) { var sw = el('span', 'sw'); sw.style.background = SLOT[ch]; c0.appendChild(sw); } c0.appendChild(document.createTextNode(label)); tr.appendChild(c0);
+      tr.appendChild(el('td', null, fN(c.contatti)));
+      tr.appendChild(el('td', 'muted', fN(p.contatti)));
+      var dv = dTxt(c.contatti, p.contatti, 'n', true); var d1 = el('td'); d1.appendChild(pill(dv.txt, dv.cls)); tr.appendChild(d1);
+      tr.appendChild(el('td', null, fN(c.lead)));
+      tr.appendChild(el('td', null, fN(c.pratiche)));
+      var cd = el('td'); if (c.tDoppi == null) { cd.className = 'muted'; cd.textContent = '—'; } else cd.appendChild(pill(fP(c.tDoppi), doppiTone(c.tDoppi))); tr.appendChild(cd);
+      var dd = dTxt(c.tDoppi, p.tDoppi, 'p', false); var d2 = el('td'); d2.appendChild(pill(dd.txt, dd.cls)); tr.appendChild(d2);
+      tr.appendChild(el('td', null, fP(c.t1)));
+      tr.appendChild(el('td', null, fN(c.ok)));
+      tb.appendChild(tr);
+    }
+    if (list.length > 1) {
+      var tot = { contatti: cur.contatti, lead: cur.lead, pratiche: cur.pratiche, tDoppi: cur.tDoppi, t1: cur.t1, ok: cur.ok };
+      row(ch + ' (totale)', cur, prv, 'ch');
+      tb.lastChild.style.setProperty('--chc', SLOT[ch]);
+    }
+    list.forEach(function (x) { var r0 = tb.childNodes.length; row(campLabel({ ch: ch, g: x.g }), x.cur, x.prv, list.length > 1 ? 'sub' : 'ch'); tb.lastChild.style.setProperty('--chc', SLOT[ch]); });
+    t.appendChild(tb);
+    document.getElementById('wnote').textContent = 'Le settimane vanno da lunedì a domenica e contano i contatti per data di creazione del lead originario. Il confronto "a parità di giorni" mette a fianco gli stessi giorni della settimana precedente, così una settimana ancora in corso non sembra in calo solo perché è incompleta. Variazioni piccole (sotto il 5% o mezzo punto) sono in grigio; verde = migliora, rosso = peggiora (per i doppi, salire è un peggioramento). La spesa è inserita per mese, per questo CPL e ROAS qui non compaiono: per giudicare il costo guarda la sezione mensile.';
+  }
+
+  /* ---------- sezione B ---------- */
+  function showTip(tip, host, ev, title, lines) {
+    tip.textContent = ''; tip.appendChild(el('b', null, title));
+    lines.forEach(function (l) { var d = el('div'); var a = el('span'); if (l.sw) { var s = el('span', 'sw'); s.style.background = l.sw; a.appendChild(s); } a.appendChild(document.createTextNode(l.k)); d.appendChild(a); d.appendChild(el('span', null, l.v)); tip.appendChild(d); });
+    tip.style.display = 'block';
+    var hb = host.getBoundingClientRect(), x = ev.clientX - hb.left + 12, y = ev.clientY - hb.top + 12, w = tip.offsetWidth, h = tip.offsetHeight;
+    if (x + w > hb.width - 6) x = ev.clientX - hb.left - w - 12; if (x < 6) x = 6; if (y + h > hb.height - 6) y = hb.height - h - 6;
+    tip.style.left = x + 'px'; tip.style.top = Math.max(6, y) + 'px';
+  }
+  function svgEl(tag, attrs) { var e = document.createElementNS('http://www.w3.org/2000/svg', tag); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  function niceMax(v) { if (v <= 0) return 1; var p = Math.pow(10, Math.floor(Math.log10(v))), f = v / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 4 ? 4 : f <= 8 ? 8 : 10) * p; }
+
+  function barChart(boxId, hostId, tipId, cats, series, stacked, fmtAxis, tipFn, labFn, titFn) {
+    var box = clear(boxId), host = document.getElementById(hostId), tip = document.getElementById(tipId);
+    var W = Math.max(300, box.clientWidth || host.clientWidth - 28), H = 250, ml = 52, mb = 24;
+    var totals = cats.map(function (c, i) { return stacked ? series.reduce(function (a, s) { return a + s.values[i]; }, 0) : Math.max.apply(null, series.map(function (s) { return s.values[i]; })); });
+    var maxV = niceMax(Math.max.apply(null, totals.concat([0])));
+    var svg = svgEl('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, role: 'img' }), plotH = H - mb - 10;
+    for (var i = 0; i <= 4; i++) {
+      var y = 10 + plotH - plotH * i / 4;
+      svg.appendChild(svgEl('line', { x1: ml, x2: W - 6, y1: y, y2: y, stroke: '#e3e6ee', 'stroke-width': 1 }));
+      var tx = svgEl('text', { x: ml - 6, y: y + 4, 'text-anchor': 'end' }); tx.textContent = fmtAxis(maxV * i / 4); svg.appendChild(tx);
+    }
+    var slot = (W - ml - 6) / cats.length, group = Math.min(40, slot * 0.7), base = 10 + plotH;
+    cats.forEach(function (c, ci) {
+      var x0 = ml + slot * ci + (slot - group) / 2;
+      if (stacked) {
+        var acc = 0;
+        series.forEach(function (s) { var v = s.values[ci]; if (v <= 0) return; var h = plotH * v / maxV; acc += h; svg.appendChild(svgEl('rect', { x: x0, y: base - acc + 1, width: group, height: Math.max(0, h - 1), fill: s.color })); });
+      } else {
+        var bw = group / series.length;
+        series.forEach(function (s, si) { var v = s.values[ci]; if (v <= 0) return; var h = plotH * v / maxV; svg.appendChild(svgEl('rect', { x: x0 + bw * si, y: base - h, width: Math.max(2, bw - 2), height: h, fill: s.color, rx: 2 })); });
+      }
+      var lab = svgEl('text', { x: x0 + group / 2, y: H - 8, 'text-anchor': 'middle' }); lab.textContent = labFn ? labFn(c) : MESI[c - 1].slice(0, 3); svg.appendChild(lab);
+      var hit = svgEl('rect', { x: ml + slot * ci, y: 0, width: slot, height: H, fill: 'transparent' });
+      hit.addEventListener('mousemove', function (ev) { showTip(tip, host, ev, titFn ? titFn(c) : MESI[c - 1] + (c >= LAST - 1 ? ' (non maturo)' : ''), tipFn(ci)); });
+      hit.addEventListener('mouseleave', function () { tip.style.display = 'none'; });
+      svg.appendChild(hit);
+    });
+    box.appendChild(svg);
+  }
+
+  function renderB() {
+    var ch = state.bch;
+    var months = []; for (var i = 1; i <= LAST; i++) months.push(i);
+    var spesa = months.map(function (m) { return sp([m], ch === 'Tutti' ? null : ch, null, 's'); });
+    var fat = months.map(function (m) { return agg([m], ch === 'Tutti' ? null : ch).f; });
+    var any = spesa.some(function (v) { return v > 0; });
+    document.getElementById('h1cap').textContent = (ch === 'Tutti' ? 'Tutti i canali' : ch) + (any ? '. Passa il mouse sulle colonne per il ROAS del mese.' : '. Inserisci la spesa per vedere il confronto.');
+    var cS = ch === 'Tutti' ? 'var(--cost)' : tint(SLOT[ch], 0.4), cF = ch === 'Tutti' ? 'var(--accent)' : SLOT[ch];
+    barChart('h1svg', 'h1', 'tip1', months, [{ name: 'Spesa', color: cS, values: spesa }, { name: 'Fatturato', color: cF, values: fat }], false,
+      function (v) { return v >= 1000 ? '€ ' + nf0.format(v / 1000) + 'k' : '€ ' + nf0.format(v); },
+      function (ci) { return [{ sw: cS, k: 'Spesa', v: fE(spesa[ci]) }, { sw: cF, k: 'Fatturato', v: fE(fat[ci]) }, { k: 'ROAS', v: spesa[ci] > 0 ? fR(fat[ci] / spesa[ci]) : '—' }]; });
+    var lg = clear('h1leg');
+    [['Spesa', cS], ['Fatturato liquidato', cF]].forEach(function (x) { var s = el('span'); var w = el('span', 'sw'); w.style.background = x[1]; s.appendChild(w); s.appendChild(document.createTextNode(x[0])); lg.appendChild(s); });
+
+    var chans = ch === 'Tutti' ? D.channels.filter(function (c) { return D.rows.some(function (r) { return r.c === c && r.l + r.p > 0; }); }) : [ch];
+    var ser = chans.map(function (c) { return { name: c, color: SLOT[c], values: months.map(function (m) { return met(agg([m], c), 0).contatti; }) }; });
+    document.getElementById('h2cap').textContent = (ch === 'Tutti' ? 'Tutti i canali' : ch) + ', ' + (state.noDup ? 'doppi esclusi' : 'doppi inclusi') + '.';
+    barChart('h2svg', 'h2', 'tip2', months, ser, true, fN, function (ci) {
+      var lines = ser.map(function (s) { return { sw: s.color, k: s.name, v: fN(s.values[ci]) }; }).filter(function (l) { return l.v !== '0'; }).reverse();
+      if (ser.length > 1) lines.push({ k: 'Totale', v: fN(ser.reduce(function (a, s) { return a + s.values[ci]; }, 0)) });
+      return lines;
+    });
+    var l2 = clear('h2leg'); if (chans.length > 1) chans.forEach(function (c) { var s = el('span'); var w = el('span', 'sw'); w.style.background = SLOT[c]; s.appendChild(w); s.appendChild(document.createTextNode(c)); l2.appendChild(s); });
+  }
+
+  /* ---------- sezione C: griglia di inserimento ---------- */
+  function renderC() {
+    var field = 's';
+    document.getElementById('gnote').textContent = 'Spesa reale (consuntivo) del mese, in euro, senza IVA. Si compila a mese chiuso: il mese in corso resta bloccato e non entra nei calcoli.';
+    var t = clear('gtable');
+    var hr = el('tr'); hr.appendChild(el('th', null, 'Canale / campagna'));
+    for (var i = 1; i <= 12; i++) hr.appendChild(el('th', null, MESI[i - 1].slice(0, 3)));
+    hr.appendChild(el('th', null, 'Anno')); var th = el('thead'); th.appendChild(hr); t.appendChild(th);
+    var tb = el('tbody'); var cur = null;
+    function sumRow(label, fn, cls, chn) {
+      var tr = el('tr', cls); if (chn) tr.style.setProperty('--chc', SLOT[chn]); tr.appendChild(el('td', null, label)); var tot = 0;
+      for (var m = 1; m <= 12; m++) { var v = fn(m); tot += v; tr.appendChild(el('td', 'ro' + (v ? '' : ' muted'), v ? fN(v) : '—')); }
+      tr.appendChild(el('td', 'ro', tot ? fN(tot) : '—')); return tr;
+    }
+    D.channels.forEach(function (ch) {
+      var es = entries().filter(function (e) { return e.ch === ch; });
+      if (es.length > 1) tb.appendChild(sumRow(ch + ' (totale)', function (m) { return sp([m], ch, null, field); }, 'ch', ch));
+      es.forEach(function (e) {
+        var tr = el('tr', es.length > 1 ? 'sub' : 'ch'); tr.style.setProperty('--chc', SLOT[ch]); var c0 = el('td');
+        c0.appendChild(document.createTextNode(es.length > 1 ? (/^\d+$/.test(e.g) ? e.g : campLabel(e)) : (ch === 'Kova' ? 'Kova (success fee)' : ch)));
+        if (/^\d+$/.test(e.g)) {
+          var nm = document.createElement('input'); nm.type = 'text'; nm.className = 'nm'; nm.placeholder = 'Nome campagna'; nm.value = SAVED.nomi[e.g] || ''; nm.setAttribute('aria-label', 'Nome della campagna ' + e.g);
+          nm.addEventListener('change', function () { var p = { nomi: {} }; p.nomi[e.g] = nm.value.trim(); persist(p); renderAll(); }); c0.appendChild(nm);
+        }
+        tr.appendChild(c0); var tot = 0;
+        for (var m = 1; m <= 12; m++) (function (m) {
+          var k = m + '|' + e.ch + '|' + e.g; var locked = m >= LAST; var v = locked ? 0 : (Number((SAVED.voci[k] || {})[field]) || 0); tot += v;
+          var td = el('td'); var inp = document.createElement('input'); inp.type = 'number'; inp.min = '0'; inp.step = '50'; inp.value = v ? (v >= 100 ? String(Math.round(v)) : String(v)) : ''; if (v && v !== Math.round(v)) inp.title = 'Valore esatto: ' + v.toFixed(2).replace('.', ',') + ' euro'; inp.placeholder = locked ? '' : '0';
+          if (locked) { inp.disabled = true; inp.title = 'Mese in corso: la spesa di consuntivo si inserisce a mese chiuso'; inp.style.background = '#efedf5'; }
+          inp.setAttribute('aria-label', 'Spesa ' + campLabel(e) + ' ' + MESI[m - 1]);
+          inp.addEventListener('change', function () { var p = { voci: {} }; p.voci[k] = {}; p.voci[k][field] = Math.max(0, Number(inp.value) || 0); persist(p); renderAll(); });
+          td.appendChild(inp); tr.appendChild(td);
+        })(m);
+        tr.appendChild(el('td', 'ro', tot ? fN(tot) : '—')); tb.appendChild(tr);
+      });
+    });
+    tb.appendChild(sumRow('Totale', function (m) { return sp([m], null, null, field); }, 'total'));
+    t.appendChild(tb);
+  }
+
+  /* ---------- regole ---------- */
+  function renderRules() {
+    var ul = clear('regole');
+    [
+      'Contatti: lead + pratiche dello stesso mese. Il mese è quello di creazione del lead originario.',
+      '1ª conversione: pratiche / contatti. 2ª conversione: pratiche OK / (contatti − pratiche aperte).',
+      'Pratiche OK: stato "Deliberata Stato 30" o "Liquidata Stato 60", una sola volta ciascuna.',
+      'Pratiche aperte, escluse dalla 2ª conversione: "Da inviare al mandante Stato 0" sempre. "In lavorazione Stato 5" e "Caricata Stato 10" si escludono con la spunta in alto (da confermare).',
+      'Tasso doppi: (lead "Lead Doppio" + pratiche "Pratica Doppia") / contatti. Etichetta verde sotto il 15%, gialla fino al 25%, rossa oltre: soglie indicative, da confermare. "Escludi doppi" li toglie da contatti, pratiche, CPL e conversioni.',
+      'Fatturato: commissioni attive totali + rappell + direzione + premi, solo sulle pratiche "Liquidata Stato 60". Manca il rappel annuale, che non è nel report pratiche del CRM: per Younited il fatturato risulta più basso del report dedicato di circa il 14%. Il montante mostrato è quello delle stesse pratiche. Il ROAS usa il fatturato.',
+      'CPL: spesa / contatti. ROAS: fatturato / spesa. La spesa non è nel CRM: è un dato di consuntivo che si inserisce nella griglia in fondo a mese chiuso e poi non cambia. Il budget non è in questo report (confronto spesa e budget in un report a parte). Il mese in corso non ha spesa e quindi non ha CPL né ROAS.',
+      'Canali: Google Ads, Meta, Younited, Sito web, WhatsApp, Cofidis KO (i tre prodotti KO insieme), Altri. Kova non compare ancora tra le origini del CRM (è a success fee: la spesa sono le provvigioni). I ' + fN(D.meta.leadSenzaOrigine + D.meta.pratSenzaOrigine) + ' contatti con origine vuota sono contati in Altri.',
+      'Campagne: per Google Ads si leggono dall\'ID Utm_Campaign. Per Meta si usa il Campaign Name salvato dal CRM nella scheda del lead: la spesa va inserita con lo stesso nome della campagna in Meta Ads Manager. I lead Meta arrivati prima di fine ottobre non hanno la campagna e restano "non tracciati".',
+      'CPL e ROAS di ogni riga usano solo i mesi in cui la spesa è inserita. Se la spesa di una riga è solo dell\'ultimo mese chiuso il giudizio è "Troppo presto per giudicare", perché il fatturato non è maturo. WhatsApp: la spesa della campagna Meta "WhatsApp" è confrontata con tutti i contatti WhatsApp, anche quelli non pubblicitari, quindi il suo ROAS è sovrastimato.',
+      'Stati pratica non classificati come OK né aperti ("Stato 00", "Da ripresentare", "Rifiutata", "Ritirata", "Declinata", "Respinta"): restano nei contatti e nel denominatore della 2ª conversione. Da confermare che "Stato 00" sia un esito chiuso.',
+      'Focus sulla settimana (solo Google Ads e Meta): settimane da lunedì a domenica, per data di creazione del lead originario. Con "a parità di giorni" la settimana in corso è confrontata con gli stessi giorni della precedente. Spesa, CPL e ROAS restano mensili.',
+      'I mesi più recenti non sono maturi: molte pratiche sono ancora aperte e il fatturato non è completo, quindi 2ª conversione e ROAS salgono con gli aggiornamenti.'
+    ].forEach(function (x) { ul.appendChild(el('li', null, x)); });
+  }
+
+  function renderAll() { renderA(); renderW(); renderB(); renderC(); }
+
+  function init() {
+    document.getElementById('fonte').textContent = 'Report di rendimento · dati CRM al ' + D.meta.estratto + ' · ' + fN(D.meta.nLead) + ' lead e ' + fN(D.meta.nPratiche) + ' pratiche';
+    var per = document.getElementById('per'); periodOpts().forEach(function (o) { var op = el('option', null, o[1]); op.value = o[0]; per.appendChild(op); }); per.value = state.per;
+    var bch = document.getElementById('bch'); [['Tutti', 'Tutti i canali']].concat(D.channels.map(function (c) { return [c, c]; })).forEach(function (o) { var op = el('option', null, o[1]); op.value = o[0]; bch.appendChild(op); });
+    initW();
+    var wch = document.getElementById('wch'); WCH.forEach(function (c) { var op = el('option', null, c); op.value = c; wch.appendChild(op); }); wch.value = state.wch;
+    var wwk = document.getElementById('wwk');
+    for (var o = 0; o < 8; o++) { var a0 = WMON - o * 7 * DAY; var op = el('option', null, fRange(a0, a0 + 6 * DAY) + (a0 + 6 * DAY > WLAST ? ' (in corso)' : '')); op.value = String(o); wwk.appendChild(op); }
+    wwk.value = String(state.wk);
+    wch.addEventListener('change', function (e) { state.wch = e.target.value; renderW(); });
+    wwk.addEventListener('change', function (e) { state.wk = Number(e.target.value); renderW(); });
+    document.getElementById('wcmp').addEventListener('change', function (e) { state.wcmp = e.target.value; renderW(); });
+    per.addEventListener('change', function (e) { state.per = e.target.value; renderA(); });
+    bch.addEventListener('change', function (e) { state.bch = e.target.value; renderB(); });
+    document.getElementById('noDup').addEventListener('change', function (e) { state.noDup = e.target.checked; renderAll(); });
+    document.getElementById('ex510').addEventListener('change', function (e) { state.ex510 = e.target.checked; renderAll(); });
+    renderRules();
+    if (D.spend) {
+      /* versione statica per il CRM: la spesa è già dentro i dati, niente salvataggio né griglia di inserimento */
+      SAVED = normalize(D.spend);
+      var sc = document.getElementById('c'); if (sc) sc.style.display = 'none';
+      var p0 = document.getElementById('savestate'); p0.className = 'pill neu'; p0.textContent = 'Spesa di consuntivo aggiornata al ' + (D.spend.aggiornata || '—');
+      renderAll();
+    } else { setSave('init'); renderAll(); initDb(); }
+    var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { renderB(); renderW(); }, 120); });
+  }
+  init();
+})();
+</script>
+</body>
+</html>

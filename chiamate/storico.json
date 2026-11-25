@@ -6,6 +6,6 @@
   {"data": "2026-11-20", "aggiornato": "19:36", "chiusa": true, "dialer_con_risposta": 672, "manuali_con_risposta": 64, "clienti_parlati": 736},
   {"data": "2026-11-23", "aggiornato": "19:37", "chiusa": true, "dialer_con_risposta": 627, "manuali_con_risposta": 83, "clienti_parlati": 710},
   {"data": "2026-11-24", "aggiornato": "19:37", "chiusa": true, "dialer_con_risposta": 647, "manuali_con_risposta": 60, "clienti_parlati": 707, "ore": [{"ora": "09", "risposte_dialer": 90, "conversato_dialer_sec": 4915}, {"ora": "10", "risposte_dialer": 67, "conversato_dialer_sec": 4447}, {"ora": "11", "risposte_dialer": 61, "conversato_dialer_sec": 5418}, {"ora": "12", "risposte_dialer": 124, "conversato_dialer_sec": 7872}, {"ora": "14", "risposte_dialer": 99, "conversato_dialer_sec": 7417}, {"ora": "15", "risposte_dialer": 83, "conversato_dialer_sec": 5362}, {"ora": "16", "risposte_dialer": 43, "conversato_dialer_sec": 2749}, {"ora": "17", "risposte_dialer": 80, "conversato_dialer_sec": 4331}]},
-  {"data": "2026-11-25", "aggiornato": "10:08", "chiusa": false, "dialer_con_risposta": 96, "manuali_con_risposta": 6, "clienti_parlati": 102}
+  {"data": "2026-11-25", "aggiornato": "13:08", "chiusa": false, "dialer_con_risposta": 269, "manuali_con_risposta": 8, "clienti_parlati": 277}
  ]
 }

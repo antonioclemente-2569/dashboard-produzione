@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Canale Younited</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: report a colonna singola — sintesi KPI, funnel/ROAS per mese, tabella, dettaglio pratiche, note di metodo */
+:root{
+  --bg:#f6f5f9; --surface:#ffffff; --ink:#1d1a2b; --muted:#625d78; --line:#e3e0ec;
+  --accent:#4b2fa3; --accent-soft:#e6e0f7; --cost:#b9b2cf;
+  --good:#1f7a4d; --good-bg:#e1f3e9; --warn:#9a6200; --warn-bg:#fbf0d9; --bad:#b3261e; --bad-bg:#fbe5e3;
+  --f-display:"Bricolage Grotesque",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#13111c; --surface:#1c1929; --ink:#ece9f5; --muted:#a39dbb; --line:#2f2b40;
+  --accent:#a891f5; --accent-soft:#2d2550; --cost:#5d5675;
+  --good:#5fd39a; --good-bg:#173527; --warn:#f0b455; --warn-bg:#3a2d12; --bad:#ff8a80; --bad-bg:#40201e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#13111c; --surface:#1c1929; --ink:#ece9f5; --muted:#a39dbb; --line:#2f2b40;
+  --accent:#a891f5; --accent-soft:#2d2550; --cost:#5d5675;
+  --good:#5fd39a; --good-bg:#173527; --warn:#f0b455; --warn-bg:#3a2d12; --bad:#ff8a80; --bad-bg:#40201e; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,5vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--f-display);font-weight:600;font-size:20px;margin:0 0 4px;text-wrap:balance}
+.sub{color:var(--muted);max-width:70ch;margin:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.kpi .l{font-size:12px;color:var(--muted);letter-spacing:.03em}
+.kpi .v{font-family:var(--f-display);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi .n{font-size:12px;color:var(--muted)}
+.kpi.hl{background:var(--accent-soft);border-color:transparent}
+.kpi.hl .v{color:var(--accent)}
+section{display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.charts .panel{min-width:0}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto}
+svg text{fill:var(--muted);font-family:var(--f-mono);font-size:11px}
+svg .vl{fill:var(--ink);font-weight:500}
+.tw{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 12px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font-weight:600;font-size:12px;color:var(--muted);background:var(--bg);position:sticky;top:0}
+th:first-child,td:first-child,td.t{text-align:left}
+tr.tot td{font-weight:600;border-bottom:0;background:var(--accent-soft)}
+td.k{color:var(--accent);font-weight:600}
+.pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600}
+.pill.g{background:var(--good-bg);color:var(--good)} .pill.w{background:var(--warn-bg);color:var(--warn)} .pill.b{background:var(--bad-bg);color:var(--bad)} .pill.n{background:var(--bg);color:var(--muted)}
+.notes{display:grid;gap:8px;color:var(--muted);font-size:13.5px;max-width:80ch;padding-left:18px;margin:0}
+.est{font-size:11px;color:var(--warn);font-weight:600;margin-left:4px}
+</style>
+</head><body>
+<div class="wrap">
+<header>
+  <span class="eyebrow">AP 24/7 · Report di rendimento · dati CRM al 23/11/2026</span>
+  <h1>Canale Younited</h1>
+  <p class="sub">Conversioni e ritorno sulla spesa delle lead pre-rifiutate da Younited, per mese di creazione della lead. CPL € 15 + IVA (Allegato B del contratto).</p>
+</header>
+
+<div class="kpis" id="kpis"></div>
+
+<section>
+  <div class="charts">
+    <div class="panel"><h2>Conversioni per mese</h2>
+      <div class="legend"><span><i style="background:var(--cost)"></i>Conv. 1 · pratiche / totale</span><span><i style="background:var(--accent)"></i>Conv. 2 · pratiche valide / totale</span></div>
+      <svg id="c1" viewBox="0 0 480 240" role="img" aria-label="Conversioni per mese"></svg></div>
+    <div class="panel"><h2>Fatturato e costo lead</h2>
+      <div class="legend"><span><i style="background:var(--accent)"></i>Fatturato pratiche valide</span><span><i style="background:var(--cost)"></i>Costo lead</span></div>
+      <svg id="c2" viewBox="0 0 480 240" role="img" aria-label="Fatturato e costo per mese"></svg></div>
+  </div>
+</section>
+
+<section>
+  <h2>Dettaglio mensile</h2>
+  <div class="tw"><table id="tab"></table></div>
+</section>
+
+<section>
+  <h2>Come leggere i numeri</h2>
+  <ul class="notes">
+    <li><b>Totale</b> = lead nel modulo Lead + lead convertiti in pratica (il file Lead non contiene i convertiti).</li>
+    <li><b>Conversione 1</b> = pratiche / totale. <b>Conversione 2</b> = pratiche Liquidate, Deliberate, Caricate, In Lavorazione o Esaminate / totale.</li>
+    <li><b>Fatturato</b> = Comm. Attive Totali + Comm. Premi + Comm. Rappel + Comm. Attive Direzione + Rappel Annuale, solo sulle pratiche valide.</li>
+    <li><b>Costo</b> = (totale − lead esclusi) × € 15. Maggio, giugno e luglio usano i lead scalati nelle fatture Younited; settembre le 29 esclusioni comunicate; ottobre le 11 lead stornate concordate con Younited (mail del 06/11/2026). Novembre (mese in corso) non ha ancora dati.</li>
+    <li>"Da inviare al mandante Stato 0" e "Stato 00" sono escluse dalle pratiche valide. Nessuna lead ad agosto (fermo tecnico Younited).</li>
+    <li>Maggio e giugno: scalati in fattura solo 4 lead per mese contro 9 e 13 escludibili. 14 lead (€ 210 + IVA) ancora da stornare.</li>
+  </ul>
+</section>
+</div>
+
+<script>
+const D={"rows": [{"m": "2025-12", "lead": 1, "prat": 0, "tot": 1, "valid": 0, "mont": 0.0, "fatt": 0.0, "excl": 0, "src": "nessuna esclusione", "liq": 0}, {"m": "2026-05", "lead": 37, "prat": 21, "tot": 58, "valid": 1, "mont": 12384.0, "fatt": 1702.8, "excl": 4, "src": "fattura 2026/159", "liq": 1}, {"m": "2026-06", "lead": 68, "prat": 22, "tot": 90, "valid": 0, "mont": 0.0, "fatt": 0.0, "excl": 4, "src": "fattura 2026/184", "liq": 0}, {"m": "2026-07", "lead": 74, "prat": 27, "tot": 101, "valid": 3, "mont": 48600.0, "fatt": 4667.34, "excl": 12, "src": "fattura 2026/218", "liq": 2}, {"m": "2026-09", "lead": 125, "prat": 81, "tot": 206, "valid": 8, "mont": 154992.0, "fatt": 19349.85, "excl": 29, "src": "lista comunicata (16 doppi, 8 spazzatura, 5 fuori target)", "liq": 8}, {"m": "2026-10", "lead": 62, "prat": 29, "tot": 91, "valid": 1, "mont": 4464.0, "fatt": 53.57, "excl": 11, "src": "mail Younited 06/11/2026: 11 lead stornati, 54 fatturati (consuntivo Younited 65)", "liq": 0}], "states": {"Da ripresentare": 75, "Ritirata dal cliente Pre Stato 5": 33, "Rifiutata Pre Stato 5": 25, "Declinata Ex Art.39": 17, "Stato 00": 14, "Liquidata Stato 60": 11, "Pratica Doppia": 1, "Respinta - Stato 40": 1, "Deliberata - Stato 30": 1, "Da Inviare al mandante Stato 0": 1, "In Lavorazione - Stato 5": 1}};
+const CPL=15;
+const MN={"2025-12":"Dic 25","2026-05":"Mag","2026-06":"Giu","2026-07":"Lug","2026-08":"Ago","2026-09":"Set","2026-10":"Ott","2026-11":"Nov"};
+const eur=v=>"€ "+v.toLocaleString("it-IT",{minimumFractionDigits:0,maximumFractionDigits:0});
+const pct=v=>(v*100).toLocaleString("it-IT",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";
+const x2=v=>v.toLocaleString("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2})+"x";
+const R=D.rows.map(r=>{const fb=r.tot-r.excl,c=fb*CPL;return {...r,fb,cost:c,c1:r.tot?r.prat/r.tot:0,c2:r.tot?r.valid/r.tot:0,roas:c?r.fatt/c:0}});
+const T=R.reduce((a,r)=>{for(const k of["lead","prat","tot","valid","mont","fatt","excl","fb","cost"])a[k]=(a[k]||0)+r[k];return a},{});
+T.c1=T.prat/T.tot;T.c2=T.valid/T.tot;T.roas=T.fatt/T.cost;
+const sep=R.find(r=>r.m==="2026-09");
+document.getElementById("kpis").innerHTML=[
+ ["Nominativi ricevuti",T.tot.toLocaleString("it-IT"),T.lead+" lead + "+T.prat+" pratiche"],
+ ["Conversione 1",pct(T.c1),"lead diventati pratica"],
+ ["Conversione 2",pct(T.c2),T.valid+" pratiche valide"],
+ ["Fatturato",eur(T.fatt),"montante "+eur(T.mont)],
+ ["Costo lead",eur(T.cost),T.excl+" lead esclusi"],
+ ["ROAS totale",x2(T.roas),"settembre "+x2(sep.roas),1]
+].map(([l,v,n,h])=>`<div class="kpi${h?" hl":""}"><span class="l">${l}</span><span class="v">${v}</span><span class="n">${n}</span></div>`).join("");
+
+const pill=r=>r.roas>=1.5?'<span class="pill g">'+x2(r.roas)+'</span>':r.roas>=1?'<span class="pill w">'+x2(r.roas)+'</span>':r.cost&&r.roas===0?'<span class="pill b">0,00x</span>':r.roas>0?'<span class="pill b">'+x2(r.roas)+'</span>':'<span class="pill n">–</span>';
+const est=r=>r.m==="2026-11"?'<span class="est">stima</span>':"";
+document.getElementById("tab").innerHTML=`<thead><tr><th>Mese</th><th>Lead</th><th>Pratiche</th><th>Totale</th><th>Conv. 1</th><th>Pratiche valide</th><th>Conv. 2</th><th>Montante valide</th><th>Fatturato</th><th>Esclusi</th><th>Fatturabili</th><th>Costo</th><th>ROAS</th></tr></thead><tbody>`+
+R.map(r=>`<tr><td>${MN[r.m]||r.m}</td><td>${r.lead}</td><td>${r.prat}</td><td>${r.tot}</td><td class="k">${pct(r.c1)}</td><td>${r.valid}</td><td class="k">${pct(r.c2)}</td><td>${eur(r.mont)}</td><td>${eur(r.fatt)}</td><td title="${r.src}">${r.excl}${est(r)}</td><td>${r.fb}</td><td>${eur(r.cost)}</td><td>${pill(r)}</td></tr>`).join("")+
+`<tr class="tot"><td>Totale</td><td>${T.lead}</td><td>${T.prat}</td><td>${T.tot}</td><td>${pct(T.c1)}</td><td>${T.valid}</td><td>${pct(T.c2)}</td><td>${eur(T.mont)}</td><td>${eur(T.fatt)}</td><td>${T.excl}</td><td>${T.fb}</td><td>${eur(T.cost)}</td><td>${x2(T.roas)}</td></tr></tbody>`;
+
+function bars(id,series,fmt,cols,li){
+  const s=document.getElementById(id),W=480,H=240,L=46,B=28,Tp=16,pw=W-L-10,ph=H-B-Tp;
+  const mx=Math.max(...series.flat())*1.15||1,n=R.length,gw=pw/n,bw=Math.min(18,gw/2-4);
+  const nice=[0,.25,.5,.75,1].map(f=>f*mx);
+  let o="";
+  nice.forEach(v=>{const y=Tp+ph-v/mx*ph;o+=`<line x1="${L}" x2="${W-10}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${L-6}" y="${y+4}" text-anchor="end">${fmt(v,1)}</text>`});
+  R.forEach((r,i)=>{const cx=L+gw*i+gw/2;
+    series.forEach((ser,j)=>{const v=ser[i],h=v/mx*ph,x=cx+(j?2:-bw-2),y=Tp+ph-h;
+      o+=`<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(h,0)}" rx="2" fill="${cols[j]}"/>`;
+      if(v>0&&j===li)o+=`<text class="vl" x="${x+bw/2}" y="${y-4}" text-anchor="middle">${fmt(v)}</text>`});
+    o+=`<text x="${cx}" y="${H-8}" text-anchor="middle">${MN[r.m]||r.m}</text>`});
+  s.innerHTML=o;
+}
+bars("c1",[R.map(r=>r.c1),R.map(r=>r.c2)],(v,a)=>a?Math.round(v*100)+"%":(v*100).toFixed(1).replace(".",",")+"%",["var(--cost)","var(--accent)"],1);
+bars("c2",[R.map(r=>r.fatt),R.map(r=>r.cost)],(v,a)=>a?(v>=1000?Math.round(v/1000)+"k":Math.round(v)):(v>=1000?(v/1000).toFixed(1).replace(".",",")+"k":Math.round(v)),["var(--accent)","var(--cost)"],0);
+</script>
+</body></html>

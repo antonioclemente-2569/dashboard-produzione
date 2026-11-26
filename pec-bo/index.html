@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PEC Back Office</title><style>
+  /* Stile Aessefin: fondo nero, testata con filetto rosso, marchio giallo, schede scure */
+  html, body { margin: 0; background: #000; }
+  .ae {
+    --ae-red: #E50041;
+    --ae-yellow: #FFC400;
+    --ae-burg: #66153A;
+    --ae-bg: #000000;
+    --ae-panel: #121212;
+    --ae-line: #2e2e2e;
+    --ae-fg: #ffffff;
+    --ae-muted: #b8b8b8;
+    background: var(--ae-bg); color: var(--ae-fg);
+    font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    padding-block: clamp(20px, 4vw, 40px) 40px; padding-inline: clamp(16px, 4vw, 40px);
+    display: flex; flex-direction: column; gap: 32px; min-height: 100%; box-sizing: border-box;
+  }
+  .ae *, .ae *::before, .ae *::after { box-sizing: border-box; }
+  .ae-head { display: flex; flex-direction: column; gap: 10px; border-bottom: 4px solid var(--ae-red); padding-bottom: 20px; }
+  .ae-brand { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ae-yellow); margin: 0; }
+  .ae-title { font-size: clamp(26px, 5vw, 40px); font-weight: 700; line-height: 1.1; margin: 0; text-wrap: balance; }
+  .ae-period { color: var(--ae-muted); font-size: 13px; margin: 0; }
+  .ae-h2 { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ae-muted); margin: 0 0 14px; }
+
+  .ae-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+  .ae-card { background: var(--ae-panel); border: 1px solid var(--ae-line); border-radius: 6px; padding: 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .ae-card.is-key { background: var(--ae-red); border-color: var(--ae-red); }
+  .ae-card-label { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin: 0; }
+  .ae-big { font-size: clamp(28px, 4.6vw, 38px); font-weight: 700; line-height: 1; display: block; }
+  .ae-big.is-yellow { color: var(--ae-yellow); }
+
+  .ae-ops { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ae-op { border: 1px solid var(--ae-line); background: var(--ae-panel); border-radius: 6px; padding: 8px 12px; font-size: 13px; color: var(--ae-muted); }
+  .ae-op b { color: var(--ae-fg); margin-left: 6px; }
+
+  .ae-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .ae-seg { display: inline-flex; border: 1px solid var(--ae-line); border-radius: 6px; overflow: hidden; }
+  .ae-seg button { font: inherit; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border: 0; background: var(--ae-panel); color: var(--ae-muted); padding: 9px 14px; cursor: pointer; }
+  .ae-seg button.on { background: var(--ae-red); color: #fff; }
+  .ae-in { font: inherit; font-size: 14px; padding: 9px 12px; border: 1px solid var(--ae-line); border-radius: 6px; background: var(--ae-panel); color: var(--ae-fg); }
+  .ae-in::placeholder { color: #8a8a8a; }
+  input.ae-in[type=search] { flex: 1 1 240px; min-width: 0; }
+
+  .ae-list { display: flex; flex-direction: column; gap: 10px; }
+  .ae-row { background: var(--ae-panel); border: 1px solid var(--ae-line); border-left: 4px solid var(--ae-yellow); border-radius: 6px; padding: 16px 18px; display: grid; grid-template-columns: 1fr auto; gap: 14px; }
+  .ae-row.done { border-left-color: var(--ae-burg); opacity: .85; }
+  .ae-name { font-size: 17px; font-weight: 700; margin: 0; }
+  .ae-meta { color: var(--ae-muted); font-size: 13px; margin: 2px 0 0; }
+  .ae-rif { display: inline-block; margin: 6px 0 0; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--ae-yellow); }
+  .ae-subj { font-size: 14px; margin: 8px 0 0; word-break: break-word; }
+  .ae-det { margin: 10px 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; font-size: 14px; }
+  .ae-det dt { color: var(--ae-muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding-top: 2px; }
+  .ae-det dd { margin: 0; }
+  .ae-foot { color: var(--ae-muted); font-size: 12px; margin: 10px 0 0; }
+  .ae a { color: var(--ae-yellow); }
+  .ae-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; min-width: 190px; }
+  .ae-badge { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 4px; padding: 4px 10px; white-space: nowrap; }
+  .ae-badge.todo { background: var(--ae-yellow); color: #000; }
+  .ae-badge.done { background: var(--ae-burg); color: #fff; }
+  .ae-who { font-size: 13px; color: var(--ae-muted); text-align: right; }
+  .ae-who b { color: var(--ae-fg); }
+  .ae-btn { font: inherit; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--ae-line); background: transparent; color: var(--ae-fg); border-radius: 6px; padding: 9px 14px; cursor: pointer; }
+  .ae-btn.is-red { background: var(--ae-red); border-color: var(--ae-red); color: #fff; }
+  .ae-btn:focus-visible, .ae-seg button:focus-visible, .ae-in:focus-visible { outline: 2px solid var(--ae-yellow); outline-offset: 2px; }
+  .ae-empty { color: var(--ae-muted); text-align: center; padding: 40px 0; border: 1px dashed var(--ae-line); border-radius: 6px; }
+  .ae-note { font-size: 12px; color: var(--ae-muted); margin: 0; }
+  @media (max-width: 640px) {
+    .ae-row { grid-template-columns: 1fr; }
+    .ae-side { align-items: flex-start; min-width: 0; }
+    .ae-who { text-align: left; }
+    .ae-det { grid-template-columns: 1fr; gap: 2px; }
+    .ae-det dd { margin-bottom: 6px; }
+  }
+
+  dialog.ae-dlg { border: 1px solid var(--ae-line, #2e2e2e); border-top: 4px solid #E50041; border-radius: 6px; background: #121212; color: #fff; padding: 22px; width: min(440px, calc(100vw - 32px)); font-family: Arial, Helvetica, sans-serif; }
+  dialog.ae-dlg::backdrop { background: rgba(0,0,0,.7); }
+  .ae-dlg h2 { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #FFC400; margin: 0 0 6px; }
+  .ae-dlg p { margin: 0; color: #b8b8b8; font-size: 14px; }
+  .ae-dlg label { display: block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #b8b8b8; margin: 16px 0 6px; }
+  .ae-dlg select, .ae-dlg textarea { width: 100%; box-sizing: border-box; font: inherit; font-size: 15px; padding: 10px 12px; border: 1px solid #2e2e2e; border-radius: 6px; background: #000; color: #fff; }
+  .ae-dlg .act { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+  .ae-dlg .ae-btn { font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border: 1px solid #2e2e2e; background: transparent; color: #fff; border-radius: 6px; padding: 9px 14px; cursor: pointer; }
+  .ae-dlg .ae-btn.is-red { background: #E50041; border-color: #E50041; }
+</style></head><body>
+<div class="ae">
+  <header class="ae-head">
+    <p class="ae-brand">Aessefin Prestiti 24/7 · Back Office</p>
+    <h1 class="ae-title">PEC da gestire a mano</h1>
+    <p class="ae-period" id="periodo">PEC di oggi girate da Claude a bomilano@aessefin.it</p>
+    <p class="ae-period">Versione senza dati dei clienti: nomi e codici fiscali sono nella mail inviata al Back Office.</p>
+  </header>
+
+  <section>
+    <h2 class="ae-h2">Situazione di oggi</h2>
+    <div class="ae-cards">
+      <article class="ae-card"><p class="ae-card-label">PEC arrivate</p><b class="ae-big" id="kTot">0</b></article>
+      <article class="ae-card is-key"><p class="ae-card-label">Da riscontrare</p><b class="ae-big" id="kTodo">0</b></article>
+      <article class="ae-card"><p class="ae-card-label">Riscontrate</p><b class="ae-big is-yellow" id="kDone">0</b></article>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="ae-h2">Riscontri per operatore</h2>
+    <div class="ae-ops" id="ops"></div>
+  </section>
+
+  <section>
+    <h2 class="ae-h2">Elenco PEC</h2>
+    <div class="ae-filters">
+      <div class="ae-seg" id="seg">
+        <button data-s="todo" class="on">Da riscontrare</button>
+        <button data-s="done">Riscontrate</button>
+        <button data-s="all">Tutte</button>
+      </div>
+      <input class="ae-in" type="search" id="q" placeholder="Cerca contratto, pratica, azienda…">
+      <select class="ae-in" id="fOp"><option value="">Tutti gli operatori</option></select>
+    </div>
+    <div class="ae-list" id="list"></div>
+  </section>
+
+  <p class="ae-note" id="notice"></p>
+</div>
+
+<dialog class="ae-dlg" id="dlg">
+  <form method="dialog" id="frm">
+    <h2>Segna come riscontrata</h2>
+    <p id="dlgWho"></p>
+    <label for="op">Operatore che ha riscontrato</label>
+    <select id="op" required><option value="">Seleziona l'operatore</option></select>
+    <label for="nota">Nota (facoltativa)</label>
+    <textarea id="nota" rows="3" placeholder="Es. pratica integrata, avvisato il Credit Manager… (niente nomi né codici fiscali)"></textarea>
+    <div class="act">
+      <button class="ae-btn" value="cancel" formnovalidate>Annulla</button>
+      <button class="ae-btn is-red" value="ok" id="ok">Conferma riscontro</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* ===== CONFIGURAZIONE =====
+   API_URL: indirizzo del webhook (es. Make) che salva e restituisce i riscontri condivisi.
+   Vuoto = anteprima: i riscontri restano solo su questo browser. */
+const API_URL = "";
+const OPERATORI = ["Pasquale Pepe","Sandra Pancio","Gianluca Alfonsi","Marianna D'Ambrosio","Alessandro Simone"];
+let PEC = [];
+
+let RISCONTRI = {};
+let API_KO = false;
+let filtro = "todo";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ora = iso => { const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Rome"}); };
+const quando = iso => { const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleString("it-IT",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",timeZone:"Europe/Rome"}); };
+
+const LS = "pec-bo-riscontri-v1";
+async function caricaRiscontri(){
+  if (API_URL){
+    try { const r = await fetch(API_URL + (API_URL.includes("?")?"&":"?") + "azione=leggi", {cache:"no-store", credentials:"same-origin"}); if (!r.ok) throw 0; RISCONTRI = (await r.json()) || {}; return; }
+    catch(e){ API_KO = true; }
+  }
+  try { RISCONTRI = JSON.parse(localStorage.getItem(LS) || "{}"); } catch(e){ RISCONTRI = {}; }
+}
+async function salvaRiscontro(id, rec){
+  if (rec) RISCONTRI[id] = rec; else delete RISCONTRI[id];
+  if (API_URL){
+    try { const r = await fetch(API_URL, {method:"POST", credentials:"same-origin", headers:{"Content-Type":"application/json"}, body: JSON.stringify({azione:"salva", id, riscontro: rec || null})}); if (!r.ok) throw 0; }
+    catch(e){ alert("Salvataggio del riscontro non riuscito: ricarica la pagina e riprova."); }
+  } else { try { localStorage.setItem(LS, JSON.stringify(RISCONTRI)); } catch(e){} }
+}
+
+function render(){
+  const q = $("#q").value.trim().toLowerCase(), op = $("#fOp").value;
+  const done = PEC.filter(p => RISCONTRI[p.id]).length;
+  $("#kTot").textContent = PEC.length; $("#kDone").textContent = done; $("#kTodo").textContent = PEC.length - done;
+  const per = {}; OPERATORI.forEach(o => per[o] = 0);
+  PEC.forEach(p => { const r = RISCONTRI[p.id]; if (r && r.operatore) per[r.operatore] = (per[r.operatore]||0) + 1; });
+  $("#ops").innerHTML = Object.entries(per).map(([o,n]) => `<span class="ae-op">${esc(o)}<b>${n}</b></span>`).join("");
+
+  const rows = PEC.filter(p => {
+    const s = RISCONTRI[p.id] ? "done" : "todo";
+    if (filtro !== "all" && s !== filtro) return false;
+    if (op && (!RISCONTRI[p.id] || RISCONTRI[p.id].operatore !== op)) return false;
+    if (q && !`${p.rif} ${p.azienda} ${p.mittente} ${p.oggetto}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  $("#list").innerHTML = rows.length ? rows.map(p => {
+    const r = RISCONTRI[p.id], s = r ? "done" : "todo";
+    const id = [p.mittente].filter(Boolean).map(esc).join(" · ");
+    return `<article class="ae-row ${s}">
+      <div>
+        <p class="ae-name">${esc(p.azienda || p.mittente)}</p>
+        <p class="ae-rif">${esc(p.rif)}</p>
+        <p class="ae-meta">${id}</p>
+        <p class="ae-subj">${esc(p.oggetto)}</p>
+        <dl class="ae-det">
+          ${p.inviato ? `<dt>Inviato</dt><dd>${esc(p.inviato)}</dd>` : ""}
+          ${p.stato_crm ? `<dt>Stato CRM</dt><dd>${esc(p.stato_crm)}</dd>` : ""}
+          ${p.da_decidere ? `<dt>Da decidere</dt><dd>${esc(p.da_decidere)}</dd>` : ""}
+        </dl>
+        <p class="ae-foot">PEC ricevuta ${esc(p.ricevuta)} · girata al Back Office alle ${ora(p.data_invio)} · nome e dettagli del cliente nella mail “PEC da gestire a mano” delle ${ora(p.data_invio)}</p>
+      </div>
+      <div class="ae-side">
+        <span class="ae-badge ${s}">${r ? "Riscontrato" : "Da riscontrare"}</span>
+        ${r ? `<div class="ae-who">da <b>${esc(r.operatore)}</b><br>${quando(r.quando)}${r.nota ? `<br>“${esc(r.nota)}”` : ""}</div>
+               <button class="ae-btn" data-undo="${esc(p.id)}">Annulla riscontro</button>`
+            : `<button class="ae-btn is-red" data-do="${esc(p.id)}">Segna riscontrato</button>`}
+      </div>
+    </article>`;
+  }).join("") : `<div class="ae-empty">${!PEC.length ? "Oggi non sono ancora arrivate PEC da gestire a mano." : (filtro === "todo" && !q && !op ? "Tutte le PEC di oggi sono state riscontrate." : "Nessuna PEC con questi filtri.")}</div>`;
+}
+
+let corrente = null;
+$("#list").addEventListener("click", async e => {
+  const d = e.target.closest("[data-do]"), u = e.target.closest("[data-undo]");
+  if (d){
+    corrente = d.dataset.do;
+    const p = PEC.find(x => x.id === corrente);
+    $("#dlgWho").textContent = `${p.rif} · ${p.azienda || p.mittente}`;
+    $("#op").value = ""; $("#nota").value = "";
+    $("#dlg").showModal();
+  }
+  if (u && confirm("Riportare questa PEC a 'Da riscontrare'?")){ await salvaRiscontro(u.dataset.undo, null); render(); }
+});
+$("#frm").addEventListener("submit", async e => {
+  if (e.submitter && e.submitter.value === "ok"){
+    if (!$("#op").value){ e.preventDefault(); $("#op").focus(); return; }
+    await salvaRiscontro(corrente, {stato:"riscontrato", operatore:$("#op").value, nota:$("#nota").value.trim(), quando:new Date().toISOString()});
+    render();
+  }
+});
+$("#seg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
+  filtro = b.dataset.s; document.querySelectorAll("#seg button").forEach(x => x.classList.toggle("on", x === b)); render(); });
+["#q","#fOp"].forEach(s => $(s).addEventListener("input", render));
+
+(async () => {
+  OPERATORI.forEach(o => { $("#op").add(new Option(o,o)); $("#fOp").add(new Option(o,o)); });
+  try {
+    const r = await fetch("dati.json?v=" + Date.now(), {cache:"no-store"});
+    const j = await r.json();
+    const oggi = new Date().toLocaleDateString("sv-SE", {timeZone:"Europe/Rome"});
+    PEC = (j.giorno === oggi && Array.isArray(j.pec)) ? j.pec : [];
+    const g = new Date(oggi + "T12:00:00").toLocaleDateString("it-IT", {day:"numeric", month:"long", year:"numeric"});
+    $("#periodo").textContent = `PEC di oggi, ${g}, girate da Claude a bomilano@aessefin.it` + (j.giorno === oggi && j.aggiornato ? ` · Aggiornato alle ${j.aggiornato}` : "");
+  } catch(e) { $("#periodo").textContent = "Dati non disponibili: riprova tra qualche minuto."; }
+  PEC.sort((a,b) => (b.data_invio||"").localeCompare(a.data_invio||""));
+  await caricaRiscontri();
+  $("#notice").textContent = !API_URL ? "Anteprima: i riscontri restano salvati solo su questo browser."
+    : API_KO ? "Attenzione: archivio dei riscontri non raggiungibile. I riscontri mostrati potrebbero non essere aggiornati."
+    : "I riscontri sono condivisi tra tutti gli operatori. La pagina si aggiorna ogni ora.";
+  render();
+  setInterval(() => { if (!document.querySelector("#dlg").open) location.reload(); }, 15*60000);
+  setInterval(async () => { if (!document.querySelector("#dlg").open){ await caricaRiscontri(); render(); } }, 60000);
+})();
+</script>
+</body></html>

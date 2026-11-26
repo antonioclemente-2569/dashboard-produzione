@@ -141,9 +141,9 @@
 
 <script>
 /* ===== CONFIGURAZIONE =====
-   API_URL: indirizzo del webhook (es. Make) che salva e restituisce i riscontri condivisi.
-   Vuoto = anteprima: i riscontri restano solo su questo browser. */
-const API_URL = "";
+   API_URL: webhook Make (scenario "CLAUDE BO - Riscontri dashboard PEC (webhook)", data store
+   "Riscontri PEC Back Office") che salva e restituisce i riscontri condivisi tra gli operatori. */
+const API_URL = "https://hook.eu1.make.com/g6oruggvjb6lr6okxc4npg425xm3r2oy";
 const OPERATORI = ["Pasquale Pepe","Sandra Pancio","Gianluca Alfonsi","Marianna D'Ambrosio","Alessandro Simone"];
 let PEC = [];
 
@@ -156,19 +156,40 @@ const ora = iso => { const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleT
 const quando = iso => { const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleString("it-IT",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",timeZone:"Europe/Rome"}); };
 
 const LS = "pec-bo-riscontri-v1";
+async function chiamaApi(params){
+  const r = await fetch(API_URL + "?" + new URLSearchParams(params).toString(), {cache:"no-store"});
+  const t = await r.text();
+  if (!r.ok || !t.startsWith("OK")) throw new Error("risposta non valida");
+  return t;
+}
 async function caricaRiscontri(){
   if (API_URL){
-    try { const r = await fetch(API_URL + (API_URL.includes("?")?"&":"?") + "azione=leggi", {cache:"no-store", credentials:"same-origin"}); if (!r.ok) throw 0; RISCONTRI = (await r.json()) || {}; return; }
-    catch(e){ API_KO = true; }
+    try {
+      const t = await chiamaApi({azione:"leggi", t:Date.now()});
+      const m = {};
+      t.split("\n").slice(1).forEach(riga => {
+        const [id, operatore, quando, nota] = riga.split("|");
+        if (!id || !operatore) return;
+        let n = ""; try { n = decodeURIComponent(nota || ""); } catch(e){ n = nota || ""; }
+        m[id] = {stato:"riscontrato", operatore, quando, nota:n};
+      });
+      RISCONTRI = m; API_KO = false; return;
+    } catch(e){ API_KO = true; return; }
   }
   try { RISCONTRI = JSON.parse(localStorage.getItem(LS) || "{}"); } catch(e){ RISCONTRI = {}; }
 }
 async function salvaRiscontro(id, rec){
-  if (rec) RISCONTRI[id] = rec; else delete RISCONTRI[id];
   if (API_URL){
-    try { const r = await fetch(API_URL, {method:"POST", credentials:"same-origin", headers:{"Content-Type":"application/json"}, body: JSON.stringify({azione:"salva", id, riscontro: rec || null})}); if (!r.ok) throw 0; }
-    catch(e){ alert("Salvataggio del riscontro non riuscito: ricarica la pagina e riprova."); }
-  } else { try { localStorage.setItem(LS, JSON.stringify(RISCONTRI)); } catch(e){} }
+    try {
+      if (rec) await chiamaApi({azione:"salva", id, operatore:rec.operatore, nota:encodeURIComponent(rec.nota || "")});
+      else await chiamaApi({azione:"annulla", id});
+      if (rec) RISCONTRI[id] = rec; else delete RISCONTRI[id];
+      await caricaRiscontri();
+    } catch(e){ alert("Salvataggio del riscontro non riuscito: ricarica la pagina e riprova."); }
+  } else {
+    if (rec) RISCONTRI[id] = rec; else delete RISCONTRI[id];
+    try { localStorage.setItem(LS, JSON.stringify(RISCONTRI)); } catch(e){}
+  }
 }
 
 function render(){
@@ -247,12 +268,12 @@ $("#seg").addEventListener("click", e => { const b = e.target.closest("button");
   } catch(e) { $("#periodo").textContent = "Dati non disponibili: riprova tra qualche minuto."; }
   PEC.sort((a,b) => (b.data_invio||"").localeCompare(a.data_invio||""));
   await caricaRiscontri();
-  $("#notice").textContent = !API_URL ? "Anteprima: i riscontri restano salvati solo su questo browser."
-    : API_KO ? "Attenzione: archivio dei riscontri non raggiungibile. I riscontri mostrati potrebbero non essere aggiornati."
-    : "I riscontri sono condivisi tra tutti gli operatori. La pagina si aggiorna ogni ora.";
-  render();
+  const avviso = () => { $("#notice").textContent = !API_URL ? "Anteprima: i riscontri restano salvati solo su questo browser."
+    : API_KO ? "Attenzione: archivio dei riscontri non raggiungibile. Riprova tra poco."
+    : "I riscontri sono condivisi tra tutti gli operatori e si aggiornano ogni minuto."; };
+  avviso(); render();
   setInterval(() => { if (!document.querySelector("#dlg").open) location.reload(); }, 15*60000);
-  setInterval(async () => { if (!document.querySelector("#dlg").open){ await caricaRiscontri(); render(); } }, 60000);
+  setInterval(async () => { if (!document.querySelector("#dlg").open){ await caricaRiscontri(); avviso(); render(); } }, 60000);
 })();
 </script>
 </body></html>

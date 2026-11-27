@@ -1,6 +1,6 @@
 {
  "giorno": "2026-11-27",
- "aggiornato": "11:20",
+ "aggiornato": "12:20",
  "pec": [
   {
    "id": "1a21c0ae296d2429",
@@ -61,6 +61,18 @@
    "inviato": "PEC senza testo con un PDF allegato: copia di un atto di pignoramento notificato con raccomandata del 03/08/2026.",
    "stato_crm": "Da ripresentare, attributo Archiviata; CDS richiesto 23/11/2026 e rientrato 24/11/2026.",
    "da_decidere": "Valutare l'impatto del pignoramento sulla ripresentazione della pratica, se allegare l'atto in CRM e se informare cliente o Credit Manager."
+  },
+  {
+   "id": "1a21caf6871d5dad",
+   "data_invio": "2026-11-27T11:06:27Z",
+   "ricevuta": "27/11/2026 ore 11:20",
+   "azienda": "Progetto Srl",
+   "mittente": "laprogettosrl@pec.it",
+   "rif": "Contratto 292397",
+   "oggetto": "Re:RICHIESTA CHIARIMENTI [cliente]",
+   "inviato": "Solo testo, nessun PDF: l'azienda dichiara un errore di scrittura sulla data di assunzione nel CDS e conferma l'assunzione a tempo indeterminato dal 29/12/2016.",
+   "stato_crm": "In Lavorazione Stato 5, attributo Contratto Firmato; CDS richiesto 30/10/2026, rientrato 19/11/2026.",
+   "da_decidere": "Decidere se il chiarimento testuale basta per la mandante o se serve un CDS corretto/rettificato dall'azienda."
   }
  ]
 }

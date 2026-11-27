@@ -1,6 +1,6 @@
 {
  "giorno": "2026-11-27",
- "aggiornato": "13:20",
+ "aggiornato": "14:21",
  "pec": [
   {
    "id": "1a21c0ae296d2429",
@@ -85,6 +85,54 @@
    "inviato": "Risponde alla richiesta del 27/11 di reinviare il CDS con luogo e data di rilascio, allegando un certificato di stipendio (contenuto non aperto).",
    "stato_crm": "In Lavorazione Stato 5, attributo Contratto Firmato; CDS richiesto 24/11/2026 e già rientrato il 25/11/2026.",
    "da_decidere": "Verificare che il nuovo CDS riporti luogo e data di rilascio, caricarlo sulla pratica a integrazione del precedente e inoltrarlo a Cofidis se necessario."
+  },
+  {
+   "id": "1a21d1ed42471372",
+   "data_invio": "2026-11-27T13:08:09Z",
+   "ricevuta": "27/11/2026 ore 13:59",
+   "azienda": "Cantieri Edili srl",
+   "mittente": "cantieri-edili@pec.it",
+   "rif": "Pratica CRM 12x6548080",
+   "oggetto": "Re:[cliente] SOLLECITO RICHIESTA RILASCIO CERTIFICATO DI STIPENDIO",
+   "inviato": "Risposta al sollecito CDS senza allegati: ha inoltrato la richiesta allo studio paghe e invierà il certificato appena disponibile.",
+   "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 20/11/2026, sollecitato 27/11/2026, nessun rientro.",
+   "da_decidere": "Nessun rientro: restare in attesa del certificato ed eventualmente pianificare un nuovo sollecito."
+  },
+  {
+   "id": "1a21d1edeb38f745",
+   "data_invio": "2026-11-27T13:08:12Z",
+   "ricevuta": "27/11/2026 ore 13:32",
+   "azienda": "Stellantis Europe SpA",
+   "mittente": "fcaservices.cessionequinto@pec.fcagroup.com",
+   "rif": "Pratica CRM 12x6521684",
+   "oggetto": "AutoReply [[cliente] SOLLECITO RICHIESTA RILASCIO CERTIFICATO DI STIPENDIO]",
+   "inviato": "Solo una risposta automatica (AutoReply) al nostro sollecito CDS, senza testo né PDF.",
+   "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 17/11/2026, sollecitato 27/11/2026, nessun rientro.",
+   "da_decidere": "Nessuna azione: attendere il certificato."
+  },
+  {
+   "id": "1a21d1ee9df0a4bf",
+   "data_invio": "2026-11-27T13:08:14Z",
+   "ricevuta": "27/11/2026 ore 13:54",
+   "azienda": "Team S.r.l.",
+   "mittente": "pec.teamsrl@legalmail.it",
+   "rif": "Pratica CRM 12x6249124",
+   "oggetto": "FWD: RICHIESTA CHIARIMENTI [cliente]",
+   "inviato": "Ha re-inoltrato la nostra richiesta di chiarimenti (permessi non retribuiti, provvedimenti disciplinari, scadenza appalto) senza testo di risposta né PDF.",
+   "stato_crm": "Caricata Stato 10 / In Istruttoria; CDS rientrato 29/09/2026.",
+   "da_decidere": "Verificare se l'azienda intendeva rispondere (la risposta potrebbe mancare) ed eventualmente sollecitare i chiarimenti."
+  },
+  {
+   "id": "1a21d1ef294e5013",
+   "data_invio": "2026-11-27T13:08:17Z",
+   "ricevuta": "27/11/2026 ore 14:00",
+   "azienda": "Salerno Pulita S.p.A.",
+   "mittente": "amministrazione@pec.salernopulita.it",
+   "rif": "Pratica CRM 12x6525554",
+   "oggetto": "Ricevuta di Avvenuta protocollazione",
+   "inviato": "Solo una ricevuta automatica di avvenuta protocollazione, senza testo né PDF.",
+   "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 16/11/2026, sollecitato 27/11/2026 (abbinamento presunto al sollecito).",
+   "da_decidere": "Nessuna azione: attendere il certificato."
   }
  ]
 }

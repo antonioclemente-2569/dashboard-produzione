@@ -1,6 +1,6 @@
 {
  "giorno": "2026-11-27",
- "aggiornato": "10:20",
+ "aggiornato": "11:20",
  "pec": [
   {
    "id": "1a21c0ae296d2429",
@@ -37,6 +37,30 @@
    "inviato": "Risponde al sollecito CDS del 28/10 inviando solo l'ultimo cedolino, non il CDS; inoltrerà in seguito il contratto firmato (tempo indeterminato dal 01/10/2026).",
    "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 09/10/2026, sollecito 28/10/2026, rientro CDS vuoto.",
    "da_decidere": "Decidere se il cedolino basta o se insistere per il CDS compilato; attendere il contratto promesso e verificare l'anzianità di servizio."
+  },
+  {
+   "id": "1a21c784ede5543c",
+   "data_invio": "2026-11-27T10:06:16Z",
+   "ricevuta": "27/11/2026 ore 09:33",
+   "azienda": "Supermercato San Pietro in Vincoli snc",
+   "mittente": "conadsanpietroinvincoli@pecconfesercentira.it",
+   "rif": "Pratica CRM 12x6310129",
+   "oggetto": "Re: POSTA CERTIFICATA: [cliente] SOLLECITO RICHIESTA RILASCIO CERTIFICATO DI STIPENDIO",
+   "inviato": "Risponde al sollecito CDS del 28/10 allegando la comunicazione obbligatoria di assunzione a tempo indeterminato; il CDS non risulta allegato.",
+   "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 09/10/2026, sollecito 28/10/2026, rientro CDS vuoto.",
+   "da_decidere": "Verificare se il CDS è stato inviato a parte o va risollecitato; valutare se allegare la comunicazione di assunzione alla pratica."
+  },
+  {
+   "id": "1a21c7859009d6fc",
+   "data_invio": "2026-11-27T10:06:18Z",
+   "ricevuta": "27/11/2026 ore 10:58",
+   "azienda": "UNES MAXI SPA",
+   "mittente": "unesmaxi_personale@legalmail.it",
+   "rif": "Pratica CRM 12x6548226",
+   "oggetto": "Copia atto di pignoramento [cliente]",
+   "inviato": "PEC senza testo con un PDF allegato: copia di un atto di pignoramento notificato con raccomandata del 03/08/2026.",
+   "stato_crm": "Da ripresentare, attributo Archiviata; CDS richiesto 23/11/2026 e rientrato 24/11/2026.",
+   "da_decidere": "Valutare l'impatto del pignoramento sulla ripresentazione della pratica, se allegare l'atto in CRM e se informare cliente o Credit Manager."
   }
  ]
 }

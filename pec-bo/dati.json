@@ -1,6 +1,6 @@
 {
  "giorno": "2026-11-27",
- "aggiornato": "15:20",
+ "aggiornato": "17:23",
  "pec": [
   {
    "id": "1a21c0ae296d2429",
@@ -157,6 +157,18 @@
    "inviato": "Risposta (RE:) al nostro sollecito CDS che riporta solo il nostro testo, senza note proprie e senza PDF dell'azienda: il certificato non risulta allegato.",
    "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 23/11/2026, sollecitato 27/11/2026, rientro vuoto; CF non valorizzato in CRM.",
    "da_decidere": "Verificare la PEC originale; se il CDS manca, ricontattare l'azienda per farsi inviare il certificato compilato."
+  },
+  {
+   "id": "1a21dc25b98012a4",
+   "data_invio": "2026-11-27T16:06:46Z",
+   "ricevuta": "27/11/2026 ore 17:04",
+   "azienda": "AON SPA – People Org Italy",
+   "mittente": "aon.spa.hr@pec.aon.it",
+   "rif": "Pratica CRM 12x6515112",
+   "oggetto": "CERTIFICATO DI STIPENDIO vs dipendente [cliente]",
+   "inviato": "Risponde alla richiesta CDS allegando un certificato di stipendio in PDF (contenuto non aperto).",
+   "stato_crm": "Da ripresentare, attributo Archiviata; CDS richiesto 13/11/2026, data rientro CDS vuota.",
+   "da_decidere": "Pratica archiviata, rientro non registrato in automatico: valutare se riattivarla e registrare il rientro del CDS o lasciarla archiviata."
   }
  ]
 }

@@ -1,6 +1,6 @@
 {
  "giorno": "2026-11-27",
- "aggiornato": "09:20",
+ "aggiornato": "10:20",
  "pec": [
   {
    "id": "1a21c0ae296d2429",
@@ -13,6 +13,30 @@
    "inviato": "Risposta alla richiesta CDS del 26/11 senza PDF: non rilascia CDS né compila moduli, non accetta deleghe; per il TFR rimanda all'ultima CU e ai cedolini 2026.",
    "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 26/11/2026, rientro vuoto",
    "da_decidere": "Decidere se accettare attestato di servizio più CU e cedolini forniti dal cliente al posto del CDS (verificare con la mandante) o gestire diversamente la pratica."
+  },
+  {
+   "id": "1a21c41e252292c7",
+   "data_invio": "2026-11-27T09:06:49Z",
+   "ricevuta": "27/11/2026 ore 09:59",
+   "azienda": "Ufficio Stipendi POSTE ITALIANE S.P.A.",
+   "mittente": "par.1na.ruo@pec.posteitaliane.it",
+   "rif": "Contratto 291667",
+   "oggetto": "I: Allegato C: Finanziamento 291667 [cliente] Cessione del Quinto dello Stipendio",
+   "inviato": "Invia l'Allegato C firmato (probabile benestare) per il finanziamento 291667 e indica le rate e la decorrenza da dicembre 2026.",
+   "stato_crm": "Deliberata Stato 30, attributo Notificata, data benestare vuota: rientro automatico non eseguito.",
+   "da_decidere": "Verificare lo stato della pratica, controllare che rata e durata indicate corrispondano alla delibera e registrare a mano il rientro del benestare."
+  },
+  {
+   "id": "1a21c41ead04cbcb",
+   "data_invio": "2026-11-27T09:06:51Z",
+   "ricevuta": "27/11/2026 ore 09:29",
+   "azienda": "SUPERMERCATO S.PIETRO IN VINCOLI SNC",
+   "mittente": "conadsanpietroinvincoli@pecconfesercentira.it",
+   "rif": "Pratica CRM 12x6310129",
+   "oggetto": "Re: POSTA CERTIFICATA: [cliente] SOLLECITO RICHIESTA RILASCIO CERTIFICATO DI STIPENDIO",
+   "inviato": "Risponde al sollecito CDS del 28/10 inviando solo l'ultimo cedolino, non il CDS; inoltrerà in seguito il contratto firmato (tempo indeterminato dal 01/10/2026).",
+   "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 09/10/2026, sollecito 28/10/2026, rientro CDS vuoto.",
+   "da_decidere": "Decidere se il cedolino basta o se insistere per il CDS compilato; attendere il contratto promesso e verificare l'anzianità di servizio."
   }
  ]
 }

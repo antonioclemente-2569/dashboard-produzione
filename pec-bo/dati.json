@@ -1,6 +1,6 @@
 {
  "giorno": "2026-11-27",
- "aggiornato": "14:21",
+ "aggiornato": "15:20",
  "pec": [
   {
    "id": "1a21c0ae296d2429",
@@ -133,6 +133,30 @@
    "inviato": "Solo una ricevuta automatica di avvenuta protocollazione, senza testo né PDF.",
    "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 16/11/2026, sollecitato 27/11/2026 (abbinamento presunto al sollecito).",
    "da_decidere": "Nessuna azione: attendere il certificato."
+  },
+  {
+   "id": "1a21d5572c8100a0",
+   "data_invio": "2026-11-27T14:07:49Z",
+   "ricevuta": "27/11/2026 ore 14:34",
+   "azienda": "Melchioni S.p.A.",
+   "mittente": "melchionispa@legalmail.it",
+   "rif": "Pratica CRM 12x6565519",
+   "oggetto": "RE: [cliente] SOLLECITO RICHIESTA RILASCIO CERTIFICATO DI STIPENDIO",
+   "inviato": "Risposta (RE:) al nostro sollecito CDS che riporta solo il nostro testo, senza note proprie e senza PDF dell'azienda: il certificato non risulta allegato.",
+   "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 23/11/2026, sollecitato 27/11/2026, rientro vuoto; esiste una pratica precedente archiviata.",
+   "da_decidere": "Verificare la PEC originale; se il CDS manca, ricontattare l'azienda per farsi inviare il certificato compilato."
+  },
+  {
+   "id": "1a21d557f078fb47",
+   "data_invio": "2026-11-27T14:07:52Z",
+   "ricevuta": "27/11/2026 ore 14:25",
+   "azienda": "DPA Service S.r.l.",
+   "mittente": "dpaservicesrl@legalmail.it",
+   "rif": "Pratica CRM 12x5621349",
+   "oggetto": "RE: [cliente] SOLLECITO RICHIESTA RILASCIO CERTIFICATO DI STIPENDIO",
+   "inviato": "Risposta (RE:) al nostro sollecito CDS che riporta solo il nostro testo, senza note proprie e senza PDF dell'azienda: il certificato non risulta allegato.",
+   "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 23/11/2026, sollecitato 27/11/2026, rientro vuoto; CF non valorizzato in CRM.",
+   "da_decidere": "Verificare la PEC originale; se il CDS manca, ricontattare l'azienda per farsi inviare il certificato compilato."
   }
  ]
 }

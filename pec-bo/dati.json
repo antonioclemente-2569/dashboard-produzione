@@ -1,6 +1,6 @@
 {
  "giorno": "2026-11-27",
- "aggiornato": "12:20",
+ "aggiornato": "13:20",
  "pec": [
   {
    "id": "1a21c0ae296d2429",
@@ -73,6 +73,18 @@
    "inviato": "Solo testo, nessun PDF: l'azienda dichiara un errore di scrittura sulla data di assunzione nel CDS e conferma l'assunzione a tempo indeterminato dal 29/12/2016.",
    "stato_crm": "In Lavorazione Stato 5, attributo Contratto Firmato; CDS richiesto 30/10/2026, rientrato 19/11/2026.",
    "da_decidere": "Decidere se il chiarimento testuale basta per la mandante o se serve un CDS corretto/rettificato dall'azienda."
+  },
+  {
+   "id": "1a21ce64ff7ff454",
+   "data_invio": "2026-11-27T12:06:25Z",
+   "ricevuta": "27/11/2026 ore 12:45",
+   "azienda": "GENOVESE GIUSEPPE S.R.L.",
+   "mittente": "genovese@arubapec.it",
+   "rif": "Contratto 292399",
+   "oggetto": "Re:RICHIESTA INTEGRAZIONI CERTIFICATO DI STIPENDIO DEL VOSTRO DIPENDENTE [cliente]",
+   "inviato": "Risponde alla richiesta del 27/11 di reinviare il CDS con luogo e data di rilascio, allegando un certificato di stipendio (contenuto non aperto).",
+   "stato_crm": "In Lavorazione Stato 5, attributo Contratto Firmato; CDS richiesto 24/11/2026 e già rientrato il 25/11/2026.",
+   "da_decidere": "Verificare che il nuovo CDS riporti luogo e data di rilascio, caricarlo sulla pratica a integrazione del precedente e inoltrarlo a Cofidis se necessario."
   }
  ]
 }

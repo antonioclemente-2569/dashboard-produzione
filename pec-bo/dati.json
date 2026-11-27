@@ -1,6 +1,6 @@
 {
  "giorno": "2026-11-27",
- "aggiornato": "17:23",
+ "aggiornato": "18:22",
  "pec": [
   {
    "id": "1a21c0ae296d2429",
@@ -169,6 +169,30 @@
    "inviato": "Risponde alla richiesta CDS allegando un certificato di stipendio in PDF (contenuto non aperto).",
    "stato_crm": "Da ripresentare, attributo Archiviata; CDS richiesto 13/11/2026, data rientro CDS vuota.",
    "da_decidere": "Pratica archiviata, rientro non registrato in automatico: valutare se riattivarla e registrare il rientro del CDS o lasciarla archiviata."
+  },
+  {
+   "id": "1a21df95be6049ed",
+   "data_invio": "2026-11-27T17:06:50Z",
+   "ricevuta": "27/11/2026 ore 17:48",
+   "azienda": "OPERA LABORATORI S.P.A.",
+   "mittente": "amministrazione@pec.operalaboratori.com",
+   "rif": "Pratica CRM 12x6568225",
+   "oggetto": "R: POSTA CERTIFICATA: CERTIFICATO DI STIPENDIO vs dipendente [cliente]",
+   "inviato": "Risposta senza PDF: non ravvisando un obbligo normativo, l'azienda non intende compilare il CDS; adempirà solo a contratto perfezionato e notificato.",
+   "stato_crm": "Da Inviare al mandante Stato 0 / In Attesa CDS; CDS richiesto 24/11/2026, nessun rientro registrato.",
+   "da_decidere": "Decidere come procedere senza CDS: busta paga e altra documentazione, sollecito motivato o gestione con cliente/Credit Manager."
+  },
+  {
+   "id": "1a21df9645c22eba",
+   "data_invio": "2026-11-27T17:06:53Z",
+   "ricevuta": "27/11/2026 ore 17:42",
+   "azienda": "Gruppo Negozi srl",
+   "mittente": "grupponegozi@legalmail.it",
+   "rif": "Pratica CRM 12x6578288",
+   "oggetto": "RE: CERTIFICATO DI STIPENDIO vs dipendente [cliente]",
+   "inviato": "Risposta senza testo proprio con allegato un certificato di stipendio in PDF, verosimilmente compilato (contenuto non aperto).",
+   "stato_crm": "Da ripresentare, attributo Archiviata; CDS richiesto 25/11/2026, nessun rientro registrato.",
+   "da_decidere": "Pratica archiviata, rientro non registrato in automatico: valutare se riattivarla e registrare il rientro CDS allegando il PDF o lasciarla archiviata."
   }
  ]
 }

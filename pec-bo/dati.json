@@ -1,6 +1,6 @@
 {
  "giorno": "2026-11-27",
- "aggiornato": "18:22",
+ "aggiornato": "19:20",
  "pec": [
   {
    "id": "1a21c0ae296d2429",
@@ -193,6 +193,18 @@
    "inviato": "Risposta senza testo proprio con allegato un certificato di stipendio in PDF, verosimilmente compilato (contenuto non aperto).",
    "stato_crm": "Da ripresentare, attributo Archiviata; CDS richiesto 25/11/2026, nessun rientro registrato.",
    "da_decidere": "Pratica archiviata, rientro non registrato in automatico: valutare se riattivarla e registrare il rientro CDS allegando il PDF o lasciarla archiviata."
+  },
+  {
+   "id": "1a21e30300166c38",
+   "data_invio": "2026-11-27T18:06:44Z",
+   "ricevuta": "27/11/2026 ore 18:05",
+   "azienda": "MAZZOCCO S.R.L.",
+   "mittente": "info@pec.mazzoccosrl.it",
+   "rif": "Pratica CRM 12x6482971",
+   "oggetto": "R: POSTA CERTIFICATA: [cliente] SOLLECITO RICHIESTA RILASCIO CERTIFICATO DI STIPENDIO",
+   "inviato": "Risponde al sollecito CDS del 13/11 con \"in allegato quanto richiesto\" e un PDF, probabilmente un certificato di stipendio (contenuto non aperto).",
+   "stato_crm": "Ritirata dal cliente Pre Stato 5, attributo Archiviata; CDS richiesto 09/11, sollecito 13/11, rientro CDS già registrato al 13/11/2026.",
+   "da_decidere": "Pratica ritirata/archiviata con rientro CDS già registrato: valutare se archiviare il documento o se il cliente ha riaperto la richiesta."
   }
  ]
 }
